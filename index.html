@@ -785,7 +785,7 @@
 
                         <div class="field full">
                             <label for="toolUrl">Tool URL</label>
-                            <input id="toolUrl" type="url" placeholder="https://example.com" required />
+                            <input id="toolUrl" type="text" placeholder="toolname.html" required />
                         </div>
 
                         <div class="field full">
@@ -1121,17 +1121,10 @@
                 const desc = el.toolDesc.value.trim();
 
                 if (!name || !url) {
-                    toast("Missing fields", "Tool name and URL are required.", "danger");
+                   toast("Missing fields", "Tool name and file name are required.", "danger");
                     return;
                 }
 
-                try {
-                    const parsedUrl = new URL(url);
-                    if (!["http:", "https:"].includes(parsedUrl.protocol)) throw new Error("Invalid protocol");
-                } catch {
-                    toast("Invalid URL", "Use a valid http or https link.", "danger");
-                    return;
-                }
 
                 upsertTool({ emoji, name, url, desc });
                 closeModal();
