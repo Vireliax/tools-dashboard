@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My AI Tools</title>
+    <meta name="color-scheme" content="dark light" />
+    <style>
+        :root {
+            --bg-1: #0b1020;
+            --bg-2: #111a33;
+            --bg-3: rgba(255, 255, 255, 0.06);
+            --bg-4: rgba(255, 255, 255, 0.1);
+            --text: #f5f7ff;
+            --muted: rgba(245, 247, 255, 0.72);
+            --border: rgba(255, 255, 255, 0.12);
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.22);
+            --accent: #8b5cf6;
+            --accent-2: #22d3ee;
+            --danger: #fb7185;
+            --success: #34d399;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(255, 255, 255, 0.08);
+            --input-border: rgba(255, 255, 255, 0.12);
+            --glass-blur: 18px;
+            --radius-xl: 28px;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
+        html[data-theme="light"] {
+            --bg-1: #eef3ff;
+            --bg-2: #f7f9ff;
+            --bg-3: rgba(255, 255, 255, 0.72);
+            --bg-4: rgba(255, 255, 255, 0.92);
+            --text: #131a2a;
+            --muted: rgba(19, 26, 42, 0.68);
+            --border: rgba(19, 26, 42, 0.08);
+            --shadow: 0 20px 60px rgba(34, 45, 73, 0.12);
+            --shadow-soft: 0 10px 28px rgba(34, 45, 73, 0.08);
+            --accent: #6d5efc;
+            --accent-2: #0ea5e9;
+            --danger: #ef476f;
+            --success: #12b981;
+            --card-bg: rgba(255, 255, 255, 0.72);
+            --input-bg: rgba(255, 255, 255, 0.82);
+            --input-border: rgba(19, 26, 42, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(1200px 800px at 10% 10%, rgba(139, 92, 246, 0.26), transparent 55%),
+                radial-gradient(900px 700px at 90% 20%, rgba(34, 211, 238, 0.18), transparent 50%),
+                radial-gradient(1000px 700px at 50% 95%, rgba(16, 185, 129, 0.14), transparent 60%),
+                linear-gradient(180deg, var(--bg-1), var(--bg-2));
+            background-attachment: fixed;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        .noise {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            opacity: 0.045;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mix-blend-mode: overlay;
+            z-index: 0;
+        }
+
+        .app {
+            position: relative;
+            z-index: 1;
+            width: min(1320px, calc(100% - 32px));
+            margin: 24px auto 48px;
+        }
+
+        .shell {
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            background: linear-gradient(180deg, var(--bg-3), transparent);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            border-radius: 32px;
+            overflow: hidden;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            justify-content: space-between;
+            padding: 22px 22px 18px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            backdrop-filter: blur(18px);
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 220px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: clamp(1.35rem, 2vw, 1.8rem);
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            font-weight: 800;
+        }
+
+        .brand p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.94rem;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .search-wrap {
+            flex: 1;
+            min-width: min(420px, 100%);
+            max-width: 620px;
+            position: relative;
+        }
+
+        .search-wrap svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .search {
+            width: 100%;
+            border: 1px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text);
+            padding: 14px 16px 14px 46px;
+            border-radius: 999px;
+            outline: none;
+            font-size: 0.96rem;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+        }
+
+        .search::placeholder {
+            color: var(--muted);
+        }
+
+        .search:focus {
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+            color: var(--text);
+            padding: 13px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease, opacity .18s ease;
+            box-shadow: var(--shadow-soft);
+            user-select: none;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(139, 92, 246, 0.32);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            opacity: 0.92;
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(34, 211, 238, 0.88));
+            border-color: transparent;
+            color: white;
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 18px 45px rgba(139, 92, 246, 0.28);
+        }
+
+        .btn.ghost {
+            background: var(--input-bg);
+        }
+
+        .btn.icon-only {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            justify-content: center;
+        }
+
+        .content {
+            padding: 22px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .stat strong {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .card {
+            position: relative;
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            background:
+                radial-gradient(800px 250px at 0% 0%, rgba(139, 92, 246, 0.16), transparent 55%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.05));
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            overflow: hidden;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            min-height: 250px;
+            transition:
+                transform .22s ease,
+                box-shadow .22s ease,
+                border-color .22s ease,
+                background .22s ease;
+            animation: floatIn .42s ease both;
+        }
+
+        .card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 22px 54px rgba(0, 0, 0, 0.24);
+            border-color: rgba(139, 92, 246, 0.28);
+        }
+
+        .card::after {
+            content: "";
+            position: absolute;
+            inset: auto -20% -70% -20%;
+            height: 180px;
+            background: radial-gradient(circle at top, rgba(139, 92, 246, 0.24), transparent 65%);
+            filter: blur(8px);
+            opacity: 0;
+            transition: opacity .22s ease;
+            pointer-events: none;
+        }
+
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .emoji {
+            width: 62px;
+            height: 62px;
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            font-size: 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+            border: 1px solid var(--border);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+            transition: transform .2s ease;
+        }
+
+        .card:hover .emoji {
+            transform: rotate(-3deg) scale(1.05);
+        }
+
+        .mini-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .mini-btn {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text);
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: transform .18s ease, background .18s ease, border-color .18s ease, opacity .18s ease;
+        }
+
+        .mini-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .mini-btn.danger:hover {
+            border-color: rgba(251, 113, 133, 0.32);
+            background: rgba(251, 113, 133, 0.12);
+        }
+
+        .card h2 {
+            margin: 16px 0 8px;
+            font-size: 1.18rem;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+        }
+
+        .desc {
+            margin: 0 0 16px;
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .card-link {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .empty-state {
+            border: 1px dashed var(--border);
+            border-radius: 28px;
+            min-height: 360px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 32px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent);
+        }
+
+        .empty-inner {
+            max-width: 460px;
+        }
+
+        .empty-inner .big {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .empty-inner h3 {
+            margin: 0 0 8px;
+            font-size: 1.35rem;
+            letter-spacing: -0.03em;
+        }
+
+        .empty-inner p {
+            margin: 0 0 18px;
+            color: var(--muted);
+        }
+
+        .modal,
+        .confirm {
+            position: fixed;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            padding: 22px;
+            background: rgba(3, 8, 20, 0.52);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .22s ease;
+        }
+
+        .modal.open,
+        .confirm.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .dialog {
+            width: min(660px, 100%);
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            background:
+                radial-gradient(900px 400px at 0% 0%, rgba(139, 92, 246, 0.18), transparent 40%),
+                linear-gradient(180deg, var(--bg-4), rgba(255, 255, 255, 0.82));
+            color: var(--text);
+            box-shadow: var(--shadow);
+            transform: translateY(22px) scale(0.98);
+            transition: transform .22s ease, opacity .22s ease;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        .modal.open .dialog,
+        .confirm.open .dialog {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        html[data-theme="dark"] .dialog {
+            background:
+                radial-gradient(900px 400px at 0% 0%, rgba(139, 92, 246, 0.16), transparent 40%),
+                linear-gradient(180deg, rgba(17, 26, 51, 0.96), rgba(8, 12, 24, 0.94));
+        }
+
+        .dialog-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 22px 22px 0;
+        }
+
+        .dialog-head h3 {
+            margin: 0;
+            font-size: 1.35rem;
+            letter-spacing: -0.03em;
+        }
+
+        .dialog-head p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .dialog-body {
+            padding: 20px 22px 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            border: 1px solid var(--input-border);
+            border-radius: 18px;
+            background: var(--input-bg);
+            color: var(--text);
+            padding: 14px 15px;
+            outline: none;
+            font: inherit;
+            transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        .field textarea {
+            min-height: 104px;
+            resize: vertical;
+        }
+
+        .field input:focus,
+        .field textarea:focus {
+            border-color: rgba(139, 92, 246, 0.55);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .confirm-box {
+            width: min(460px, 100%);
+        }
+
+        .confirm-text {
+            padding: 18px 22px 0;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .toast-wrap {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            min-width: 260px;
+            max-width: 360px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            color: var(--text);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.07));
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            transform: translateY(10px);
+            opacity: 0;
+            animation: toastIn .25s ease forwards;
+            pointer-events: auto;
+        }
+
+        .toast strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.98rem;
+        }
+
+        .toast span {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .toast.success {
+            border-color: rgba(52, 211, 153, 0.25);
+        }
+
+        .toast.danger {
+            border-color: rgba(251, 113, 133, 0.28);
+        }
+
+        .footer-note {
+            padding: 0 22px 22px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .kbd {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes toastIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 880px) {
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .brand {
+                min-width: 0;
+            }
+
+            .controls {
+                justify-content: stretch;
+            }
+
+            .search-wrap {
+                min-width: 0;
+                max-width: none;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .app {
+                width: min(100% - 18px, 1320px);
+                margin: 9px auto 24px;
+            }
+
+            .shell {
+                border-radius: 24px;
+            }
+
+            .topbar,
+            .content {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                min-height: 230px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="noise"></div>
+
+    <main class="app">
+        <section class="shell">
+            <header class="topbar">
+                <div class="brand">
+                    <h1>My AI Tools</h1>
+                    <p>A personal dashboard for everything I build.</p>
+                </div>
+
+                <div class="controls">
+                    <div class="search-wrap">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path
+                                d="M21 21L16.65 16.65M10.5 18C14.6421 18 18 14.6421 18 10.5C18 6.35786 14.6421 3 10.5 3C6.35786 3 3 6.35786 3 10.5C3 14.6421 6.35786 18 10.5 18Z"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        <input id="searchInput" class="search" type="text" placeholder="Search tools..."
+                            autocomplete="off" />
+                    </div>
+
+                    <button id="themeToggle" class="btn ghost icon-only" type="button" aria-label="Toggle theme"
+                        title="Toggle theme">
+                        <span id="themeIcon">🌙</span>
+                    </button>
+
+                    <button id="addBtn" class="btn primary" type="button">
+                        <span>＋</span>
+                        <span>Add Tool</span>
+                    </button>
+                </div>
+            </header>
+
+            <section class="content">
+                <div class="stats-row">
+                    <div class="stat"><strong id="toolCount">0</strong> tools saved</div>
+                    <div class="stat">Tip: press <span class="kbd">/</span> to search fast</div>
+                </div>
+
+                <div id="toolGrid" class="grid"></div>
+
+                <div id="emptyState" class="empty-state hidden">
+                    <div class="empty-inner">
+                        <div class="big">🧠</div>
+                        <h3>No tools yet</h3>
+                        <p>Add your first AI tool and keep every project in one clean dashboard.</p>
+                        <button id="emptyAddBtn" class="btn primary" type="button">Add Your First Tool</button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer-note">
+                Saved locally in your browser. Refresh-safe. No backend.
+            </div>
+        </section>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div id="toolModal" class="modal" aria-hidden="true">
+        <div class="dialog">
+            <div class="dialog-head">
+                <div>
+                    <h3 id="modalTitle">Add Tool</h3>
+                    <p id="modalSubtitle">Create a new tool card for your dashboard.</p>
+                </div>
+                <button id="closeModalBtn" class="mini-btn" type="button" aria-label="Close modal">✕</button>
+            </div>
+
+            <div class="dialog-body">
+                <form id="toolForm">
+                    <input type="hidden" id="toolId" />
+
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="toolEmoji">Emoji Icon</label>
+                            <input id="toolEmoji" type="text" placeholder="🤖" maxlength="4" required />
+                        </div>
+
+                        <div class="field">
+                            <label for="toolName">Tool Name</label>
+                            <input id="toolName" type="text" placeholder="Prompt Forge" required />
+                        </div>
+
+                        <div class="field full">
+                            <label for="toolUrl">Tool URL</label>
+                            <input id="toolUrl" type="url" placeholder="https://example.com" required />
+                        </div>
+
+                        <div class="field full">
+                            <label for="toolDesc">Description (optional)</label>
+                            <textarea id="toolDesc" placeholder="What does this tool do?"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="dialog-actions">
+                        <button id="cancelModalBtn" class="btn ghost" type="button">Cancel</button>
+                        <button class="btn primary" type="submit">Save Tool</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Dialog -->
+    <div id="confirmModal" class="confirm" aria-hidden="true">
+        <div class="dialog confirm-box">
+            <div class="dialog-head">
+                <div>
+                    <h3>Remove Tool</h3>
+                    <p>This action cannot be undone.</p>
+                </div>
+                <button id="closeConfirmBtn" class="mini-btn" type="button" aria-label="Close dialog">✕</button>
+            </div>
+            <div class="confirm-text" id="confirmText">
+                Are you sure you want to remove this tool?
+            </div>
+            <div class="dialog-body">
+                <div class="dialog-actions">
+                    <button id="cancelRemoveBtn" class="btn ghost" type="button">Cancel</button>
+                    <button id="confirmRemoveBtn" class="btn"
+                        style="border-color: rgba(251,113,133,0.25); color: var(--text); background: linear-gradient(180deg, rgba(251,113,133,0.22), rgba(251,113,133,0.12));"
+                        type="button">
+                        Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" class="toast-wrap" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+        (() => {
+            const STORAGE_KEY = "my_ai_tools_dashboard_v1";
+            const THEME_KEY = "my_ai_tools_theme_v1";
+
+            const el = {
+                html: document.documentElement,
+                grid: document.getElementById("toolGrid"),
+                empty: document.getElementById("emptyState"),
+                count: document.getElementById("toolCount"),
+                search: document.getElementById("searchInput"),
+                addBtn: document.getElementById("addBtn"),
+                emptyAddBtn: document.getElementById("emptyAddBtn"),
+                themeToggle: document.getElementById("themeToggle"),
+                themeIcon: document.getElementById("themeIcon"),
+                toastWrap: document.getElementById("toastWrap"),
+
+                modal: document.getElementById("toolModal"),
+                modalTitle: document.getElementById("modalTitle"),
+                modalSubtitle: document.getElementById("modalSubtitle"),
+                closeModalBtn: document.getElementById("closeModalBtn"),
+                cancelModalBtn: document.getElementById("cancelModalBtn"),
+                form: document.getElementById("toolForm"),
+                toolId: document.getElementById("toolId"),
+                toolEmoji: document.getElementById("toolEmoji"),
+                toolName: document.getElementById("toolName"),
+                toolUrl: document.getElementById("toolUrl"),
+                toolDesc: document.getElementById("toolDesc"),
+
+                confirmModal: document.getElementById("confirmModal"),
+                confirmText: document.getElementById("confirmText"),
+                closeConfirmBtn: document.getElementById("closeConfirmBtn"),
+                cancelRemoveBtn: document.getElementById("cancelRemoveBtn"),
+                confirmRemoveBtn: document.getElementById("confirmRemoveBtn"),
+            };
+
+            let tools = [];
+            let editId = null;
+            let deleteId = null;
+            let lastFocused = null;
+
+            const seedTools = [
+                {
+                    id: crypto.randomUUID(),
+                    emoji: "⚡",
+                    name: "Prompt Forge",
+                    url: "https://example.com",
+                    desc: "Fast prompt builder for reusable AI workflows."
+                },
+                {
+                    id: crypto.randomUUID(),
+                    emoji: "🎨",
+                    name: "Image Studio",
+                    url: "https://example.com",
+                    desc: "Create and organize AI image generation presets."
+                },
+                {
+                    id: crypto.randomUUID(),
+                    emoji: "📚",
+                    name: "Research Snap",
+                    url: "https://example.com",
+                    desc: "Collect notes, sources, and summaries in one place."
+                }
+            ];
+
+            function loadTheme() {
+                const saved = localStorage.getItem(THEME_KEY);
+                const theme = saved || "dark";
+                applyTheme(theme);
+            }
+
+            function applyTheme(theme) {
+                el.html.setAttribute("data-theme", theme);
+                el.themeIcon.textContent = theme === "dark" ? "🌙" : "☀️";
+                localStorage.setItem(THEME_KEY, theme);
+            }
+
+            function toggleTheme() {
+                const current = el.html.getAttribute("data-theme") || "dark";
+                applyTheme(current === "dark" ? "light" : "dark");
+            }
+
+            function loadTools() {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) {
+                    tools = seedTools;
+                    saveTools();
+                    return;
+                }
+
+                try {
+                    const parsed = JSON.parse(raw);
+                    tools = Array.isArray(parsed) ? parsed : [];
+                    if (!tools.length) {
+                        tools = seedTools;
+                        saveTools();
+                    }
+                } catch {
+                    tools = seedTools;
+                    saveTools();
+                }
+            }
+
+            function saveTools() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(tools));
+            }
+
+            function toast(title, message, type = "success") {
+                const node = document.createElement("div");
+                node.className = `toast ${type}`;
+                node.innerHTML = `<strong>${escapeHTML(title)}</strong><span>${escapeHTML(message)}</span>`;
+                el.toastWrap.appendChild(node);
+                setTimeout(() => {
+                    node.style.opacity = "0";
+                    node.style.transform = "translateY(10px)";
+                    setTimeout(() => node.remove(), 220);
+                }, 2500);
+            }
+
+            function escapeHTML(str) {
+                return String(str).replace(/[&<>"']/g, (m) => ({
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                }[m]));
+            }
+
+            function normalize(s) {
+                return String(s || "").trim().toLowerCase();
+            }
+
+            function render() {
+                const query = normalize(el.search.value);
+                const filtered = tools.filter(tool => {
+                    const haystack = `${tool.emoji} ${tool.name} ${tool.desc || ""} ${tool.url}`.toLowerCase();
+                    return haystack.includes(query);
+                });
+
+                el.grid.innerHTML = "";
+
+                el.count.textContent = tools.length;
+
+                if (!filtered.length) {
+                    el.empty.classList.remove("hidden");
+                    el.grid.classList.add("hidden");
+                    return;
+                }
+
+                el.empty.classList.add("hidden");
+                el.grid.classList.remove("hidden");
+
+                filtered.forEach((tool, index) => {
+                    const card = document.createElement("article");
+                    card.className = "card";
+                    card.style.animationDelay = `${Math.min(index * 40, 240)}ms`;
+
+                    card.innerHTML = `
+            <div class="card-top">
+              <div class="emoji" aria-hidden="true">${escapeHTML(tool.emoji || "🧠")}</div>
+              <div class="mini-actions">
+                <button class="mini-btn" data-action="edit" data-id="${tool.id}" title="Edit tool" aria-label="Edit tool">✎</button>
+                <button class="mini-btn danger" data-action="delete" data-id="${tool.id}" title="Remove tool" aria-label="Remove tool">🗑</button>
+              </div>
+            </div>
+            <h2>${escapeHTML(tool.name)}</h2>
+            <p class="desc">${escapeHTML(tool.desc || "No description added yet.")}</p>
+            <div class="card-actions">
+              <a class="btn primary card-link" href="${escapeAttr(tool.url)}" target="_blank" rel="noopener noreferrer">Open Tool</a>
+            </div>
+          `;
+
+                    el.grid.appendChild(card);
+                });
+            }
+
+            function escapeAttr(str) {
+                return String(str).replace(/"/g, "&quot;");
+            }
+
+            function openModal(mode = "add", tool = null) {
+                lastFocused = document.activeElement;
+                el.modal.classList.add("open");
+                el.modal.setAttribute("aria-hidden", "false");
+
+                if (mode === "edit" && tool) {
+                    editId = tool.id;
+                    el.modalTitle.textContent = "Edit Tool";
+                    el.modalSubtitle.textContent = "Update the details for this tool card.";
+                    el.toolId.value = tool.id;
+                    el.toolEmoji.value = tool.emoji || "";
+                    el.toolName.value = tool.name || "";
+                    el.toolUrl.value = tool.url || "";
+                    el.toolDesc.value = tool.desc || "";
+                } else {
+                    editId = null;
+                    el.modalTitle.textContent = "Add Tool";
+                    el.modalSubtitle.textContent = "Create a new tool card for your dashboard.";
+                    el.toolId.value = "";
+                    el.form.reset();
+                    el.toolEmoji.value = "🤖";
+                }
+
+                setTimeout(() => el.toolName.focus(), 60);
+            }
+
+            function closeModal() {
+                el.modal.classList.remove("open");
+                el.modal.setAttribute("aria-hidden", "true");
+                editId = null;
+                if (lastFocused && typeof lastFocused.focus === "function") {
+                    lastFocused.focus();
+                }
+            }
+
+            function openConfirm(id) {
+                deleteId = id;
+                const tool = tools.find(t => t.id === id);
+                el.confirmText.textContent = tool
+                    ? `Remove “${tool.name}”? This will delete it from your dashboard.`
+                    : "Remove this tool? This will delete it from your dashboard.";
+                lastFocused = document.activeElement;
+                el.confirmModal.classList.add("open");
+                el.confirmModal.setAttribute("aria-hidden", "false");
+                setTimeout(() => el.confirmRemoveBtn.focus(), 60);
+            }
+
+            function closeConfirm() {
+                el.confirmModal.classList.remove("open");
+                el.confirmModal.setAttribute("aria-hidden", "true");
+                deleteId = null;
+                if (lastFocused && typeof lastFocused.focus === "function") {
+                    lastFocused.focus();
+                }
+            }
+
+            function getToolById(id) {
+                return tools.find(t => t.id === id);
+            }
+
+            function upsertTool(data) {
+                if (editId) {
+                    const idx = tools.findIndex(t => t.id === editId);
+                    if (idx !== -1) {
+                        tools[idx] = { ...tools[idx], ...data };
+                        saveTools();
+                        render();
+                        toast("Tool updated", `${data.name} was saved successfully.`, "success");
+                    }
+                } else {
+                    tools.unshift({
+                        id: crypto.randomUUID(),
+                        ...data
+                    });
+                    saveTools();
+                    render();
+                    toast("Tool added", `${data.name} is now in your dashboard.`, "success");
+                }
+            }
+
+            function removeTool(id) {
+                const tool = getToolById(id);
+                tools = tools.filter(t => t.id !== id);
+                saveTools();
+                render();
+                toast("Tool removed", `${tool ? tool.name : "Tool"} was deleted.`, "danger");
+            }
+
+            // Events
+            el.themeToggle.addEventListener("click", toggleTheme);
+            el.addBtn.addEventListener("click", () => openModal("add"));
+            el.emptyAddBtn.addEventListener("click", () => openModal("add"));
+            el.closeModalBtn.addEventListener("click", closeModal);
+            el.cancelModalBtn.addEventListener("click", closeModal);
+
+            el.closeConfirmBtn.addEventListener("click", closeConfirm);
+            el.cancelRemoveBtn.addEventListener("click", closeConfirm);
+
+            el.search.addEventListener("input", render);
+
+            el.form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                const emoji = el.toolEmoji.value.trim() || "🧠";
+                const name = el.toolName.value.trim();
+                const url = el.toolUrl.value.trim();
+                const desc = el.toolDesc.value.trim();
+
+                if (!name || !url) {
+                    toast("Missing fields", "Tool name and URL are required.", "danger");
+                    return;
+                }
+
+                try {
+                    const parsedUrl = new URL(url);
+                    if (!["http:", "https:"].includes(parsedUrl.protocol)) throw new Error("Invalid protocol");
+                } catch {
+                    toast("Invalid URL", "Use a valid http or https link.", "danger");
+                    return;
+                }
+
+                upsertTool({ emoji, name, url, desc });
+                closeModal();
+            });
+
+            el.grid.addEventListener("click", (e) => {
+                const btn = e.target.closest("[data-action]");
+                if (!btn) return;
+
+                const id = btn.getAttribute("data-id");
+                const action = btn.getAttribute("data-action");
+                const tool = getToolById(id);
+                if (!tool) return;
+
+                if (action === "edit") {
+                    openModal("edit", tool);
+                } else if (action === "delete") {
+                    openConfirm(id);
+                }
+            });
+
+            el.confirmRemoveBtn.addEventListener("click", () => {
+                if (deleteId) {
+                    removeTool(deleteId);
+                    closeConfirm();
+                }
+            });
+
+            function closeOnBackdropClick(modalEl, closeFn) {
+                modalEl.addEventListener("click", (e) => {
+                    if (e.target === modalEl) closeFn();
+                });
+            }
+
+            closeOnBackdropClick(el.modal, closeModal);
+            closeOnBackdropClick(el.confirmModal, closeConfirm);
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    if (el.modal.classList.contains("open")) closeModal();
+                    if (el.confirmModal.classList.contains("open")) closeConfirm();
+                }
+
+                if (e.key === "/" && document.activeElement !== el.search) {
+                    e.preventDefault();
+                    el.search.focus();
+                }
+            });
+
+            // Init
+            loadTheme();
+            loadTools();
+            render();
+
+            // Small first-run hint if empty storage
+            if (!localStorage.getItem(STORAGE_KEY)) {
+                toast("Ready", "Your dashboard is loaded with starter tools.", "success");
+            }
+        })();
+    </script>
+</body>
+
+</html>
