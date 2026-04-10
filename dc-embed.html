@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discord Webhook Embed Builder</title>
+    <meta name="color-scheme" content="dark" />
+    <style>
+        :root {
+            --bg0: #070b14;
+            --bg1: #0b1020;
+            --bg2: #10162a;
+            --glass: rgba(255, 255, 255, .06);
+            --glass-2: rgba(255, 255, 255, .09);
+            --line: rgba(255, 255, 255, .10);
+            --line-2: rgba(255, 255, 255, .14);
+            --text: #f4f7ff;
+            --muted: rgba(244, 247, 255, .70);
+            --muted-2: rgba(244, 247, 255, .55);
+            --accent: #5865F2;
+            --accent-2: #22d3ee;
+            --danger: #fb7185;
+            --success: #34d399;
+            --shadow: 0 22px 60px rgba(0, 0, 0, .34);
+            --shadow-soft: 0 12px 30px rgba(0, 0, 0, .20);
+            --r-xl: 30px;
+            --r-lg: 24px;
+            --r-md: 18px;
+            --r-sm: 14px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            background:
+                radial-gradient(1100px 760px at 12% 8%, rgba(88, 101, 242, .25), transparent 50%),
+                radial-gradient(900px 680px at 85% 12%, rgba(34, 211, 238, .14), transparent 45%),
+                radial-gradient(900px 720px at 50% 100%, rgba(52, 211, 153, .10), transparent 55%),
+                linear-gradient(180deg, var(--bg0), var(--bg1) 55%, var(--bg2));
+            color: var(--text);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .055;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, .7) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .7) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mix-blend-mode: overlay;
+            z-index: 0;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        button,
+        input,
+        textarea {
+            font: inherit
+        }
+
+        button {
+            cursor: pointer
+        }
+
+        .hidden {
+            display: none !important
+        }
+
+        .modal-open {
+            overflow: hidden
+        }
+
+        .app {
+            position: relative;
+            z-index: 1;
+            width: min(1440px, calc(100% - 32px));
+            margin: 24px auto 40px;
+        }
+
+        .glass {
+            background: linear-gradient(180deg, rgba(255, 255, 255, .085), rgba(255, 255, 255, .045));
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .hero {
+            border-radius: 34px;
+            padding: 26px;
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto -20% -60% auto;
+            width: 440px;
+            height: 440px;
+            background: radial-gradient(circle, rgba(88, 101, 242, .22), transparent 62%);
+            filter: blur(18px);
+            pointer-events: none;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            width: fit-content;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(88, 101, 242, .14);
+            border: 1px solid rgba(88, 101, 242, .24);
+            color: #dfe4ff;
+            font-size: .82rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin: 14px 0 10px;
+            font-size: clamp(2rem, 3.4vw, 3.35rem);
+            line-height: 1.02;
+            letter-spacing: -.05em;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 760px;
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .shortcuts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .shortcuts span,
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, .04);
+            color: var(--muted);
+            font-size: .88rem;
+            font-weight: 600;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 10px;
+            max-width: 640px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 14px;
+            min-height: 46px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .06));
+            color: var(--text);
+            box-shadow: var(--shadow-soft);
+            transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease, opacity .18s ease;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, .20);
+            box-shadow: 0 18px 42px rgba(0, 0, 0, .24)
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            opacity: .94
+        }
+
+        .btn.primary {
+            border-color: transparent;
+            background: linear-gradient(135deg, rgba(88, 101, 242, 1), rgba(34, 211, 238, .92));
+            color: white;
+            font-weight: 800;
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 20px 42px rgba(88, 101, 242, .25)
+        }
+
+        .btn.danger {
+            border-color: rgba(251, 113, 133, .2);
+            background: linear-gradient(180deg, rgba(251, 113, 133, .18), rgba(251, 113, 133, .10));
+        }
+
+        .btn.ghost {
+            background: rgba(255, 255, 255, .05);
+        }
+
+        .btn.small {
+            min-height: 38px;
+            padding: 10px 12px;
+            font-size: .92rem;
+        }
+
+        .btn.active {
+            background: linear-gradient(135deg, rgba(88, 101, 242, .92), rgba(88, 101, 242, .54));
+            border-color: rgba(88, 101, 242, .45);
+            color: white;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+            gap: 18px;
+            margin-top: 18px;
+            align-items: start;
+        }
+
+        .panel {
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .05), transparent);
+        }
+
+        .panel-head h2 {
+            margin: 0;
+            font-size: 1.06rem;
+            letter-spacing: -.03em;
+        }
+
+        .panel-head p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: .92rem;
+        }
+
+        .panel-body {
+            padding: 20px;
+        }
+
+        .editor-panel .panel-body {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .editor-footnote {
+            color: var(--muted-2);
+            font-size: .9rem;
+            line-height: 1.5;
+            padding: 0 4px 2px;
+        }
+
+        .section-card {
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, .045);
+            padding: 18px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03);
+        }
+
+        .section-card+.section-card {
+            margin-top: 0
+        }
+
+        .section-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-head h3 {
+            margin: 0;
+            font-size: 1rem;
+            letter-spacing: -.03em;
+        }
+
+        .section-head p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: .9rem;
+            line-height: 1.5;
+        }
+
+        .section-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px
+        }
+
+        .grid-1 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px
+        }
+
+        .full {
+            grid-column: 1 / -1
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .field label {
+            font-size: .88rem;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .input,
+        .textarea {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid var(--line-2);
+            background: rgba(255, 255, 255, .06);
+            color: var(--text);
+            outline: none;
+            padding: 13px 14px;
+            transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease, background .18s ease;
+        }
+
+        .textarea {
+            min-height: 106px;
+            resize: vertical;
+            line-height: 1.5
+        }
+
+        .input::placeholder,
+        .textarea::placeholder {
+            color: rgba(244, 247, 255, .35)
+        }
+
+        .input:focus,
+        .textarea:focus {
+            border-color: rgba(88, 101, 242, .56);
+            box-shadow: 0 0 0 4px rgba(88, 101, 242, .12);
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, .075);
+        }
+
+        .switch-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: space-between;
+            padding: 12px 14px;
+            border-radius: 16px;
+            border: 1px solid var(--line-2);
+            background: rgba(255, 255, 255, .05);
+            min-height: 48px;
+        }
+
+        .switch-label {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .switch-label strong {
+            font-size: .95rem;
+            font-weight: 700;
+        }
+
+        .switch-label span {
+            font-size: .86rem;
+            color: var(--muted);
+            line-height: 1.35;
+        }
+
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 30px;
+            flex: 0 0 auto;
+        }
+
+        .switch input {
+            display: none
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .09);
+            border: 1px solid var(--line-2);
+            transition: .2s ease;
+        }
+
+        .slider::before {
+            content: "";
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            left: 3px;
+            top: 3px;
+            background: white;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .22);
+            transition: .2s ease;
+        }
+
+        .switch input:checked+.slider {
+            background: linear-gradient(135deg, rgba(88, 101, 242, .95), rgba(34, 211, 238, .9));
+            border-color: rgba(88, 101, 242, .55);
+        }
+
+        .switch input:checked+.slider::before {
+            transform: translateX(20px)
+        }
+
+        .fields-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .fields-toolbar .hint {
+            color: var(--muted);
+            font-size: .9rem;
+            line-height: 1.45;
+        }
+
+        .field-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .field-row {
+            border: 1px solid var(--line-2);
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .04));
+            padding: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03);
+            transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+        }
+
+        .field-row:hover {
+            border-color: rgba(88, 101, 242, .24);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, .15);
+        }
+
+        .field-row-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .field-row-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .field-row-title strong {
+            font-size: .95rem;
+            letter-spacing: -.02em;
+        }
+
+        .drag-handle {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            border: 1px solid var(--line-2);
+            background: rgba(255, 255, 255, .06);
+            color: var(--muted);
+            cursor: grab;
+            flex: 0 0 auto;
+            user-select: none;
+            transition: transform .18s ease, background .18s ease, color .18s ease;
+        }
+
+        .drag-handle:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, .09);
+            color: var(--text);
+        }
+
+        .drag-ghost {
+            opacity: .50
+        }
+
+        .drag-chosen {
+            box-shadow: 0 22px 40px rgba(0, 0, 0, .25)
+        }
+
+        .remove-field {
+            border: 1px solid rgba(251, 113, 133, .18);
+            background: rgba(251, 113, 133, .10);
+            color: #ffd5dd;
+            border-radius: 999px;
+            padding: 9px 12px;
+            min-height: 36px;
+            transition: transform .18s ease, opacity .18s ease;
+        }
+
+        .remove-field:hover {
+            transform: translateY(-1px);
+            opacity: .94
+        }
+
+        .field-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .field-subgrid {
+            display: grid;
+            grid-template-columns: 1.05fr 1.45fr;
+            gap: 12px;
+        }
+
+        .mini-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .mini-field label {
+            font-size: .84rem;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .mini-field .textarea {
+            min-height: 90px;
+        }
+
+        .empty-inline {
+            border: 1px dashed var(--line-2);
+            border-radius: 18px;
+            padding: 18px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, .03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .json-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .json-toolbar .status {
+            color: var(--muted);
+            font-size: .9rem;
+            line-height: 1.45;
+        }
+
+        .json-editor {
+            width: 100%;
+            min-height: 680px;
+            border-radius: 24px;
+            border: 1px solid var(--line-2);
+            background: rgba(8, 12, 25, .85);
+            color: #eff3ff;
+            outline: none;
+            padding: 16px;
+            resize: vertical;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+            line-height: 1.55;
+            font-size: .92rem;
+            tab-size: 2;
+            white-space: pre;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03);
+        }
+
+        .json-editor:focus {
+            border-color: rgba(88, 101, 242, .56);
+            box-shadow: 0 0 0 4px rgba(88, 101, 242, .12);
+        }
+
+        .json-status {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: .9rem;
+            line-height: 1.45;
+            min-height: 1.4em;
+        }
+
+        .json-status.error {
+            color: #ffb4c0
+        }
+
+        .json-status.good {
+            color: #b7f7d3
+        }
+
+        .preview-panel {
+            position: sticky;
+            top: 18px;
+            align-self: start;
+        }
+
+        .discord-shell {
+            border: 1px solid var(--line);
+            border-radius: 26px;
+            background:
+                radial-gradient(900px 560px at 0% 0%, rgba(88, 101, 242, .12), transparent 50%),
+                linear-gradient(180deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .03));
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            padding: 16px;
+            min-height: 760px;
+        }
+
+        .discord-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            color: var(--muted);
+            font-size: .92rem;
+        }
+
+        .channel {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #e8ebff;
+            letter-spacing: -.01em;
+        }
+
+        .channel .hash {
+            color: rgba(255, 255, 255, .55);
+            font-size: 1rem;
+        }
+
+        .live-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(52, 211, 153, .18);
+            background: rgba(52, 211, 153, .08);
+            color: #cff8e8;
+            font-weight: 700;
+            font-size: .84rem;
+            white-space: nowrap;
+        }
+
+        .live-chip::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 0 6px rgba(52, 211, 153, .08);
+        }
+
+        .discord-message {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            margin-top: 16px;
+        }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(88, 101, 242, .95), rgba(34, 211, 238, .78));
+            color: white;
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: -.02em;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, .22);
+            border: 1px solid rgba(255, 255, 255, .08);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .avatar.avatar-img span,
+        .mini-icon.icon-img span {
+            display: none
+        }
+
+        .avatar.avatar-fallback span {
+            opacity: .95
+        }
+
+        .avatar span,
+        .mini-icon span {
+            text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+        }
+
+        .message-col {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .message-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .userline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+
+        .username {
+            font-weight: 800;
+            letter-spacing: -.01em;
+            color: #ffffff;
+        }
+
+        .bot-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3px 7px;
+            border-radius: 6px;
+            background: rgba(88, 101, 242, .18);
+            border: 1px solid rgba(88, 101, 242, .25);
+            color: #dce2ff;
+            font-size: .68rem;
+            font-weight: 800;
+            letter-spacing: .06em;
+        }
+
+        .message-time {
+            color: var(--muted-2);
+            font-size: .84rem;
+            white-space: nowrap;
+        }
+
+        .embed {
+            display: flex;
+            align-items: stretch;
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(17, 20, 32, .88);
+            border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, .20);
+            max-width: 100%;
+        }
+
+        .embed-bar {
+            width: 4px;
+            background: var(--accent);
+            flex: 0 0 auto;
+        }
+
+        .embed-content {
+            padding: 14px 14px 12px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .embed-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .embed-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .embed-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: .92rem;
+            font-weight: 700;
+            color: #f6f7fb;
+            min-width: 0;
+        }
+
+        .mini-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(88, 101, 242, .98), rgba(34, 211, 238, .82));
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-size: .64rem;
+            font-weight: 900;
+            flex: 0 0 auto;
+        }
+
+        .embed-title {
+            display: inline-block;
+            margin: 0 0 8px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            line-height: 1.3;
+            letter-spacing: -.02em;
+            color: #ffffff;
+            word-break: break-word;
+        }
+
+        .embed-title:hover {
+            text-decoration: underline
+        }
+
+        .embed-title.placeholder {
+            color: rgba(255, 255, 255, .62);
+            font-style: italic;
+            font-weight: 700;
+        }
+
+        .embed-desc {
+            margin: 0;
+            color: #dcdee6;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .embed-desc.placeholder {
+            color: rgba(220, 222, 230, .70);
+            font-style: italic;
+        }
+
+        .thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, .10);
+            background: linear-gradient(135deg, rgba(88, 101, 242, .26), rgba(34, 211, 238, .12));
+            background-size: cover;
+            background-position: center;
+            flex: 0 0 auto;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, .18);
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px 12px;
+            margin-top: 12px;
+        }
+
+        .embed-field {
+            min-width: 0;
+        }
+
+        .embed-field.block {
+            grid-column: 1 / -1;
+        }
+
+        .field-name {
+            color: #f7f8fb;
+            font-size: .9rem;
+            font-weight: 800;
+            line-height: 1.35;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+
+        .field-value {
+            color: #dfe2ea;
+            font-size: .9rem;
+            line-height: 1.45;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .placeholder {
+            color: rgba(223, 226, 234, .66);
+            font-style: italic;
+        }
+
+        .embed-image {
+            margin-top: 12px;
+            width: 100%;
+            border-radius: 16px;
+            min-height: 240px;
+            background: linear-gradient(135deg, rgba(88, 101, 242, .16), rgba(34, 211, 238, .10));
+            border: 1px solid rgba(255, 255, 255, .08);
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 12px 26px rgba(0, 0, 0, .18);
+        }
+
+        .embed-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 12px;
+            color: #b7bbc7;
+            font-size: .78rem;
+            line-height: 1.45;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .footer-text {
+            color: #b7bbc7;
+            font-size: .78rem;
+            line-height: 1.45;
+            word-break: break-word;
+        }
+
+        .timestamp {
+            color: #aeb3c1;
+            white-space: nowrap;
+            flex: 0 0 auto;
+        }
+
+        .empty-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 620px;
+            color: var(--muted);
+            text-align: center;
+            padding: 24px;
+        }
+
+        .empty-preview .card {
+            max-width: 520px;
+            padding: 22px;
+            border-radius: 24px;
+            border: 1px dashed var(--line-2);
+            background: rgba(255, 255, 255, .03);
+        }
+
+        .empty-preview h3 {
+            margin: 0 0 10px;
+            font-size: 1.25rem;
+            letter-spacing: -.03em;
+            color: #fff;
+        }
+
+        .empty-preview p {
+            margin: 0;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: grid;
+            place-items: center;
+            padding: 22px;
+            background: rgba(2, 7, 18, .56);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .22s ease;
+        }
+
+        .modal.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .dialog {
+            width: min(820px, 100%);
+            border-radius: 28px;
+            border: 1px solid var(--line);
+            background:
+                radial-gradient(900px 420px at 0% 0%, rgba(88, 101, 242, .18), transparent 45%),
+                linear-gradient(180deg, rgba(14, 18, 34, .96), rgba(10, 14, 26, .96));
+            box-shadow: var(--shadow);
+            transform: translateY(18px) scale(.985);
+            opacity: 0;
+            overflow: hidden;
+            transition: transform .22s ease, opacity .22s ease;
+        }
+
+        .modal.open .dialog {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .dialog.large {
+            width: min(980px, 100%)
+        }
+
+        .dialog.small {
+            width: min(580px, 100%)
+        }
+
+        .dialog-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 20px 20px 0;
+        }
+
+        .dialog-head h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            letter-spacing: -.03em;
+        }
+
+        .dialog-head p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            line-height: 1.5;
+            font-size: .93rem;
+        }
+
+        .dialog-body {
+            padding: 18px 20px 20px;
+        }
+
+        .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .close-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            border: 1px solid var(--line-2);
+            background: rgba(255, 255, 255, .06);
+            color: var(--text);
+            display: grid;
+            place-items: center;
+        }
+
+        .save-input {
+            margin-top: 10px;
+        }
+
+        .draft-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 58vh;
+            overflow: auto;
+            padding-right: 2px;
+        }
+
+        .draft-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border: 1px solid var(--line-2);
+            border-radius: 18px;
+            padding: 14px;
+            background: rgba(255, 255, 255, .045);
+        }
+
+        .draft-meta {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .draft-meta strong {
+            font-size: .98rem;
+            letter-spacing: -.02em;
+            word-break: break-word;
+        }
+
+        .draft-meta span {
+            color: var(--muted);
+            font-size: .88rem;
+            line-height: 1.45;
+        }
+
+        .draft-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex: 0 0 auto;
+            justify-content: flex-end;
+        }
+
+        .confirm-text {
+            color: var(--muted);
+            line-height: 1.65;
+            padding: 4px 2px 0;
+        }
+
+        .toast-wrap {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            pointer-events: auto;
+            min-width: 270px;
+            max-width: 380px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid var(--line-2);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .06));
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            animation: toastIn .22s ease both;
+        }
+
+        .toast strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: .96rem;
+        }
+
+        .toast span {
+            display: block;
+            color: var(--muted);
+            font-size: .9rem;
+            line-height: 1.5;
+        }
+
+        .toast.success {
+            border-color: rgba(52, 211, 153, .22)
+        }
+
+        .toast.error {
+            border-color: rgba(251, 113, 133, .28)
+        }
+
+        .toast.info {
+            border-color: rgba(88, 101, 242, .28)
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(.98)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1)
+            }
+        }
+
+        @media (max-width: 1180px) {
+            .layout {
+                grid-template-columns: 1fr
+            }
+
+            .preview-panel {
+                position: relative;
+                top: auto
+            }
+
+            .hero {
+                align-items: flex-start;
+                flex-direction: column
+            }
+
+            .hero-actions {
+                justify-content: flex-start;
+                max-width: none
+            }
+        }
+
+        @media (max-width: 760px) {
+            .app {
+                width: min(100% - 16px, 1440px);
+                margin: 8px auto 20px
+            }
+
+            .hero,
+            .panel {
+                border-radius: 24px
+            }
+
+            .hero {
+                padding: 20px
+            }
+
+            .panel-head,
+            .panel-body {
+                padding-left: 14px;
+                padding-right: 14px
+            }
+
+            .grid-2,
+            .grid-3,
+            .field-subgrid {
+                grid-template-columns: 1fr
+            }
+
+            .field-grid {
+                grid-template-columns: 1fr
+            }
+
+            .discord-shell {
+                min-height: 620px
+            }
+
+            .embed-top {
+                flex-direction: column
+            }
+
+            .thumb {
+                width: 100%;
+                height: 180px
+            }
+
+            .message-top {
+                align-items: flex-start;
+                flex-direction: column
+            }
+
+            .message-time {
+                white-space: normal
+            }
+
+            .draft-item {
+                flex-direction: column;
+                align-items: stretch
+            }
+
+            .draft-actions {
+                justify-content: flex-start
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <section class="hero glass">
+            <div class="hero-copy">
+                <div class="eyebrow">Discord / Webhook Builder</div>
+                <h1>Build polished embeds in one file.</h1>
+                <p>Create, preview, save, export, and send Discord webhook embeds with a live preview that updates
+                    instantly as you type.</p>
+                <div class="shortcuts"> <span>Ctrl + Enter send</span> <span>Ctrl + S save draft</span> <span>Ctrl +
+                        Shift + J toggle JSON</span> </div>
+            </div>
+            <div class="hero-actions">
+                <button id="jsonToggleBtn" class="btn ghost" type="button">JSON Mode</button>
+                <button id="copyEmbedBtn" class="btn ghost" type="button">Copy Embed JSON</button>
+                <button id="copyPayloadBtn" class="btn ghost" type="button">Copy Payload</button>
+                <button id="saveDraftBtn" class="btn ghost" type="button">Save Draft</button>
+                <button id="loadDraftBtn" class="btn ghost" type="button">Load Drafts</button>
+                <button id="importBtn" class="btn ghost" type="button">Import</button>
+                <button id="exportBtn" class="btn ghost" type="button">Export</button>
+                <button id="sendBtn" class="btn primary" type="button">Send Message</button>
+            </div>
+        </section>
+
+        <div class="layout">
+            <section class="panel editor-panel glass">
+                <div class="panel-head">
+                    <div>
+                        <h2>Left Panel — Embed Editor</h2>
+                        <p>Everything you edit updates the preview instantly.</p>
+                    </div>
+                    <span class="pill">Autosaved locally</span>
+                </div>
+
+                <div class="panel-body">
+                    <div id="builderFormWrap">
+                        <form id="editorForm" autocomplete="off">
+                            <section class="section-card">
+                                <div class="section-head">
+                                    <div>
+                                        <h3>Webhook Settings</h3>
+                                        <p>Set the webhook endpoint and sender overrides.</p>
+                                    </div>
+                                </div>
+                                <div class="grid-2">
+                                    <div class="field full">
+                                        <label for="webhookUrl">Webhook URL</label>
+                                        <input id="webhookUrl" class="input" type="url" data-bind="webhookUrl"
+                                            placeholder="https://discord.com/api/webhooks/..." />
+                                    </div>
+                                    <div class="field">
+                                        <label for="username">Username override</label>
+                                        <input id="username" class="input" type="text" data-bind="username"
+                                            placeholder="Webhook Bot" />
+                                    </div>
+                                    <div class="field">
+                                        <label for="avatarUrl">Avatar URL</label>
+                                        <input id="avatarUrl" class="input" type="url" data-bind="avatarUrl"
+                                            placeholder="https://..." />
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="section-card">
+                                <div class="section-head">
+                                    <div>
+                                        <h3>Embed Settings</h3>
+                                        <p>Title, description, accent color, and timestamp.</p>
+                                    </div>
+                                </div>
+                                <div class="grid-2">
+                                    <div class="field">
+                                        <label for="title">Embed Title</label>
+                                        <input id="title" class="input" type="text" data-bind="title"
+                                            placeholder="Launch update" />
+                                    </div>
+                                    <div class="field">
+                                        <label for="titleUrl">Title URL</label>
+                                        <input id="titleUrl" class="input" type="url" data-bind="titleUrl"
+                                            placeholder="https://..." />
+                                    </div>
+                                    <div class="field full">
+                                        <label for="description">Description</label>
+                                        <textarea id="description" class="textarea" data-bind="description"
+                                            placeholder="Describe what this embed is for..."></textarea>
+                                    </div>
+                                    <div class="field">
+                                        <label for="color">Color</label>
+                                        <input id="color" class="input" type="color" data-bind="color" />
+                                    </div>
+                                    <div class="field">
+                                        <label>&nbsp;</label>
+                                        <div class="switch-wrap">
+                                            <div class="switch-label">
+                                                <strong>Timestamp</strong>
+                                                <span>Show an embed timestamp in the footer.</span>
+                                            </div>
+                                            <label class="switch" title="Toggle timestamp">
+                                                <input id="timestamp" type="checkbox" data-bind="timestamp" />
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="section-card">
+                                <div class="section-head">
+                                    <div>
+                                        <h3>Author Section</h3>
+                                        <p>Optional author name, icon, and clickable URL.</p>
+                                    </div>
+                                </div>
+                                <div class="grid-3">
+                                    <div class="field">
+                                        <label for="authorName">Author Name</label>
+                                        <input id="authorName" class="input" type="text" data-bind="author.name"
+                                            placeholder="Author name" />
+                                    </div>
+                                    <div class="field">
+                                        <label for="authorIconUrl">Author Icon URL</label>
+                                        <input id="authorIconUrl" class="input" type="url" data-bind="author.iconUrl"
+                                            placeholder="https://..." />
+                                    </div>
+                                    <div class="field">
+                                        <label for="authorUrl">Author URL</label>
+                                        <input id="authorUrl" class="input" type="url" data-bind="author.url"
+                                            placeholder="https://..." />
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="section-card">
+                                <div class="fields-toolbar">
+                                    <div>
+                                        <div class="section-head" style="margin:0">
+                                            <div>
+                                                <h3>Embed Content</h3>
+                                                <p>Unlimited fields with drag-and-drop reordering.</p>
+                                            </div>
+                                        </div>
+                                        <div class="hint">Drag the handle on each field card to reorder them.</div>
+                                    </div>
+                                    <button id="addFieldBtn" class="btn small primary" type="button">+ Add
+                                        Field</button>
+                                </div>
+                                <div id="fieldList" class="field-list"></div>
+                            </section>
+
+                            <section class="section-card">
+                                <div class="section-head">
+                                    <div>
+                                        <h3>Images</h3>
+                                        <p>Add a thumbnail or a full image to the embed.</p>
+                                    </div>
+                                </div>
+                                <div class="grid-2">
+                                    <div class="field">
+                                        <label for="thumbnailUrl">Thumbnail URL</label>
+                                        <input id="thumbnailUrl" class="input" type="url" data-bind="thumbnailUrl"
+                                            placeholder="https://..." />
+                                    </div>
+                                    <div class="field">
+                                        <label for="imageUrl">Image URL</label>
+                                        <input id="imageUrl" class="input" type="url" data-bind="imageUrl"
+                                            placeholder="https://..." />
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="section-card">
+                                <div class="section-head">
+                                    <div>
+                                        <h3>Footer</h3>
+                                        <p>Optional footer text and footer icon URL.</p>
+                                    </div>
+                                </div>
+                                <div class="grid-2">
+                                    <div class="field">
+                                        <label for="footerText">Footer text</label>
+                                        <input id="footerText" class="input" type="text" data-bind="footerText"
+                                            placeholder="Footer text" />
+                                    </div>
+                                    <div class="field">
+                                        <label for="footerIconUrl">Footer icon URL</label>
+                                        <input id="footerIconUrl" class="input" type="url" data-bind="footerIconUrl"
+                                            placeholder="https://..." />
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+
+                    <div id="jsonWrap" class="hidden">
+                        <div class="json-toolbar">
+                            <div>
+                                <div class="section-head" style="margin:0">
+                                    <div>
+                                        <h3>Raw JSON Mode</h3>
+                                        <p>Edit the full exported config JSON directly.</p>
+                                    </div>
+                                </div>
+                                <div class="status">Changes update the preview as soon as the JSON is valid.</div>
+                            </div>
+                            <div class="section-actions">
+                                <button id="formatJsonBtn" class="btn small ghost" type="button">Format JSON</button>
+                            </div>
+                        </div>
+                        <textarea id="jsonEditor" class="json-editor" spellcheck="false"
+                            placeholder='{"version":1,"state":{...}}'></textarea>
+                        <div id="jsonStatus" class="json-status"></div>
+                    </div>
+
+                    <div class="editor-footnote">
+                        Tip: use Ctrl + Enter to send, Ctrl + S to save a draft, and drag field cards by the handle to
+                        reorder them.
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel preview-panel glass">
+                <div class="panel-head">
+                    <div>
+                        <h2>Right Panel — Live Preview</h2>
+                        <p>Styled to feel like a Discord webhook message.</p>
+                    </div>
+                    <span class="pill">Live</span>
+                </div>
+                <div class="panel-body">
+                    <div class="discord-shell">
+                        <div class="discord-header">
+                            <div class="channel"><span class="hash">#</span> webhook-preview</div>
+                            <div class="live-chip">Live preview</div>
+                        </div>
+                        <div id="previewRoot"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div> <input id="importFileInput" type="file" accept=".json,application/json" class="hidden" />
+    <div id="saveModal" class="modal" aria-hidden="true">
+        <div class="dialog small">
+            <div class="dialog-head">
+                <div>
+                    <h3>Save Draft</h3>
+                    <p>Store the current embed locally so you can load it later.</p>
+                </div> <button class="close-btn" type="button" data-close="saveModal">✕</button>
+            </div>
+            <div class="dialog-body">
+                <div class="field"> <label for="draftName">Draft name</label> <input id="draftName"
+                        class="input save-input" type="text" placeholder="My embed draft" /> </div>
+                <div class="dialog-actions"> <button class="btn ghost" type="button"
+                        data-close="saveModal">Cancel</button> <button id="confirmSaveDraftBtn" class="btn primary"
+                        type="button">Save Draft</button> </div>
+            </div>
+        </div>
+    </div>
+    <div id="loadModal" class="modal" aria-hidden="true">
+        <div class="dialog large">
+            <div class="dialog-head">
+                <div>
+                    <h3>Saved Drafts</h3>
+                    <p>Load a previous embed or delete one from local storage.</p>
+                </div> <button class="close-btn" type="button" data-close="loadModal">✕</button>
+            </div>
+            <div class="dialog-body">
+                <div id="draftList" class="draft-list"></div>
+                <div class="dialog-actions"> <button class="btn ghost" type="button"
+                        data-close="loadModal">Close</button> </div>
+            </div>
+        </div>
+    </div>
+    <div id="confirmModal" class="modal" aria-hidden="true">
+        <div class="dialog small">
+            <div class="dialog-head">
+                <div>
+                    <h3 id="confirmTitle">Confirm Action</h3>
+                    <p id="confirmSubtitle">This action requires confirmation.</p>
+                </div> <button class="close-btn" type="button" data-close="confirmModal">✕</button>
+            </div>
+            <div class="dialog-body">
+                <div id="confirmText" class="confirm-text"></div>
+                <div class="dialog-actions"> <button id="confirmCancelBtn" class="btn ghost"
+                        type="button">Cancel</button> <button id="confirmActionBtn" class="btn danger"
+                        type="button">Continue</button> </div>
+            </div>
+        </div>
+    </div>
+    <div id="toastWrap" class="toast-wrap" aria-live="polite" aria-atomic="true"></div>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+    <script> (() => {
+            const STORAGE_CURRENT = "discord_embed_builder_current_v1"; const STORAGE_DRAFTS = "discord_embed_builder_drafts_v1"; const el = { jsonToggleBtn: document.getElementById("jsonToggleBtn"), copyEmbedBtn: document.getElementById("copyEmbedBtn"), copyPayloadBtn: document.getElementById("copyPayloadBtn"), saveDraftBtn: document.getElementById("saveDraftBtn"), loadDraftBtn: document.getElementById("loadDraftBtn"), importBtn: document.getElementById("importBtn"), exportBtn: document.getElementById("exportBtn"), sendBtn: document.getElementById("sendBtn"), builderFormWrap: document.getElementById("builderFormWrap"), editorForm: document.getElementById("editorForm"), fieldList: document.getElementById("fieldList"), addFieldBtn: document.getElementById("addFieldBtn"), jsonWrap: document.getElementById("jsonWrap"), jsonEditor: document.getElementById("jsonEditor"), jsonStatus: document.getElementById("jsonStatus"), formatJsonBtn: document.getElementById("formatJsonBtn"), previewRoot: document.getElementById("previewRoot"), toastWrap: document.getElementById("toastWrap"), importFileInput: document.getElementById("importFileInput"), saveModal: document.getElementById("saveModal"), draftName: document.getElementById("draftName"), confirmSaveDraftBtn: document.getElementById("confirmSaveDraftBtn"), loadModal: document.getElementById("loadModal"), draftList: document.getElementById("draftList"), confirmModal: document.getElementById("confirmModal"), confirmTitle: document.getElementById("confirmTitle"), confirmSubtitle: document.getElementById("confirmSubtitle"), confirmText: document.getElementById("confirmText"), confirmActionBtn: document.getElementById("confirmActionBtn"), confirmCancelBtn: document.getElementById("confirmCancelBtn"), }; let state = defaultState(); let drafts = []; let jsonMode = false; let jsonDirty = false; let jsonTimer = null; let saveTimer = null; let pendingConfirm = null; let pendingFocusFieldId = null; let activeModal = null; let sortable = null; let sending = false; function uid() { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); return "id-" + Math.random().toString(36).slice(2) + Date.now().toString(36); } function safeGet(key) { try { return localStorage.getItem(key); } catch { return null; } } function safeSet(key, value) { try { localStorage.setItem(key, value); } catch { } } function safeParse(raw) { if (!raw) return null; try { return JSON.parse(raw); } catch { return null; } } function defaultState() { return { webhookUrl: "", username: "", avatarUrl: "", title: "", titleUrl: "", description: "", color: "#5865F2", timestamp: true, author: { name: "", iconUrl: "", url: "" }, fields: [], thumbnailUrl: "", imageUrl: "", footerText: "", footerIconUrl: "" }; } function newField() { return { id: uid(), name: "", value: "", inline: false }; } function clone(obj) { return JSON.parse(JSON.stringify(obj)); } function isHexColor(v) { return /^#([0-9a-fA-F]{6})$/.test(String(v || "").trim()); } function hexToInt(hex) { if (!isHexColor(hex)) return 0x5865F2; return parseInt(hex.slice(1), 16); } function intToHex(num) { const n = Number(num); if (!Number.isFinite(n)) return "#5865F2"; return "#" + n.toString(16).padStart(6, "0").slice(-6).toUpperCase(); } function cleanString(v) { return v == null ? "" : String(v); } function normalizeField(field) { return { id: field && field.id ? String(field.id) : uid(), name: cleanString(field && field.name), value: cleanString(field && field.value), inline: !!(field && field.inline) }; } function normalizeState(input) { const base = defaultState(); const source = input && typeof input === "object" ? input : {}; const author = source.author && typeof source.author === "object" ? source.author : {}; const fields = Array.isArray(source.fields) ? source.fields.map(normalizeField) : []; return { webhookUrl: cleanString(source.webhookUrl ?? base.webhookUrl), username: cleanString(source.username ?? base.username), avatarUrl: cleanString(source.avatarUrl ?? base.avatarUrl), title: cleanString(source.title ?? base.title), titleUrl: cleanString(source.titleUrl ?? base.titleUrl), description: cleanString(source.description ?? base.description), color: isHexColor(source.color) ? source.color.toUpperCase() : base.color, timestamp: typeof source.timestamp === "boolean" ? source.timestamp : !!base.timestamp, author: { name: cleanString(author.name), iconUrl: cleanString(author.iconUrl), url: cleanString(author.url) }, fields, thumbnailUrl: cleanString(source.thumbnailUrl ?? base.thumbnailUrl), imageUrl: cleanString(source.imageUrl ?? base.imageUrl), footerText: cleanString(source.footerText ?? base.footerText), footerIconUrl: cleanString(source.footerIconUrl ?? base.footerIconUrl) }; } function payloadToState(payload) { const embed = Array.isArray(payload.embeds) ? (payload.embeds[0] || {}) : (payload.embeds || {}); return normalizeState({ webhookUrl: "", username: cleanString(payload.username), avatarUrl: cleanString(payload.avatar_url), title: cleanString(embed.title), titleUrl: cleanString(embed.url), description: cleanString(embed.description), color: typeof embed.color === "number" ? intToHex(embed.color) : "#5865F2", timestamp: !!embed.timestamp, author: embed.author ? { name: cleanString(embed.author.name), iconUrl: cleanString(embed.author.icon_url), url: cleanString(embed.author.url) } : { name: "", iconUrl: "", url: "" }, fields: Array.isArray(embed.fields) ? embed.fields.map(f => ({ id: uid(), name: cleanString(f.name), value: cleanString(f.value), inline: !!f.inline })) : [], thumbnailUrl: embed.thumbnail ? cleanString(embed.thumbnail.url) : "", imageUrl: embed.image ? cleanString(embed.image.url) : "", footerText: embed.footer ? cleanString(embed.footer.text) : "", footerIconUrl: embed.footer ? cleanString(embed.footer.icon_url) : "" }); } function importToState(data) { if (!data || typeof data !== "object") return defaultState(); if (data.state && typeof data.state === "object") return normalizeState(data.state); if (data.embeds) return payloadToState(data); return normalizeState(data); } function exportConfig() { return { version: 1, state: clone(state) }; } function buildEmbedObject() { const embed = {}; const title = state.title.trim(); const titleUrl = state.titleUrl.trim(); const desc = state.description.trim(); const authorName = state.author.name.trim(); const authorIcon = state.author.iconUrl.trim(); const authorUrl = state.author.url.trim(); const thumbnailUrl = state.thumbnailUrl.trim(); const imageUrl = state.imageUrl.trim(); const footerText = state.footerText.trim(); const footerIconUrl = state.footerIconUrl.trim(); if (title) embed.title = title; if (titleUrl) embed.url = titleUrl; if (desc) embed.description = desc; if (isHexColor(state.color)) embed.color = hexToInt(state.color); if (state.timestamp) embed.timestamp = new Date().toISOString(); if (authorName || authorIcon || authorUrl) { embed.author = {}; if (authorName) embed.author.name = authorName; if (authorIcon) embed.author.icon_url = authorIcon; if (authorUrl) embed.author.url = authorUrl; } const fields = state.fields.map(f => ({ name: f.name.trim(), value: f.value.trim(), inline: !!f.inline })).filter(f => f.name || f.value); if (fields.length) embed.fields = fields; if (thumbnailUrl) embed.thumbnail = { url: thumbnailUrl }; if (imageUrl) embed.image = { url: imageUrl }; if (footerText || footerIconUrl) { embed.footer = {}; if (footerText) embed.footer.text = footerText; if (footerIconUrl) embed.footer.icon_url = footerIconUrl; } return embed; } function buildWebhookPayload() { const payload = { embeds: [buildEmbedObject()] }; const username = state.username.trim(); const avatarUrl = state.avatarUrl.trim(); if (username) payload.username = username; if (avatarUrl) payload.avatar_url = avatarUrl; return payload; } function escapeHTML(str) { return cleanString(str).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m])); } function escapeAttr(str) { return escapeHTML(str); } function textToHtml(str) { return escapeHTML(str).replace(/\n/g, "<br>"); } function cssBg(url) { const raw = cleanString(url).trim(); if (!raw) return ""; return `url("${encodeURI(raw).replace(/"/g, "%22")}")`; } function formatTime() { const now = new Date(); const time = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); return `Today at ${time}`; } function formatDate(ts) { return new Date(ts).toLocaleString([], { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }); } function showToast(title, message, type = "info") { const node = document.createElement("div"); node.className = `toast ${type}`; node.innerHTML = `<strong>${escapeHTML(title)}</strong><span>${escapeHTML(message)}</span>`; el.toastWrap.appendChild(node); setTimeout(() => { node.style.opacity = "0"; node.style.transform = "translateY(8px) scale(.98)"; setTimeout(() => node.remove(), 220); }, 2600); } function copyText(text) { const value = String(text); const done = () => showToast("Copied", "The clipboard was updated.", "success"); if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(value).then(done).catch(fallbackCopy); return; } fallbackCopy(); function fallbackCopy() { const ta = document.createElement("textarea"); ta.value = value; ta.setAttribute("readonly", "readonly"); ta.style.position = "fixed"; ta.style.left = "-9999px"; ta.style.top = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch { showToast("Copy failed", "Your browser blocked clipboard access.", "error"); } ta.remove(); } } function downloadFile(filename, content) { const blob = new Blob([content], { type: "application/json;charset=utf-8" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 250); } function readByPath(obj, path) { return path.split(".").reduce((acc, key) => (acc && key in acc ? acc[key] : ""), obj); } function writeByPath(obj, path, value) { const parts = path.split("."); let cur = obj; for (let i = 0; i < parts.length - 1; i++) { const k = parts[i]; if (!cur[k] || typeof cur[k] !== "object") cur[k] = {}; cur = cur[k]; } cur[parts[parts.length - 1]] = value; } function updateBoundInputs() { document.querySelectorAll("[data-bind]").forEach(node => { const path = node.dataset.bind; const value = readByPath(state, path); if (node.type === "checkbox") node.checked = !!value; else if (node.type === "color") node.value = isHexColor(value) ? value : "#5865F2"; else node.value = value ?? ""; }); } function renderFieldList() {
+                if (!state.fields.length) { el.fieldList.innerHTML = ` <div class="empty-inline"> <div> <strong style="display:block; margin-bottom:4px; color:#fff;">No fields yet</strong> <span>Add fields to build a Discord-style grid inside the embed.</span> </div> <button id="emptyAddFieldBtn" class="btn small primary" type="button">+ Add First Field</button> </div> `; const emptyBtn = document.getElementById("emptyAddFieldBtn"); if (emptyBtn) emptyBtn.onclick = () => addField(); return; } el.fieldList.innerHTML = state.fields.map((field, index) => {
+                    const title = `Field ${index + 1}`; return ` <div class="field-row" data-field-id="${escapeAttr(field.id)}"> <div class="field-row-head"> <div class="field-row-title"> <button class="drag-handle" type="button" title="Drag to reorder" aria-label="Drag to reorder">⋮⋮</button> <strong>${title}</strong> </div> <button class="remove-field" type="button" data-action="remove-field" data-field-id="${escapeAttr(field.id)}">Remove</button> </div> <div class="field-subgrid"> <div class="mini-field"> <label>Name</label> <input class="input" type="text" data-prop="name" data-field-id="${escapeAttr(field.id)}" placeholder="Field name" value="${escapeAttr(field.name)}" /> </div> <div class="mini-field"> <label>Value</label> <textarea class="textarea" data-prop="value" data-field-id="${escapeAttr(field.id)}" placeholder="Field value">${escapeHTML(field.value)}</textarea>
+            </div>
+          </div>
+          <div class="field-meta">
+            <div class="switch-wrap" style="flex:1;">
+              <div class="switch-label">
+                <strong>Inline</strong>
+                <span>Inline fields display side-by-side in Discord.</span>
+              </div>
+              <label class="switch" title="Inline field">
+                <input type="checkbox" data-prop="inline" data-field-id="${escapeAttr(field.id)}" ${field.inline ? "checked" : ""} />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      `;
+                }).join("");
+
+                if (!sortable && window.Sortable) {
+                    sortable = Sortable.create(el.fieldList, {
+                        animation: 180,
+                        handle: ".drag-handle",
+                        ghostClass: "drag-ghost",
+                        chosenClass: "drag-chosen",
+                        dragClass: "drag-chosen",
+                        onEnd: () => {
+                            const orderedIds = [...el.fieldList.querySelectorAll(".field-row")].map(row => row.dataset.fieldId);
+                            state.fields = orderedIds.map(id => state.fields.find(f => f.id === id)).filter(Boolean);
+                            persistCurrentState();
+                            renderPreview();
+                            if (jsonMode && !jsonDirty) updateJsonEditor();
+                        }
+                    });
+                }
+
+                if (pendingFocusFieldId) {
+                    const row = el.fieldList.querySelector(`.field-row[data-field-id="${CSS.escape(pendingFocusFieldId)}"]`);
+                    if (row) {
+                        const focusTarget = row.querySelector('[data-prop="name"]');
+                        setTimeout(() => focusTarget && focusTarget.focus(), 30);
+                    }
+                    pendingFocusFieldId = null;
+                }
+            }
+
+            function renderPreview() {
+                const username = state.username.trim() || "Webhook Bot";
+                const initial = (username.trim().charAt(0) || "W").toUpperCase();
+                const avatarUrl = state.avatarUrl.trim();
+                const color = isHexColor(state.color) ? state.color : "#5865F2";
+                const titleText = state.title.trim();
+                const titleUrl = state.titleUrl.trim();
+                const descText = state.description.trim();
+                const authorName = state.author.name.trim();
+                const authorIcon = state.author.iconUrl.trim();
+                const authorUrl = state.author.url.trim();
+                const thumbUrl = state.thumbnailUrl.trim();
+                const imageUrl = state.imageUrl.trim();
+                const footerText = state.footerText.trim();
+                const footerIcon = state.footerIconUrl.trim();
+                const hasFooter = footerText || footerIcon || state.timestamp;
+
+                const avatarClass = avatarUrl ? "avatar avatar-img" : "avatar avatar-fallback";
+                const avatarStyle = avatarUrl ? ` style="background-image:${cssBg(avatarUrl)}"` : "";
+                const footerIconHtml = footerIcon
+                    ? `<div class="mini-icon icon-img" style="background-image:${cssBg(footerIcon)}"><span>${escapeHTML((footerText.charAt(0) || "F").toUpperCase())}</span></div>`
+                    : "";
+
+                const authorVisible = authorName || authorIcon || authorUrl;
+                const authorLabel = authorName || "Author";
+                const authorIconHtml = authorIcon
+                    ? `<div class="mini-icon icon-img" style="background-image:${cssBg(authorIcon)}"><span>${escapeHTML((authorLabel.charAt(0) || "A").toUpperCase())}</span></div>`
+                    : "";
+
+                const titleClass = titleText ? "embed-title" : "embed-title placeholder";
+                const titleContent = textToHtml(titleText || "Your embed title");
+                const titleHtml = titleUrl && titleText
+                    ? `<a class="${titleClass}" href="${escapeAttr(titleUrl)}" target="_blank" rel="noopener noreferrer">${titleContent}</a>`
+                    : `<div class="${titleClass}">${titleContent}</div>`;
+
+                const descClass = descText ? "embed-desc" : "embed-desc placeholder";
+                const descContent = textToHtml(descText || "Add a description, fields, images, and footer details here.");
+                const descHtml = `<p class="${descClass}">${descContent}</p>`;
+
+                const authorHtml = authorVisible ? `
+      <div class="embed-author">
+        ${authorIconHtml}
+        ${authorUrl && authorName
+                        ? `<a href="${escapeAttr(authorUrl)}" target="_blank" rel="noopener noreferrer">${escapeHTML(authorLabel)}</a>`
+                        : `<span>${escapeHTML(authorLabel)}</span>`
+                    }
+      </div>
+    ` : "";
+
+                const fieldsHtml = state.fields.length ? `
+      <div class="field-grid">
+        ${state.fields.map(field => {
+                    const nameText = field.name.trim() || "Field name";
+                    const valueText = field.value.trim() || "Field value";
+                    const nameClass = field.name.trim() ? "field-name" : "field-name placeholder";
+                    const valueClass = field.value.trim() ? "field-value" : "field-value placeholder";
+                    return `
+            <div class="embed-field ${field.inline ? "inline" : "block"}">
+              <div class="${nameClass}">${textToHtml(nameText)}</div>
+              <div class="${valueClass}">${textToHtml(valueText)}</div>
+            </div>
+          `;
+                }).join("")}
+      </div>
+    ` : "";
+
+                const thumbHtml = thumbUrl ? `<div class="thumb" style="background-image:${cssBg(thumbUrl)}"></div>` : "";
+                const imageHtml = imageUrl ? `<div class="embed-image" style="background-image:${cssBg(imageUrl)}"></div>` : "";
+
+                const footerLeft = footerText
+                    ? `<div class="footer-text">${textToHtml(footerText)}</div>`
+                    : footerIcon
+                        ? `<div class="footer-text placeholder">Footer</div>`
+                        : "";
+
+                const footerRight = state.timestamp ? `<div class="timestamp">${formatTime()}</div>` : "";
+
+                const footerHtml = hasFooter ? `
+      <div class="embed-footer">
+        <div class="footer-left">
+          ${footerIconHtml}
+          ${footerLeft}
+        </div>
+        ${footerRight}
+      </div>
+    ` : "";
+
+                el.previewRoot.innerHTML = `
+      <div class="discord-message">
+        <div class="${avatarClass}" ${avatarStyle}><span>${escapeHTML(initial)}</span></div>
+        <div class="message-col">
+          <div class="message-top">
+            <div class="userline">
+              <span class="username">${escapeHTML(username)}</span>
+              <span class="bot-badge">BOT</span>
+            </div>
+            <div class="message-time">${formatTime()}</div>
+          </div>
+
+          <div class="embed" style="--accent:${color};">
+            <div class="embed-bar" style="background:${color}"></div>
+            <div class="embed-content">
+              <div class="embed-top">
+                <div class="embed-body">
+                  ${authorHtml}
+                  ${titleHtml}
+                  ${descHtml}
+                  ${fieldsHtml}
+                  ${imageHtml}
+                  ${footerHtml}
+                </div>
+                ${thumbHtml}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+            }
+
+            function persistCurrentState() {
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(() => {
+                    safeSet(STORAGE_CURRENT, JSON.stringify(exportConfig()));
+                }, 120);
+            }
+
+            function syncAndRender(source = "form") {
+                renderPreview();
+                persistCurrentState();
+                if (jsonMode && !jsonDirty && source !== "json") {
+                    updateJsonEditor();
+                }
+            }
+
+            function applyState(nextState, options = {}) {
+                state = normalizeState(nextState);
+                updateBoundInputs();
+                renderFieldList();
+                renderPreview();
+                persistCurrentState();
+                if (jsonMode && !jsonDirty) updateJsonEditor();
+                if (options.toast) showToast(options.toast.title, options.toast.message, options.toast.type || "success");
+            }
+
+            function updateJsonEditor() {
+                const pretty = JSON.stringify(exportConfig(), null, 2);
+                el.jsonEditor.value = pretty;
+                updateJsonStatus(true, `Valid JSON · ${pretty.length.toLocaleString()} characters`);
+            }
+
+            function updateJsonStatus(ok, message) {
+                el.jsonStatus.className = `json-status ${ok ? "good" : "error"}`;
+                el.jsonStatus.textContent = message;
+            }
+
+            function parseJsonEditor(force = false) {
+                const raw = el.jsonEditor.value.trim();
+                if (!raw) {
+                    updateJsonStatus(false, "JSON is empty.");
+                    return false;
+                }
+                try {
+                    const parsed = JSON.parse(raw);
+                    state = importToState(parsed);
+                    updateBoundInputs();
+                    renderFieldList();
+                    renderPreview();
+                    persistCurrentState();
+                    jsonDirty = false;
+                    const pretty = JSON.stringify(exportConfig(), null, 2);
+                    updateJsonStatus(true, `Valid JSON · ${pretty.length.toLocaleString()} characters`);
+                    if (force) el.jsonEditor.value = pretty;
+                    return true;
+                } catch (err) {
+                    updateJsonStatus(false, `Invalid JSON · ${err.message}`);
+                    return false;
+                }
+            }
+
+            function openModal(modalEl) {
+                activeModal = modalEl;
+                modalEl.classList.add("open");
+                modalEl.setAttribute("aria-hidden", "false");
+                document.body.classList.add("modal-open");
+            }
+
+            function closeModal(modalEl) {
+                modalEl.classList.remove("open");
+                modalEl.setAttribute("aria-hidden", "true");
+                if (activeModal === modalEl) activeModal = null;
+                if (!document.querySelector(".modal.open")) document.body.classList.remove("modal-open");
+            }
+
+            function openConfirm({ title, subtitle, text, confirmText = "Continue", tone = "danger", onConfirm }) {
+                pendingConfirm = typeof onConfirm === "function" ? onConfirm : null;
+                el.confirmTitle.textContent = title || "Confirm Action";
+                el.confirmSubtitle.textContent = subtitle || "This action requires confirmation.";
+                el.confirmText.textContent = text || "Are you sure?";
+                el.confirmActionBtn.textContent = confirmText;
+                el.confirmActionBtn.className = tone === "danger" ? "btn danger" : "btn primary";
+                openModal(el.confirmModal);
+            }
+
+            function closeConfirm() {
+                pendingConfirm = null;
+                closeModal(el.confirmModal);
+            }
+
+            function renderDrafts() {
+                drafts = safeParse(safeGet(STORAGE_DRAFTS)) || [];
+                drafts = Array.isArray(drafts) ? drafts : [];
+            }
+
+            function saveDrafts() {
+                safeSet(STORAGE_DRAFTS, JSON.stringify(drafts));
+            }
+
+            function openSaveDraftModal() {
+                el.draftName.value = state.title.trim() || "My webhook embed";
+                openModal(el.saveModal);
+                setTimeout(() => el.draftName.focus(), 40);
+            }
+
+            function saveDraftByName(name) {
+                const draftName = name.trim() || `Draft ${new Date().toLocaleString()}`;
+                const snapshot = exportConfig();
+                const normalized = draftName.toLowerCase();
+
+                const existingIndex = drafts.findIndex(d => String(d.name || "").trim().toLowerCase() === normalized);
+                const entry = {
+                    id: existingIndex >= 0 ? drafts[existingIndex].id : uid(),
+                    name: draftName,
+                    updatedAt: Date.now(),
+                    snapshot
+                };
+
+                if (existingIndex >= 0) drafts.splice(existingIndex, 1);
+                drafts.unshift(entry);
+                saveDrafts();
+                showToast("Draft saved", `“${draftName}” was saved locally.`, "success");
+            }
+
+            function renderLoadModal() {
+                renderDrafts();
+                if (!drafts.length) {
+                    el.draftList.innerHTML = `
+        <div class="empty-inline">
+          <div>
+            <strong style="display:block; margin-bottom:4px; color:#fff;">No drafts saved yet</strong>
+            <span>Save your current embed to create a local draft you can load later.</span>
+          </div>
+          <button id="loadModalSaveBtn" class="btn small primary" type="button">Save This One</button>
+        </div>
+      `;
+                    const btn = document.getElementById("loadModalSaveBtn");
+                    if (btn) btn.onclick = () => {
+                        closeModal(el.loadModal);
+                        openSaveDraftModal();
+                    };
+                    return;
+                }
+
+                el.draftList.innerHTML = drafts.map(draft => `
+      <div class="draft-item">
+        <div class="draft-meta">
+          <strong>${escapeHTML(draft.name)}</strong>
+          <span>Updated ${escapeHTML(formatDate(draft.updatedAt))}</span>
+        </div>
+        <div class="draft-actions">
+          <button class="btn small ghost" type="button" data-action="load-draft" data-draft-id="${escapeAttr(draft.id)}">Load</button>
+          <button class="btn small danger" type="button" data-action="delete-draft" data-draft-id="${escapeAttr(draft.id)}">Delete</button>
+        </div>
+      </div>
+    `).join("");
+            }
+
+            function addField() {
+                const field = newField();
+                state.fields.push(field);
+                pendingFocusFieldId = field.id;
+                renderFieldList();
+                renderPreview();
+                persistCurrentState();
+                if (jsonMode && !jsonDirty) updateJsonEditor();
+                showToast("Field added", "A new field card is ready to edit.", "success");
+            }
+
+            function removeField(fieldId) {
+                state.fields = state.fields.filter(f => f.id !== fieldId);
+                renderFieldList();
+                renderPreview();
+                persistCurrentState();
+                if (jsonMode && !jsonDirty) updateJsonEditor();
+                showToast("Field removed", "The field card was deleted.", "info");
+            }
+
+            function loadDraftById(id) {
+                const draft = drafts.find(d => d.id === id);
+                if (!draft) return;
+                openConfirm({
+                    title: "Load draft?",
+                    subtitle: "This will replace the current embed.",
+                    text: `Loading “${draft.name}” will overwrite the current work in the editor.`,
+                    confirmText: "Load Draft",
+                    tone: "primary",
+                    onConfirm: () => {
+                        applyState(importToState(draft.snapshot));
+                        showToast("Draft loaded", `“${draft.name}” is now active.`, "success");
+                    }
+                });
+            }
+
+            function deleteDraftById(id) {
+                const draft = drafts.find(d => d.id === id);
+                if (!draft) return;
+                openConfirm({
+                    title: "Delete draft?",
+                    subtitle: "This cannot be undone.",
+                    text: `Delete “${draft.name}” from local storage?`,
+                    confirmText: "Delete",
+                    tone: "danger",
+                    onConfirm: () => {
+                        drafts = drafts.filter(d => d.id !== id);
+                        saveDrafts();
+                        renderLoadModal();
+                        showToast("Draft deleted", `“${draft.name}” was removed.`, "success");
+                    }
+                });
+            }
+
+            function toggleJsonMode() {
+                jsonMode = !jsonMode;
+                el.jsonToggleBtn.classList.toggle("active", jsonMode);
+                el.jsonToggleBtn.textContent = jsonMode ? "Form Mode" : "JSON Mode";
+                el.builderFormWrap.classList.toggle("hidden", jsonMode);
+                el.jsonWrap.classList.toggle("hidden", !jsonMode);
+                if (jsonMode) {
+                    jsonDirty = false;
+                    updateJsonEditor();
+                    setTimeout(() => el.jsonEditor.focus(), 40);
+                } else {
+                    const ok = parseJsonEditor(false);
+                    if (!ok && el.jsonEditor.value.trim()) {
+                        jsonMode = true;
+                        el.jsonToggleBtn.classList.add("active");
+                        el.jsonToggleBtn.textContent = "Form Mode";
+                        el.builderFormWrap.classList.add("hidden");
+                        el.jsonWrap.classList.remove("hidden");
+                        showToast("Invalid JSON", "Fix the JSON before leaving raw mode.", "error");
+                        return;
+                    }
+                    jsonDirty = false;
+                    updateBoundInputs();
+                    renderFieldList();
+                    renderPreview();
+                    persistCurrentState();
+                }
+            }
+
+            function sendWebhook() {
+                const webhookUrl = state.webhookUrl.trim();
+                if (!webhookUrl) {
+                    showToast("Webhook URL missing", "Add a webhook URL before sending.", "error");
+                    return;
+                }
+
+                let parsedUrl;
+                try {
+                    parsedUrl = new URL(webhookUrl);
+                    if (!["http:", "https:"].includes(parsedUrl.protocol)) throw new Error("Invalid protocol");
+                } catch {
+                    showToast("Invalid webhook URL", "Use a valid http or https URL.", "error");
+                    return;
+                }
+
+                const payload = buildWebhookPayload();
+
+                if (sending) return;
+                sending = true;
+                el.sendBtn.disabled = true;
+                el.sendBtn.textContent = "Sending...";
+
+                fetch(parsedUrl.toString(), {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                })
+                    .then(async res => {
+                        if (res.ok || res.status === 204) {
+                            showToast("Message sent", "The webhook accepted the payload.", "success");
+                            return;
+                        }
+                        const text = await res.text().catch(() => "");
+                        throw new Error(text || `HTTP ${res.status}`);
+                    })
+                    .catch(err => {
+                        showToast("Send failed", err.message || "The request was rejected or blocked.", "error");
+                    })
+                    .finally(() => {
+                        sending = false;
+                        el.sendBtn.disabled = false;
+                        el.sendBtn.textContent = "Send Message";
+                    });
+            }
+
+            function importFile(file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const parsed = safeParse(String(reader.result || ""));
+                    if (!parsed) {
+                        showToast("Import failed", "The selected file is not valid JSON.", "error");
+                        return;
+                    }
+
+                    openConfirm({
+                        title: "Import file?",
+                        subtitle: "This will replace the current embed.",
+                        text: "Importing will overwrite your current editor state with the JSON from the selected file.",
+                        confirmText: "Import",
+                        tone: "primary",
+                        onConfirm: () => {
+                            applyState(importToState(parsed));
+                            showToast("Imported", "The JSON file was loaded into the builder.", "success");
+                        }
+                    });
+                };
+                reader.onerror = () => showToast("Import failed", "The file could not be read.", "error");
+                reader.readAsText(file);
+            }
+
+            function handleBoundInput(target) {
+                const path = target.dataset.bind;
+                if (!path) return;
+                const value = target.type === "checkbox" ? target.checked : target.value;
+                writeByPath(state, path, value);
+                if (path === "color" && !isHexColor(state.color)) state.color = "#5865F2";
+                syncAndRender("form");
+            }
+
+            function handleFieldInput(target) {
+                const row = target.closest(".field-row");
+                if (!row) return;
+                const id = row.dataset.fieldId;
+                const field = state.fields.find(f => f.id === id);
+                if (!field) return;
+
+                if (target.dataset.prop === "name") field.name = target.value;
+                if (target.dataset.prop === "value") field.value = target.value;
+                if (target.dataset.prop === "inline") field.inline = !!target.checked;
+
+                syncAndRender("form");
+            }
+
+            function openFilePicker() {
+                el.importFileInput.value = "";
+                el.importFileInput.click();
+            }
+
+            function closeAnyOpenModal() {
+                [el.saveModal, el.loadModal, el.confirmModal].forEach(modal => modal.classList.remove("open"));
+                [el.saveModal, el.loadModal, el.confirmModal].forEach(modal => modal.setAttribute("aria-hidden", "true"));
+                activeModal = null;
+                if (!document.querySelector(".modal.open")) document.body.classList.remove("modal-open");
+            }
+
+            function init() {
+                const current = safeParse(safeGet(STORAGE_CURRENT));
+                const currentState = importToState(current);
+                state = normalizeState(currentState);
+
+                const savedDrafts = safeParse(safeGet(STORAGE_DRAFTS));
+                drafts = Array.isArray(savedDrafts) ? savedDrafts : [];
+
+                updateBoundInputs();
+                renderFieldList();
+                renderPreview();
+                persistCurrentState();
+            }
+
+            // Events
+            el.jsonToggleBtn.addEventListener("click", toggleJsonMode);
+            el.copyEmbedBtn.addEventListener("click", () => {
+                copyText(JSON.stringify(buildEmbedObject(), null, 2));
+            });
+            el.copyPayloadBtn.addEventListener("click", () => {
+                copyText(JSON.stringify(buildWebhookPayload(), null, 2));
+            });
+            el.saveDraftBtn.addEventListener("click", openSaveDraftModal);
+            el.loadDraftBtn.addEventListener("click", () => {
+                renderLoadModal();
+                openModal(el.loadModal);
+            });
+            el.importBtn.addEventListener("click", openFilePicker);
+            el.exportBtn.addEventListener("click", () => {
+                downloadFile("discord-embed-config.json", JSON.stringify(exportConfig(), null, 2));
+                showToast("Exported", "Your embed config file was downloaded.", "success");
+            });
+            el.sendBtn.addEventListener("click", sendWebhook);
+
+            el.addFieldBtn.addEventListener("click", addField);
+
+            el.editorForm.addEventListener("input", e => {
+                const target = e.target;
+                if (!(target instanceof HTMLElement)) return;
+                if (target.matches("[data-bind]")) handleBoundInput(target);
+            });
+
+            el.editorForm.addEventListener("change", e => {
+                const target = e.target;
+                if (!(target instanceof HTMLElement)) return;
+                if (target.matches("[data-bind]")) handleBoundInput(target);
+            });
+
+            el.fieldList.addEventListener("input", e => {
+                const target = e.target;
+                if (!(target instanceof HTMLElement)) return;
+                if (target.matches("[data-prop='name'], [data-prop='value']")) handleFieldInput(target);
+            });
+
+            el.fieldList.addEventListener("change", e => {
+                const target = e.target;
+                if (!(target instanceof HTMLElement)) return;
+                if (target.matches("[data-prop='inline']")) handleFieldInput(target);
+            });
+
+            el.fieldList.addEventListener("click", e => {
+                const target = e.target;
+                if (!(target instanceof HTMLElement)) return;
+                const btn = target.closest("[data-action='remove-field']");
+                if (!btn) return;
+                const id = btn.getAttribute("data-field-id");
+                if (id) removeField(id);
+            });
+
+            el.jsonEditor.addEventListener("input", () => {
+                jsonDirty = true;
+                clearTimeout(jsonTimer);
+                jsonTimer = setTimeout(() => {
+                    const ok = parseJsonEditor(false);
+                    if (ok) jsonDirty = false;
+                }, 260);
+            });
+
+            el.formatJsonBtn.addEventListener("click", () => {
+                const ok = parseJsonEditor(true);
+                if (ok) {
+                    jsonDirty = false;
+                    showToast("Formatted", "The JSON has been prettified.", "success");
+                } else {
+                    showToast("Invalid JSON", "Fix the JSON before formatting.", "error");
+                }
+            });
+
+            el.confirmSaveDraftBtn.addEventListener("click", () => {
+                saveDraftByName(el.draftName.value);
+                closeModal(el.saveModal);
+            });
+
+            el.importFileInput.addEventListener("change", () => {
+                const file = el.importFileInput.files && el.importFileInput.files[0];
+                if (file) importFile(file);
+            });
+
+            el.draftList.addEventListener("click", e => {
+                const target = e.target;
+                if (!(target instanceof HTMLElement)) return;
+                const loadBtn = target.closest("[data-action='load-draft']");
+                const deleteBtn = target.closest("[data-action='delete-draft']");
+                if (loadBtn) {
+                    const id = loadBtn.getAttribute("data-draft-id");
+                    if (id) loadDraftById(id);
+                }
+                if (deleteBtn) {
+                    const id = deleteBtn.getAttribute("data-draft-id");
+                    if (id) deleteDraftById(id);
+                }
+            });
+
+            document.querySelectorAll("[data-close]").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const modalId = btn.getAttribute("data-close");
+                    const modal = document.getElementById(modalId);
+                    if (modal) closeModal(modal);
+                });
+            });
+
+            el.confirmCancelBtn.addEventListener("click", closeConfirm);
+            el.confirmActionBtn.addEventListener("click", () => {
+                const fn = pendingConfirm;
+                closeConfirm();
+                if (typeof fn === "function") fn();
+            });
+
+            [el.saveModal, el.loadModal, el.confirmModal].forEach(modal => {
+                modal.addEventListener("click", e => {
+                    if (e.target === modal) closeModal(modal);
+                });
+            });
+
+            document.addEventListener("keydown", e => {
+                const key = e.key.toLowerCase();
+                const meta = e.ctrlKey || e.metaKey;
+
+                if (e.key === "Escape") {
+                    if (el.confirmModal.classList.contains("open")) closeConfirm();
+                    if (el.saveModal.classList.contains("open")) closeModal(el.saveModal);
+                    if (el.loadModal.classList.contains("open")) closeModal(el.loadModal);
+                    return;
+                }
+
+                if (meta && e.shiftKey && key === "j") {
+                    e.preventDefault();
+                    if (!jsonMode || jsonMode) toggleJsonMode();
+                    return;
+                }
+
+                if (meta && key === "enter") {
+                    e.preventDefault();
+                    sendWebhook();
+                    return;
+                }
+
+                if (meta && key === "s") {
+                    e.preventDefault();
+                    openSaveDraftModal();
+                    return;
+                }
+            });
+
+            init();
+        })();
+    </script>
+</body>
+
+</html>
