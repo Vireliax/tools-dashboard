@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Converter Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        :root {
+            --bg0: #070B14;
+            --bg1: #0B1220;
+            --panel: rgba(16, 23, 41, 0.68);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --text: #EAF0FF;
+            --muted: #8D98B8;
+            --accent: #7C5CFF;
+            --accent2: #19D3FF;
+            --good: #2EE59D;
+            --warn: #FFCC66;
+            --danger: #FF6B7A;
+            --shadow: 0 24px 80px rgba(0, 0, 0, .42);
+        }
+
+        body.light {
+            --bg0: #F5F7FB;
+            --bg1: #ECF1F8;
+            --panel: rgba(255, 255, 255, 0.75);
+            --panel-border: rgba(17, 24, 39, 0.08);
+            --text: #0F172A;
+            --muted: #56627E;
+            --shadow: 0 18px 60px rgba(15, 23, 42, .12);
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(124, 92, 255, .30), transparent 28%),
+                radial-gradient(circle at top right, rgba(25, 211, 255, .20), transparent 24%),
+                linear-gradient(180deg, var(--bg0), var(--bg1));
+            overflow-x: hidden;
+        }
+
+        .glass {
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #FFFFFF, #B9C8FF 45%, #85E7FF 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        body.light .gradient-text {
+            background: linear-gradient(90deg, #0F172A, #4F46E5 50%, #0891B2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .dropzone {
+            transition: all .25s ease;
+            border: 1px dashed rgba(148, 163, 184, .35);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .01));
+        }
+
+        .dropzone.dragover {
+            border-color: rgba(124, 92, 255, .95);
+            transform: translateY(-2px);
+            box-shadow: 0 0 0 6px rgba(124, 92, 255, .12);
+        }
+
+        .soft-btn {
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+        }
+
+        .soft-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .soft-btn:active {
+            transform: translateY(0px) scale(.99);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 9999px;
+            background: var(--accent2);
+            box-shadow: 0 0 0 0 rgba(25, 211, 255, .55);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(25, 211, 255, .5);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(25, 211, 255, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(25, 211, 255, 0);
+            }
+        }
+
+        .shine {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shine::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: translateX(-120%) skewX(-20deg);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .12), transparent);
+            animation: sheen 5.5s infinite;
+        }
+
+        @keyframes sheen {
+
+            0%,
+            68% {
+                transform: translateX(-120%) skewX(-20deg);
+            }
+
+            100% {
+                transform: translateX(120%) skewX(-20deg);
+            }
+        }
+
+        .toast-enter {
+            animation: toastIn .25s ease-out;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            box-shadow: 0 0 0 4px rgba(124, 92, 255, .15);
+            cursor: pointer;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, .22);
+        }
+
+        .grid-preview {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .tab-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(124, 92, 255, .24), rgba(25, 211, 255, .16));
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .tab-sim {
+            border-radius: 18px 18px 10px 10px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .10), rgba(255, 255, 255, .04));
+            border: 1px solid rgba(255, 255, 255, .10);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, .25);
+            border-radius: 999px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+    </style>
+</head>
+
+<body class="text-slate-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-30 border-b border-white/5 backdrop-blur-xl bg-black/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl glass grid place-items-center shine">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="drop-shadow-sm">
+                                <path
+                                    d="M4 7.5C4 6.12 5.12 5 6.5 5h11C18.88 5 20 6.12 20 7.5v9c0 1.38-1.12 2.5-2.5 2.5h-11C5.12 19 4 17.88 4 16.5v-9Z"
+                                    stroke="url(#g)" stroke-width="1.8" />
+                                <path d="M7 15.5 10 12l2.5 2.5 2-2 2.5 3" stroke="#8EF0FF" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <circle cx="8.2" cy="9" r="1.1" fill="#B89CFF" />
+                                <defs>
+                                    <linearGradient id="g" x1="4" y1="5" x2="20" y2="19" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="#7C5CFF" />
+                                        <stop offset="1" stop-color="#19D3FF" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight gradient-text">Image
+                                    Converter Studio</h1>
+                                <span
+                                    class="px-2.5 py-1 rounded-full text-xs font-medium border border-white/10 bg-white/5 text-slate-300">Client-side
+                                    conversion</span>
+                            </div>
+                            <p class="mt-1 text-sm text-[color:var(--muted)]">Professional format conversion, favicon
+                                generation, and instant downloads — all in one file.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+<div class="glass rounded-2xl p-1 flex gap-1">
+    <button id="modeStandard"
+        class="soft-btn px-4 py-2 rounded-xl text-sm font-medium bg-white/10 border border-white/10">
+        Standard Converter
+    </button>
+</div>
+
+                        <button id="themeToggle"
+                            class="soft-btn glass rounded-2xl px-4 py-2 text-sm font-medium border border-white/10">Toggle
+                            Theme</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 lg:py-8">
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+                <section class="xl:col-span-7 space-y-6">
+                    <div id="uploadCard" class="glass rounded-[28px] p-5 sm:p-6 dropzone">
+                        <div class="flex items-start justify-between gap-4 flex-wrap">
+                            <div>
+                                <div class="flex items-center gap-3">
+                                    <h2 class="text-xl font-semibold">Upload image</h2>
+                                    <span class="pulse-dot"></span>
+                                </div>
+                                <p class="text-sm text-[color:var(--muted)] mt-1">Drag and drop a file, or click to
+                                    browse. Ctrl+U opens the picker.</p>
+                            </div>
+                            <div
+                                class="text-xs px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-[color:var(--muted)]">
+                                PNG · JPG · WEBP · BMP · ICO input</div>
+                        </div>
+
+                        <input id="fileInput" type="file" accept="image/*,.ico" class="hidden" />
+                        <div id="dropzoneInner"
+                            class="mt-5 rounded-[24px] border border-dashed border-white/10 p-6 sm:p-8 text-center cursor-pointer">
+                            <div class="mx-auto w-16 h-16 rounded-2xl bg-white/5 grid place-items-center mb-4">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 16V5m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M5 16.5V19h14v-2.5" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <div class="text-lg font-medium">Drop your image here</div>
+                            <div class="text-sm text-[color:var(--muted)] mt-1">Best for screenshots, artwork, logos,
+                                and icons.</div>
+                            <button id="browseBtn"
+                                class="soft-btn mt-5 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-violet-500 to-cyan-400 text-white font-medium shadow-lg shadow-violet-500/20">Choose
+                                file</button>
+                        </div>
+
+                        <div id="fileInfo" class="hidden mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-4">
+                                <div class="text-xs uppercase tracking-[0.22em] text-[color:var(--muted)]">Source
+                                    preview</div>
+                                <div
+                                    class="mt-3 rounded-2xl overflow-hidden bg-black/20 grid place-items-center min-h-[240px]">
+                                    <img id="sourcePreview" alt="Source preview"
+                                        class="max-h-[360px] max-w-full object-contain" />
+                                </div>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-4 space-y-4">
+                                <div>
+                                    <div class="text-xs uppercase tracking-[0.22em] text-[color:var(--muted)]">File
+                                        details</div>
+                                    <div class="mt-3 space-y-2 text-sm">
+                                        <div class="flex justify-between gap-3"><span
+                                                class="text-[color:var(--muted)]">Name</span><span id="metaName"
+                                                class="font-medium break-all text-right"></span></div>
+                                        <div class="flex justify-between gap-3"><span
+                                                class="text-[color:var(--muted)]">Size</span><span id="metaSize"
+                                                class="font-medium"></span></div>
+                                        <div class="flex justify-between gap-3"><span
+                                                class="text-[color:var(--muted)]">Dimensions</span><span id="metaDim"
+                                                class="font-medium"></span></div>
+                                        <div class="flex justify-between gap-3"><span
+                                                class="text-[color:var(--muted)]">Type</span><span id="metaType"
+                                                class="font-medium"></span></div>
+                                    </div>
+                                </div>
+                                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                    <div class="flex items-center justify-between text-sm mb-3">
+                                        <span class="font-medium">Conversion progress</span>
+                                        <span id="progressLabel" class="text-[color:var(--muted)]">Idle</span>
+                                    </div>
+                                    <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                        <div id="progressBar"
+                                            class="h-full w-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 transition-all duration-300">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-[28px] p-5 sm:p-6">
+                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                            <div>
+                                <h2 class="text-xl font-semibold">Conversion settings</h2>
+                                <p class="text-sm text-[color:var(--muted)] mt-1">Choose format, quality, and how
+                                    transparency should be handled.</p>
+                            </div>
+                            <div
+                                class="text-xs px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-[color:var(--muted)]">
+                                Auto-saved locally</div>
+                        </div>
+
+                        <div id="standardSettings" class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-4">
+                                <label class="text-sm font-medium">Output format</label>
+                                <select id="outputFormat"
+                                    class="mt-2 w-full glass rounded-2xl px-4 py-3 outline-none bg-transparent border border-white/10">
+                                    <option value="png">PNG</option>
+                                    <option value="jpeg">JPG / JPEG</option>
+                                    <option value="webp">WEBP</option>
+                                    <option value="bmp">BMP</option>
+                                    <option value="ico">ICO</option>
+                                </select>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-4">
+                                <label class="text-sm font-medium flex items-center justify-between">Quality <span
+                                        id="qualityValue" class="text-[color:var(--muted)]">92%</span></label>
+                                <input id="quality" type="range" min="1" max="100" value="92" class="mt-4 w-full" />
+                                <div class="mt-2 text-xs text-[color:var(--muted)]">Used for JPG / WEBP output.</div>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-4 md:col-span-2">
+                                <label class="text-sm font-medium">Background for transparent pixels</label>
+                                <div class="mt-3 flex flex-wrap gap-3">
+                                    <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="radio"
+                                            name="bgmode" value="transparent" checked /> Transparent</label>
+                                    <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="radio"
+                                            name="bgmode" value="solid" /> Solid color</label>
+                                    <input id="bgColor" type="color" value="#ffffff"
+                                        class="w-12 h-10 rounded-xl border border-white/10 bg-transparent p-1"
+                                        disabled />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="faviconSettings" class="hidden mt-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-4">
+                                <label class="text-sm font-medium">Favicon export</label>
+                                <div class="mt-3 flex flex-wrap gap-3">
+                                    <button id="exportIcoBtn"
+                                        class="soft-btn px-4 py-2.5 rounded-2xl bg-gradient-to-r from-violet-500 to-cyan-400 text-white font-medium">Export
+                                        ICO</button>
+                                    <button id="exportZipBtn"
+                                        class="soft-btn px-4 py-2.5 rounded-2xl border border-white/10 bg-white/5 font-medium">Download
+                                        package</button>
+                                </div>
+                                <div class="mt-4 text-sm text-[color:var(--muted)]">
+                                    Generates 16×16, 32×32, and 48×48 assets and bundles them with a ready-to-use
+                                    favicon snippet.
+                                </div>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-4">
+                                <div class="text-sm font-medium">Browser tab preview</div>
+                                <div class="mt-3 tab-sim p-4">
+                                    <div class="flex items-center gap-2 mb-4 text-[11px] text-[color:var(--muted)]">
+                                        <div class="w-3 h-3 rounded-full bg-red-400/80"></div>
+                                        <div class="w-3 h-3 rounded-full bg-yellow-400/80"></div>
+                                        <div class="w-3 h-3 rounded-full bg-green-400/80"></div>
+                                        <span class="ml-3">browser tab</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="tab-icon"><img id="tabIconPreview" alt="Favicon preview"
+                                                class="w-full h-full object-cover hidden" /><span id="tabIconFallback"
+                                                class="text-lg font-bold text-white/85">I</span></div>
+                                        <div>
+                                            <div class="font-medium">Image Converter Studio</div>
+                                            <div class="text-sm text-[color:var(--muted)]">Preview of a future browser
+                                                tab icon.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 flex flex-wrap gap-3">
+                            <button id="convertBtn"
+                                class="soft-btn px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-500 to-cyan-400 text-white font-semibold shadow-lg shadow-violet-500/20">Convert
+                                image</button>
+                            <input id="filenameInput" type="text" placeholder="output-filename"
+                                class="glass rounded-2xl px-4 py-3 outline-none bg-transparent border border-white/10 min-w-[220px] flex-1" />
+                            <button id="downloadBtn"
+                                class="soft-btn px-5 py-3 rounded-2xl border border-white/10 bg-white/5 font-semibold disabled:opacity-50 disabled:cursor-not-allowed">Download</button>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-[28px] p-5 sm:p-6">
+                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                            <div>
+                                <h2 class="text-xl font-semibold">Preview</h2>
+                                <p class="text-sm text-[color:var(--muted)] mt-1">Compare original and converted images
+                                    side by side.</p>
+                            </div>
+                            <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
+                                <input id="compareToggle" type="checkbox" checked /> Side-by-side comparison
+                            </label>
+                        </div>
+                        <div id="previewGrid" class="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-4">
+                                <div class="text-xs uppercase tracking-[0.22em] text-[color:var(--muted)]">Original
+                                </div>
+                                <div
+                                    class="mt-3 min-h-[280px] rounded-2xl bg-black/20 grid place-items-center overflow-hidden">
+                                    <img id="originalPreview" alt="Original image"
+                                        class="max-h-[420px] max-w-full object-contain" />
+                                </div>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-4">
+                                <div class="text-xs uppercase tracking-[0.22em] text-[color:var(--muted)]">Converted
+                                </div>
+                                <div
+                                    class="mt-3 min-h-[280px] rounded-2xl bg-black/20 grid place-items-center overflow-hidden">
+                                    <img id="convertedPreview" alt="Converted image"
+                                        class="max-h-[420px] max-w-full object-contain hidden" />
+                                    <div id="convertedEmpty" class="text-sm text-[color:var(--muted)]">No converted
+                                        image yet.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <aside class="xl:col-span-5 space-y-6">
+ 
+
+                        <div class="mt-5 grid grid-cols-3 gap-3" id="faviconGrid">
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-3 text-center">
+                                <div class="text-xs text-[color:var(--muted)]">16×16</div>
+                                <div
+                                    class="mt-3 mx-auto w-10 h-10 rounded-2xl bg-white/5 grid place-items-center overflow-hidden">
+                                    <img id="fav16" class="w-full h-full object-cover hidden" alt="16 size" /><span
+                                        class="text-xs">–</span></div>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-3 text-center">
+                                <div class="text-xs text-[color:var(--muted)]">32×32</div>
+                                <div
+                                    class="mt-3 mx-auto w-10 h-10 rounded-2xl bg-white/5 grid place-items-center overflow-hidden">
+                                    <img id="fav32" class="w-full h-full object-cover hidden" alt="32 size" /><span
+                                        class="text-xs">–</span></div>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/10 p-3 text-center">
+                                <div class="text-xs text-[color:var(--muted)]">48×48</div>
+                                <div
+                                    class="mt-3 mx-auto w-10 h-10 rounded-2xl bg-white/5 grid place-items-center overflow-hidden">
+                                    <img id="fav48" class="w-full h-full object-cover hidden" alt="48 size" /><span
+                                        class="text-xs">–</span></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+                            <div class="text-sm font-medium">Ready-made snippet</div>
+                            <pre id="faviconSnippet"
+                                class="mt-3 text-xs whitespace-pre-wrap break-all text-[color:var(--muted)] scrollbar overflow-auto max-h-44">Upload an image to generate favicon assets.</pre>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-[28px] p-5 sm:p-6">
+                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                            <div>
+                                <h2 class="text-xl font-semibold">Local history</h2>
+                                <p class="text-sm text-[color:var(--muted)] mt-1">Saved settings and last conversion
+                                    metadata.</p>
+                            </div>
+                            <button id="clearHistoryBtn"
+                                class="soft-btn px-4 py-2 rounded-2xl border border-white/10 bg-white/5 text-sm">Clear</button>
+                        </div>
+                        <div id="historyList" class="mt-5 space-y-3"></div>
+                    </div>
+
+                    <div class="glass rounded-[28px] p-5 sm:p-6">
+                        <h2 class="text-xl font-semibold">Tips</h2>
+                        <div class="mt-4 space-y-3 text-sm text-[color:var(--muted)] leading-relaxed">
+                            <p>JPEG and WEBP use the quality slider. PNG ignores quality and stays lossless.</p>
+                            <p>BMP is generated fully in-browser from canvas pixel data.</p>
+                            <p>ICO files are assembled from multi-size PNG images inside a valid icon container.</p>
+                            <p>Ctrl+U uploads a file. Ctrl+D downloads the latest converted output.</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <div id="toasts" class="fixed bottom-4 right-4 z-50 space-y-3"></div>
+
+    <script>
+        const $ = (id) => document.getElementById(id);
+        const state = {
+            mode: localStorage.getItem('ics_mode') || 'standard',
+            theme: localStorage.getItem('ics_theme') || 'dark',
+            outputFormat: localStorage.getItem('ics_format') || 'png',
+            quality: Number(localStorage.getItem('ics_quality') || 92),
+            bgMode: localStorage.getItem('ics_bgMode') || 'transparent',
+            bgColor: localStorage.getItem('ics_bgColor') || '#ffffff',
+            lastFile: null,
+            sourceDataUrl: '',
+            sourceName: '',
+            sourceType: '',
+            sourceBytes: 0,
+            sourceWidth: 0,
+            sourceHeight: 0,
+            canvas: null,
+            convertedBlob: null,
+            convertedUrl: '',
+            convertedName: '',
+            history: JSON.parse(localStorage.getItem('ics_history') || '[]')
+        };
+
+        const els = {
+            fileInput: $('fileInput'), browseBtn: $('browseBtn'), dropzoneInner: $('dropzoneInner'), uploadCard: $('uploadCard'),
+            sourcePreview: $('sourcePreview'), fileInfo: $('fileInfo'), metaName: $('metaName'), metaSize: $('metaSize'), metaDim: $('metaDim'), metaType: $('metaType'),
+            originalPreview: $('originalPreview'), convertedPreview: $('convertedPreview'), convertedEmpty: $('convertedEmpty'),
+            outputFormat: $('outputFormat'), quality: $('quality'), qualityValue: $('qualityValue'), bgColor: $('bgColor'),
+            convertBtn: $('convertBtn'), downloadBtn: $('downloadBtn'), filenameInput: $('filenameInput'),
+            modeStandard: $('modeStandard'), modeFavicon: $('modeFavicon'), standardSettings: $('standardSettings'), faviconSettings: $('faviconSettings'),
+            compareToggle: $('compareToggle'), previewGrid: $('previewGrid'),
+            fav16: $('fav16'), fav32: $('fav32'), fav48: $('fav48'), tabIconPreview: $('tabIconPreview'), tabIconFallback: $('tabIconFallback'),
+            exportIcoBtn: $('exportIcoBtn'), exportZipBtn: $('exportZipBtn'), faviconSnippet: $('faviconSnippet'),
+            historyList: $('historyList'), clearHistoryBtn: $('clearHistoryBtn'), themeToggle: $('themeToggle'),
+            progressBar: $('progressBar'), progressLabel: $('progressLabel'), toasts: $('toasts')
+        };
+
+        function saveSettings() {
+            localStorage.setItem('ics_mode', state.mode);
+            localStorage.setItem('ics_theme', state.theme);
+            localStorage.setItem('ics_format', state.outputFormat);
+            localStorage.setItem('ics_quality', String(state.quality));
+            localStorage.setItem('ics_bgMode', state.bgMode);
+            localStorage.setItem('ics_bgColor', state.bgColor);
+        }
+
+        function saveHistory(entry) {
+            state.history.unshift(entry);
+            state.history = state.history.slice(0, 8);
+            localStorage.setItem('ics_history', JSON.stringify(state.history));
+            renderHistory();
+        }
+
+        function fmtBytes(bytes) {
+            if (!bytes && bytes !== 0) return '-';
+            const units = ['B', 'KB', 'MB', 'GB'];
+            let i = 0, n = bytes;
+            while (n >= 1024 && i < units.length - 1) { n /= 1024; i++; }
+            return `${n.toFixed(i === 0 ? 0 : 2)} ${units[i]}`;
+        }
+
+        function extForFormat(fmt) {
+            if (fmt === 'jpeg') return 'jpg';
+            return fmt;
+        }
+
+        function showToast(message, kind = 'info') {
+            const div = document.createElement('div');
+            div.className = 'toast-enter glass rounded-2xl px-4 py-3 border border-white/10 max-w-sm';
+            const color = kind === 'success' ? 'text-emerald-300' : kind === 'error' ? 'text-red-300' : 'text-slate-200';
+            div.innerHTML = `<div class="text-sm ${color} font-medium">${message}</div>`;
+            els.toasts.appendChild(div);
+            setTimeout(() => { div.style.opacity = '0'; div.style.transform = 'translateY(8px) scale(.98)'; div.style.transition = 'all .25s ease'; }, 2200);
+            setTimeout(() => div.remove(), 2600);
+        }
+
+        function setProgress(v, label) {
+            els.progressBar.style.width = `${Math.max(0, Math.min(100, v))}%`;
+            els.progressLabel.textContent = label || `${Math.round(v)}%`;
+        }
+
+        function setTheme(theme) {
+            state.theme = theme;
+            document.body.classList.toggle('light', theme === 'light');
+            localStorage.setItem('ics_theme', theme);
+        }
+
+        function updateModeUI() {
+            const isFav = state.mode === 'favicon';
+            els.standardSettings.classList.toggle('hidden', isFav);
+            els.faviconSettings.classList.toggle('hidden', !isFav);
+            els.modeStandard.className = `soft-btn px-4 py-2 rounded-xl text-sm font-medium ${!isFav ? 'bg-white/10 border border-white/10' : 'text-[color:var(--muted)]'}`;
+            els.modeFavicon.className = `soft-btn px-4 py-2 rounded-xl text-sm font-medium ${isFav ? 'bg-white/10 border border-white/10' : 'text-[color:var(--muted)]'}`;
+        }
+
+        function updateQualityUI() {
+            els.qualityValue.textContent = `${els.quality.value}%`;
+            state.quality = Number(els.quality.value);
+            localStorage.setItem('ics_quality', String(state.quality));
+        }
+
+        function updateBgUI() {
+            state.bgMode = document.querySelector('input[name="bgmode"]:checked').value;
+            els.bgColor.disabled = state.bgMode !== 'solid';
+            state.bgColor = els.bgColor.value;
+            saveSettings();
+        }
+
+        function updateFormatUI(value) {
+            state.outputFormat = value;
+            els.outputFormat.value = value;
+            saveSettings();
+        }
+
+        function renderHistory() {
+            if (!state.history.length) {
+                els.historyList.innerHTML = '<div class="text-sm text-[color:var(--muted)]">No history yet. Convert something and it will appear here.</div>';
+                return;
+            }
+            els.historyList.innerHTML = state.history.map((h, i) => `
+        <div class="rounded-2xl border border-white/10 bg-black/10 p-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="font-medium truncate">${h.outputName}</div>
+            <div class="text-xs text-[color:var(--muted)] mt-1">${h.format.toUpperCase()} · ${fmtBytes(h.size)} · ${h.date}</div>
+          </div>
+          <button data-reload="${i}" class="soft-btn px-3 py-2 rounded-xl border border-white/10 bg-white/5 text-sm shrink-0">Load</button>
+        </div>`).join('');
+            els.historyList.querySelectorAll('button[data-reload]').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const item = state.history[Number(btn.dataset.reload)];
+                    if (!item?.url) return showToast('History item is unavailable.', 'error');
+                    const a = document.createElement('a');
+                    a.href = item.url;
+                    a.download = item.outputName;
+                    a.click();
+                    showToast('Download started', 'success');
+                });
+            });
+        }
+
+        function resetConverted() {
+            if (state.convertedUrl) URL.revokeObjectURL(state.convertedUrl);
+            state.convertedBlob = null;
+            state.convertedUrl = '';
+            state.convertedName = '';
+            els.convertedPreview.classList.add('hidden');
+            els.convertedEmpty.classList.remove('hidden');
+            els.downloadBtn.disabled = true;
+        }
+
+        async function readImageFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('Failed to read file.'));
+                reader.onload = () => resolve(reader.result);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function dataUrlToImage(dataUrl) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error('Could not decode image.'));
+                img.src = dataUrl;
+            });
+        }
+
+        async function fileToCanvas(file) {
+            const dataUrl = await readImageFile(file);
+            const img = await dataUrlToImage(dataUrl);
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || img.width;
+            canvas.height = img.naturalHeight || img.height;
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+            if (state.bgMode === 'solid') {
+                ctx.fillStyle = state.bgColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            ctx.drawImage(img, 0, 0);
+            return { canvas, dataUrl, width: canvas.width, height: canvas.height };
+        }
+
+        function canvasToBlob(canvas, format, quality) {
+            return new Promise((resolve, reject) => {
+                if (format === 'bmp') {
+                    try {
+                        resolve(canvasToBMPBlob(canvas));
+                    } catch (e) { reject(e); }
+                    return;
+                }
+                canvas.toBlob((blob) => {
+                    if (!blob) return reject(new Error('Conversion failed.'));
+                    resolve(blob);
+                }, format === 'jpeg' ? 'image/jpeg' : format === 'webp' ? 'image/webp' : format === 'png' ? 'image/png' : 'image/png', format === 'png' ? undefined : quality / 100);
+            });
+        }
+
+        function canvasToBMPBlob(canvas) {
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            const { width, height } = canvas;
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const rowSize = Math.floor((24 * width + 31) / 32) * 4;
+            const pixelArraySize = rowSize * height;
+            const fileSize = 54 + pixelArraySize;
+            const buffer = new ArrayBuffer(fileSize);
+            const view = new DataView(buffer);
+            let p = 0;
+            view.setUint8(p++, 0x42); view.setUint8(p++, 0x4D);
+            view.setUint32(p, fileSize, true); p += 4;
+            view.setUint16(p, 0, true); p += 2;
+            view.setUint16(p, 0, true); p += 2;
+            view.setUint32(p, 54, true); p += 4;
+            view.setUint32(p, 40, true); p += 4;
+            view.setInt32(p, width, true); p += 4;
+            view.setInt32(p, height, true); p += 4;
+            view.setUint16(p, 1, true); p += 2;
+            view.setUint16(p, 24, true); p += 2;
+            view.setUint32(p, 0, true); p += 4;
+            view.setUint32(p, pixelArraySize, true); p += 4;
+            view.setInt32(p, 2835, true); p += 4;
+            view.setInt32(p, 2835, true); p += 4;
+            view.setUint32(p, 0, true); p += 4;
+            view.setUint32(p, 0, true); p += 4;
+            const data = imageData.data;
+            const rowPadding = rowSize - width * 3;
+            let offset = 54;
+            for (let y = height - 1; y >= 0; y--) {
+                for (let x = 0; x < width; x++) {
+                    const i = (y * width + x) * 4;
+                    view.setUint8(offset++, data[i + 2]);
+                    view.setUint8(offset++, data[i + 1]);
+                    view.setUint8(offset++, data[i + 0]);
+                }
+                for (let pad = 0; pad < rowPadding; pad++) view.setUint8(offset++, 0);
+            }
+            return new Blob([buffer], { type: 'image/bmp' });
+        }
+
+        async function resizeCanvasFromSource(sourceCanvas, size, fillBg = true) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            if (fillBg && state.bgMode === 'solid') {
+                ctx.fillStyle = state.bgColor;
+                ctx.fillRect(0, 0, size, size);
+            }
+            const scale = Math.min(size / sourceCanvas.width, size / sourceCanvas.height);
+            const w = sourceCanvas.width * scale;
+            const h = sourceCanvas.height * scale;
+            const x = (size - w) / 2;
+            const y = (size - h) / 2;
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(sourceCanvas, x, y, w, h);
+            return canvas;
+        }
+
+        function concatBuffers(buffers) {
+            const total = buffers.reduce((a, b) => a + b.byteLength, 0);
+            const out = new Uint8Array(total);
+            let offset = 0;
+            for (const buf of buffers) { out.set(new Uint8Array(buf), offset); offset += buf.byteLength; }
+            return out.buffer;
+        }
+
+        async function canvasToPNGArrayBuffer(canvas) {
+            const blob = await canvasToBlob(canvas, 'png', 100);
+            return await blob.arrayBuffer();
+        }
+
+        async function buildICOFromCanvas(sourceCanvas, sizes = [16, 32, 48]) {
+            const images = [];
+            for (const size of sizes) {
+                const c = await resizeCanvasFromSource(sourceCanvas, size, true);
+                const pngBuf = await canvasToPNGArrayBuffer(c);
+                images.push({ size, buf: pngBuf });
+            }
+            const count = images.length;
+            const header = new ArrayBuffer(6 + count * 16);
+            const view = new DataView(header);
+            view.setUint16(0, 0, true);
+            view.setUint16(2, 1, true);
+            view.setUint16(4, count, true);
+            let dataOffset = 6 + count * 16;
+            const parts = [header];
+            images.forEach((img, i) => {
+                const dir = 6 + i * 16;
+                view.setUint8(dir + 0, img.size === 256 ? 0 : img.size);
+                view.setUint8(dir + 1, img.size === 256 ? 0 : img.size);
+                view.setUint8(dir + 2, 0);
+                view.setUint8(dir + 3, 0);
+                view.setUint16(dir + 4, 1, true);
+                view.setUint16(dir + 6, 32, true);
+                view.setUint32(dir + 8, img.buf.byteLength, true);
+                view.setUint32(dir + 12, dataOffset, true);
+                dataOffset += img.buf.byteLength;
+                parts.push(img.buf);
+            });
+            return new Blob([concatBuffers(parts)], { type: 'image/x-icon' });
+        }
+
+        async function generateConvertedBlob() {
+            if (!state.canvas) throw new Error('Upload an image first.');
+            const fmt = state.outputFormat;
+            setProgress(12, 'Preparing');
+            await new Promise(r => setTimeout(r, 50));
+            setProgress(35, 'Rendering');
+            let blob;
+            if (fmt === 'ico') {
+                blob = await buildICOFromCanvas(state.canvas, [16, 32, 48]);
+            } else {
+                blob = await canvasToBlob(state.canvas, fmt, state.quality);
+            }
+            setProgress(86, 'Finalizing');
+            return blob;
+        }
+
+        async function convertNow() {
+            if (!state.canvas) return showToast('Upload an image first.', 'error');
+            try {
+                els.convertBtn.disabled = true;
+                setProgress(4, 'Starting');
+                const blob = await generateConvertedBlob();
+                const url = URL.createObjectURL(blob);
+                state.convertedBlob = blob;
+                if (state.convertedUrl) URL.revokeObjectURL(state.convertedUrl);
+                state.convertedUrl = url;
+                const ext = extForFormat(state.outputFormat);
+                const base = (els.filenameInput.value || state.sourceName.replace(/\.[^.]+$/, '') || 'converted').trim().replace(/[\\/:*?"<>|]+/g, '_');
+                state.convertedName = `${base}.${ext}`;
+                els.convertedPreview.src = url;
+                els.convertedPreview.classList.remove('hidden');
+                els.convertedEmpty.classList.add('hidden');
+                els.downloadBtn.disabled = false;
+                setProgress(100, 'Done');
+                showToast('Image converted successfully', 'success');
+                showToast('Download ready', 'success');
+                saveHistory({
+                    outputName: state.convertedName,
+                    format: state.outputFormat,
+                    size: blob.size,
+                    date: new Date().toLocaleString(),
+                    url
+                });
+            } catch (e) {
+                console.error(e);
+                showToast(e.message || 'Conversion failed.', 'error');
+                setProgress(0, 'Failed');
+            } finally {
+                els.convertBtn.disabled = false;
+                setTimeout(() => { if (els.progressLabel.textContent === 'Done') setProgress(0, 'Idle'); }, 900);
+            }
+        }
+
+        async function loadFile(file) {
+            if (!file) return;
+            const valid = file.type.startsWith('image/') || /\.(png|jpe?g|webp|bmp|ico)$/i.test(file.name);
+            if (!valid) return showToast('Invalid file type. Please upload an image.', 'error');
+            if (file.size > 45 * 1024 * 1024) return showToast('File is too large for a browser-only tool.', 'error');
+            try {
+                resetConverted();
+                state.lastFile = file;
+                state.sourceName = file.name;
+                state.sourceType = file.type || 'unknown';
+                state.sourceBytes = file.size;
+                const { canvas, dataUrl, width, height } = await fileToCanvas(file);
+                state.canvas = canvas;
+                state.sourceDataUrl = dataUrl;
+                state.sourceWidth = width;
+                state.sourceHeight = height;
+                els.sourcePreview.src = dataUrl;
+                els.originalPreview.src = dataUrl;
+                els.sourcePreview.onload = () => { };
+                els.fileInfo.classList.remove('hidden');
+                els.metaName.textContent = file.name;
+                els.metaSize.textContent = fmtBytes(file.size);
+                els.metaDim.textContent = `${width} × ${height}`;
+                els.metaType.textContent = state.sourceType;
+                const base = file.name.replace(/\.[^.]+$/, '');
+                els.filenameInput.value = `${base}-converted`;
+                updateFaviconPreviews(dataUrl);
+                setProgress(0, 'Ready');
+                showToast('File loaded', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast(e.message || 'Could not load image.', 'error');
+            }
+        }
+
+        function updateFaviconSnippet() {
+            if (!state.sourceName) {
+                els.faviconSnippet.textContent = 'Upload an image to generate favicon assets.';
+                return;
+            }
+            const n = (els.filenameInput.value || state.sourceName.replace(/\.[^.]+$/, '') || 'favicon').trim().replace(/[\\/:*?"<>|]+/g, '_');
+            els.faviconSnippet.textContent = `<link rel="icon" type="image/png" sizes="32x32" href="${n}-32.png">\n<link rel="icon" type="image/png" sizes="16x16" href="${n}-16.png">\n<link rel="shortcut icon" href="${n}.ico">`;
+        }
+
+        async function updateFaviconPreviews(dataUrl) {
+            try {
+                const img = await dataUrlToImage(dataUrl);
+                const sizes = [16, 32, 48];
+                const targets = [els.fav16, els.fav32, els.fav48];
+                for (let i = 0; i < sizes.length; i++) {
+                    const c = document.createElement('canvas');
+                    c.width = sizes[i]; c.height = sizes[i];
+                    const ctx = c.getContext('2d');
+                    ctx.drawImage(img, 0, 0, sizes[i], sizes[i]);
+                    const url = c.toDataURL('image/png');
+                    targets[i].src = url;
+                    targets[i].classList.remove('hidden');
+                    targets[i].nextElementSibling?.classList.add('hidden');
+                }
+                const tab = document.createElement('canvas');
+                tab.width = 64; tab.height = 64;
+                const tctx = tab.getContext('2d');
+                tctx.drawImage(img, 0, 0, 64, 64);
+                els.tabIconPreview.src = tab.toDataURL('image/png');
+                els.tabIconPreview.classList.remove('hidden');
+                els.tabIconFallback.classList.add('hidden');
+                updateFaviconSnippet();
+            } catch {
+                els.tabIconFallback.classList.remove('hidden');
+                els.tabIconPreview.classList.add('hidden');
+            }
+        }
+
+        async function exportIco() {
+            if (!state.canvas) return showToast('Upload an image first.', 'error');
+            try {
+                const blob = await buildICOFromCanvas(state.canvas, [16, 32, 48]);
+                const base = (els.filenameInput.value || state.sourceName.replace(/\.[^.]+$/, '') || 'favicon').trim().replace(/[\\/:*?"<>|]+/g, '_');
+                saveAs(blob, `${base}.ico`);
+                showToast('ICO export ready', 'success');
+            } catch (e) {
+                showToast(e.message || 'ICO export failed.', 'error');
+            }
+        }
+
+        async function exportZip() {
+            if (!state.canvas) return showToast('Upload an image first.', 'error');
+            try {
+                const zip = new JSZip();
+                const base = (els.filenameInput.value || state.sourceName.replace(/\.[^.]+$/, '') || 'favicon').trim().replace(/[\\/:*?"<>|]+/g, '_');
+                const sizes = [16, 32, 48];
+                const img = await dataUrlToImage(state.sourceDataUrl);
+                for (const s of sizes) {
+                    const c = document.createElement('canvas');
+                    c.width = s; c.height = s;
+                    const ctx = c.getContext('2d');
+                    ctx.drawImage(img, 0, 0, s, s);
+                    const blob = await new Promise((res) => c.toBlob(res, 'image/png'));
+                    zip.file(`${base}-${s}.png`, blob);
+                }
+                const ico = await buildICOFromCanvas(state.canvas, sizes);
+                zip.file(`${base}.ico`, ico);
+                zip.file('favicon-snippet.html', els.faviconSnippet.textContent);
+                const content = await zip.generateAsync({ type: 'blob' });
+                saveAs(content, `${base}-favicon-package.zip`);
+                showToast('Favicon package ready', 'success');
+            } catch (e) {
+                showToast(e.message || 'Package export failed.', 'error');
+            }
+        }
+
+        function downloadConverted() {
+            if (!state.convertedBlob || !state.convertedUrl) return showToast('Convert an image first.', 'error');
+            const a = document.createElement('a');
+            a.href = state.convertedUrl;
+            a.download = state.convertedName || `converted.${extForFormat(state.outputFormat)}`;
+            a.click();
+            showToast('Download started', 'success');
+        }
+
+        function setMode(mode) {
+            state.mode = mode;
+            localStorage.setItem('ics_mode', mode);
+            updateModeUI();
+        }
+
+        function syncBackgroundRadios() {
+            document.querySelectorAll('input[name="bgmode"]').forEach(r => r.checked = r.value === state.bgMode);
+            els.bgColor.value = state.bgColor;
+            els.bgColor.disabled = state.bgMode !== 'solid';
+        }
+
+        els.fileInput.addEventListener('change', e => loadFile(e.target.files[0]));
+        els.browseBtn.addEventListener('click', () => els.fileInput.click());
+        els.dropzoneInner.addEventListener('click', () => els.fileInput.click());
+
+        ;['dragenter', 'dragover'].forEach(ev => {
+            els.uploadCard.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); els.dropzoneInner.classList.add('dragover'); });
+        });
+        ;['dragleave', 'drop'].forEach(ev => {
+            els.uploadCard.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); els.dropzoneInner.classList.remove('dragover'); });
+        });
+        els.uploadCard.addEventListener('drop', e => loadFile(e.dataTransfer.files[0]));
+
+        els.outputFormat.addEventListener('change', e => updateFormatUI(e.target.value));
+        els.quality.addEventListener('input', updateQualityUI);
+        els.quality.addEventListener('change', updateQualityUI);
+        els.convertBtn.addEventListener('click', convertNow);
+        els.downloadBtn.addEventListener('click', downloadConverted);
+        if (els.exportIcoBtn) els.exportIcoBtn.addEventListener('click', exportIco);
+    if (els.exportZipBtn) els.exportZipBtn.addEventListener('click', exportZip); els.exportZipBtn.addEventListener('click', exportZip);
+        els.clearHistoryBtn.addEventListener('click', () => {
+            state.history = [];
+            localStorage.removeItem('ics_history');
+            renderHistory();
+            showToast('History cleared', 'success');
+        });
+        if (els.modeStandard) els.modeStandard.addEventListener('click', () => setMode('standard'));
+        if (els.modeFavicon) els.modeFavicon.addEventListener('click', () => setMode('favicon'));
+        els.themeToggle.addEventListener('click', () => setTheme(state.theme === 'dark' ? 'light' : 'dark'));
+        els.compareToggle.addEventListener('change', () => {
+            els.previewGrid.classList.toggle('lg:grid-cols-2', els.compareToggle.checked);
+            els.previewGrid.classList.toggle('lg:grid-cols-1', !els.compareToggle.checked);
+        });
+        els.filenameInput.addEventListener('input', updateFaviconSnippet);
+        els.bgColor.addEventListener('input', updateBgUI);
+        document.querySelectorAll('input[name="bgmode"]').forEach(r => r.addEventListener('change', updateBgUI));
+
+        document.addEventListener('keydown', (e) => {
+            const mod = e.ctrlKey || e.metaKey;
+            if (!mod) return;
+            if (e.key.toLowerCase() === 'u') { e.preventDefault(); els.fileInput.click(); }
+            if (e.key.toLowerCase() === 'd') { e.preventDefault(); downloadConverted(); }
+        });
+
+        // init
+        setTheme(state.theme);
+        setMode(state.mode);
+        updateFormatUI(state.outputFormat);
+        els.quality.value = String(state.quality);
+        updateQualityUI();
+        syncBackgroundRadios();
+        updateBgUI();
+        renderHistory();
+        updateModeUI();
+        setProgress(0, 'Idle');
+
+        // subtle UI syncing for initial state
+        if (state.history[0]?.url) {
+            els.downloadBtn.disabled = false;
+        } else {
+            els.downloadBtn.disabled = true;
+        }
+    </script>
+</body>
+
+</html>
