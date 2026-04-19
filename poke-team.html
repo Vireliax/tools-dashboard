@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Team Builder — Synergy &amp; Coverage Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07080F;
+            --surface: #0E1020;
+            --surface2: #141729;
+            --surface3: #1C2038;
+            --border: rgba(90, 110, 255, 0.13);
+            --border-focus: rgba(90, 110, 255, 0.40);
+            --text-1: #E8EAF6;
+            --text-2: #8890BB;
+            --text-3: #4F566E;
+            --accent: #5A6EFF;
+            --accent-dim: rgba(90, 110, 255, 0.15);
+            --good: #3DFFA8;
+            --good-dim: rgba(61, 255, 168, 0.10);
+            --good-border: rgba(61, 255, 168, 0.22);
+            --warn: #FF9B4E;
+            --warn-dim: rgba(255, 155, 78, 0.10);
+            --warn-border: rgba(255, 155, 78, 0.22);
+            --danger: #FF4F6B;
+            --danger-dim: rgba(255, 79, 107, 0.10);
+            --danger-border: rgba(255, 79, 107, 0.22);
+            --immune: #A87FFF;
+            --immune-dim: rgba(168, 127, 255, 0.10);
+            --immune-border: rgba(168, 127, 255, 0.22);
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --radius-sm: 7px;
+            --radius-xs: 5px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+            --shadow-sm: 0 2px 14px rgba(0, 0, 0, 0.35);
+            --t: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg: #EDF0FA;
+            --surface: #FFFFFF;
+            --surface2: #F3F5FD;
+            --surface3: #E8ECFB;
+            --border: rgba(90, 110, 255, 0.12);
+            --border-focus: rgba(90, 110, 255, 0.38);
+            --text-1: #111428;
+            --text-2: #4F566E;
+            --text-3: #9097B8;
+            --shadow: 0 8px 32px rgba(0, 0, 30, 0.09);
+            --shadow-sm: 0 2px 14px rgba(0, 0, 30, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--bg);
+            color: var(--text-1);
+            min-height: 100vh;
+            line-height: 1.55;
+            transition: background var(--t), color var(--t);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 10%, rgba(90, 110, 255, 0.055) 0%, transparent 65%),
+                radial-gradient(ellipse 55% 45% at 85% 90%, rgba(61, 255, 168, 0.035) 0%, transparent 65%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 22px;
+            position: relative;
+            z-index: 1
+        }
+
+        /* HEADER */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7, 8, 15, 0.82);
+            backdrop-filter: blur(22px) saturate(1.6);
+            border-bottom: 1px solid var(--border);
+            transition: background var(--t);
+        }
+
+        [data-theme="light"] .header {
+            background: rgba(237, 240, 250, 0.88)
+        }
+
+        .header-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent) 0%, #8B5FFF 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .brand-text h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+
+        .brand-text p {
+            font-size: 11px;
+            color: var(--text-3);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.9px
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .api-pill {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            color: var(--text-3);
+            background: var(--surface2);
+            white-space: nowrap;
+        }
+
+        .api-pill.loading {
+            color: var(--warn);
+            border-color: var(--warn-border)
+        }
+
+        .api-pill.ready {
+            color: var(--good);
+            border-color: var(--good-border)
+        }
+
+        .api-pill.error {
+            color: var(--danger);
+            border-color: var(--danger-border)
+        }
+
+        .theme-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            color: var(--text-2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all var(--t);
+        }
+
+        .theme-btn:hover {
+            background: var(--surface3);
+            color: var(--text-1)
+        }
+
+        /* MAIN */
+        main {
+            padding: 28px 0 72px
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .section-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.6px;
+            color: var(--text-2);
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .section-label::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 15px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .section-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .team-count {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--text-3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            padding: 5px 13px;
+            font-size: 11.5px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            color: var(--text-3);
+            cursor: pointer;
+            transition: all var(--t);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--danger-border);
+            color: var(--danger)
+        }
+
+        /* TEAM GRID */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+
+        @media(max-width:800px) {
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media(max-width:500px) {
+            .team-grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        /* POKEMON SLOT CARD */
+        .poke-slot {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: visible;
+            transition: border-color var(--t), transform var(--t), box-shadow var(--t);
+            position: relative;
+            animation: slideUp 320ms ease both;
+        }
+
+        .poke-slot:nth-child(1) {
+            animation-delay: 0ms
+        }
+
+        .poke-slot:nth-child(2) {
+            animation-delay: 55ms
+        }
+
+        .poke-slot:nth-child(3) {
+            animation-delay: 110ms
+        }
+
+        .poke-slot:nth-child(4) {
+            animation-delay: 165ms
+        }
+
+        .poke-slot:nth-child(5) {
+            animation-delay: 220ms
+        }
+
+        .poke-slot:nth-child(6) {
+            animation-delay: 275ms
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .poke-slot.filled {
+            border-color: var(--border-focus)
+        }
+
+        .poke-slot:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: rgba(90, 110, 255, 0.35)
+        }
+
+        /* SPRITE AREA */
+        .sprite-area {
+            background: var(--surface2);
+            height: 145px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .sprite-area::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 60%, rgba(90, 110, 255, 0.08) 0%, transparent 65%);
+        }
+
+        .sprite-ring {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            opacity: 0.5;
+        }
+
+        .poke-sprite {
+            width: 108px;
+            height: 108px;
+            object-fit: contain;
+            position: relative;
+            z-index: 1;
+            transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
+            image-rendering: pixelated;
+        }
+
+        .poke-slot.filled .poke-sprite {
+            image-rendering: auto
+        }
+
+        .poke-slot:hover .poke-sprite {
+            transform: scale(1.1) translateY(-5px)
+        }
+
+        .slot-empty-icon {
+            font-size: 36px;
+            opacity: 0.13;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slot-loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(7, 8, 15, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        [data-theme="light"] .slot-loading-overlay {
+            background: rgba(237, 240, 250, 0.6)
+        }
+
+        .spinner {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* SLOT BODY */
+        .slot-body {
+            padding: 13px 14px 14px
+        }
+
+        .slot-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-3);
+            margin-bottom: 5px;
+        }
+
+        .slot-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 7px;
+            min-height: 22px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .slot-types {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 11px;
+            min-height: 22px;
+        }
+
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 9px;
+            border-radius: 100px;
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+        }
+
+        /* SEARCH */
+        .search-wrap {
+            position: relative
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 32px 8px 10px;
+            font-size: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 500;
+            color: var(--text-1);
+            outline: none;
+            transition: border-color var(--t), background var(--t);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-3)
+        }
+
+        .search-input:focus {
+            border-color: var(--border-focus);
+            background: var(--surface3)
+        }
+
+        .search-x {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-3);
+            cursor: pointer;
+            font-size: 15px;
+            line-height: 1;
+            padding: 2px;
+            display: none;
+            transition: color var(--t);
+        }
+
+        .search-x:hover {
+            color: var(--text-1)
+        }
+
+        .search-x.show {
+            display: block
+        }
+
+        /* AUTOCOMPLETE PORTAL — single element appended to body, positioned via JS */
+        #ac-portal {
+            position: fixed;
+            background: var(--surface2);
+            border: 1px solid var(--border-focus);
+            border-radius: var(--radius-md);
+            max-height: 240px;
+            overflow-y: auto;
+            z-index: 9999;
+            box-shadow: var(--shadow);
+            display: none;
+            min-width: 180px;
+        }
+
+        #ac-portal.open {
+            display: block
+        }
+
+        .ac-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 13px;
+            cursor: pointer;
+            transition: background var(--t);
+        }
+
+        .ac-item:hover,
+        .ac-item.hi {
+            background: var(--surface3)
+        }
+
+        .ac-item img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            flex-shrink: 0;
+            image-rendering: pixelated
+        }
+
+        .ac-item-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-1)
+        }
+
+        .ac-no-result {
+            padding: 14px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-3)
+        }
+
+        .ac-loading-msg {
+            padding: 14px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-3)
+        }
+
+        /* SLOT REMOVE */
+        .slot-actions {
+            margin-top: 9px;
+            display: flex;
+            gap: 6px
+        }
+
+        .slot-remove {
+            background: var(--danger-dim);
+            border: 1px solid transparent;
+            border-radius: var(--radius-xs);
+            padding: 5px 11px;
+            font-size: 11px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            color: var(--danger);
+            cursor: pointer;
+            transition: all var(--t);
+            display: none;
+        }
+
+        .poke-slot.filled .slot-remove {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px
+        }
+
+        .slot-remove:hover {
+            background: var(--danger);
+            color: #fff
+        }
+
+        /* ANALYSIS SECTION */
+        .analysis-wrap {
+            margin-bottom: 16px
+        }
+
+        .synergy-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px 22px;
+            margin-bottom: 14px;
+        }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+            color: var(--text-2);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .card-title-icon {
+            font-size: 15px
+        }
+
+        .synergy-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        @media(max-width:640px) {
+            .synergy-stats {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        .syn-stat {
+            background: var(--surface2);
+            border-radius: var(--radius-md);
+            padding: 13px 14px;
+            text-align: center;
+        }
+
+        .syn-val {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .syn-lbl {
+            font-size: 10px;
+            color: var(--text-3);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px
+        }
+
+        .balance-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .balance-lbl {
+            font-size: 12px;
+            color: var(--text-2);
+            font-weight: 600
+        }
+
+        .balance-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .bal-excellent {
+            background: var(--good-dim);
+            color: var(--good);
+            border: 1px solid var(--good-border)
+        }
+
+        .bal-good {
+            background: var(--accent-dim);
+            color: var(--accent);
+            border: 1px solid rgba(90, 110, 255, 0.25)
+        }
+
+        .bal-moderate {
+            background: var(--warn-dim);
+            color: var(--warn);
+            border: 1px solid var(--warn-border)
+        }
+
+        .bal-poor {
+            background: var(--danger-dim);
+            color: var(--danger);
+            border: 1px solid var(--danger-border)
+        }
+
+        .insight-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            font-size: 11.5px;
+            color: var(--text-2);
+        }
+
+        .insight-chip {
+            padding: 3px 9px;
+            border-radius: 100px;
+            font-size: 10.5px;
+            font-weight: 700;
+            background: var(--surface3);
+            color: var(--text-2);
+        }
+
+        /* ANALYSIS GRID */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        @media(max-width:720px) {
+            .analysis-grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .analysis-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px 22px;
+        }
+
+        /* OFFENSE COVERAGE */
+        .coverage-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+        }
+
+        .cov-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 9px;
+            border-radius: var(--radius-xs);
+            background: var(--surface2);
+            gap: 6px;
+        }
+
+        .cov-item .type-badge {
+            font-size: 9.5px;
+            padding: 2px 7px
+        }
+
+        .cov-eff {
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .eff-super {
+            color: var(--good)
+        }
+
+        .eff-neutral {
+            color: var(--text-3)
+        }
+
+        .eff-resist {
+            color: var(--warn)
+        }
+
+        .eff-zero {
+            color: var(--danger)
+        }
+
+        /* DEFENSE */
+        .def-section {
+            margin-bottom: 14px
+        }
+
+        .def-section:last-child {
+            margin-bottom: 0
+        }
+
+        .def-label {
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .def-label.lbl-weak {
+            color: var(--danger)
+        }
+
+        .def-label.lbl-resist {
+            color: var(--good)
+        }
+
+        .def-label.lbl-immune {
+            color: var(--immune)
+        }
+
+        .def-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px
+        }
+
+        .def-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+
+        .chip-weak {
+            background: var(--danger-dim);
+            border: 1px solid var(--danger-border)
+        }
+
+        .chip-resist {
+            background: var(--good-dim);
+            border: 1px solid var(--good-border)
+        }
+
+        .chip-immune {
+            background: var(--immune-dim);
+            border: 1px solid var(--immune-border)
+        }
+
+        .chip-count {
+            font-size: 9.5px;
+            font-family: 'Space Mono', monospace;
+            opacity: 0.75;
+            margin-left: 1px;
+        }
+
+        .def-empty {
+            font-size: 12px;
+            color: var(--text-3);
+            padding: 8px 0
+        }
+
+        /* EMPTY ANALYSIS */
+        .analysis-empty {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-3);
+            font-size: 13px;
+        }
+
+        .analysis-empty-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.4
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 11px 16px;
+            font-size: 12.5px;
+            font-weight: 600;
+            z-index: 9999;
+            box-shadow: var(--shadow);
+            transform: translateY(70px);
+            opacity: 0;
+            transition: all 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 260px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1
+        }
+
+        .toast.err {
+            border-color: var(--danger-border);
+            color: var(--danger)
+        }
+
+        .toast.ok {
+            border-color: var(--good-border);
+            color: var(--good)
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--surface3);
+            border-radius: 3px
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-3)
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <div class="brand">
+                <div class="brand-logo">⬡</div>
+                <div class="brand-text">
+                    <h1>Pokémon Team Builder</h1>
+                    <p>Team synergy &amp; coverage analyzer</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <span class="api-pill loading" id="api-pill">Loading Pokédex…</span>
+                <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">
+                    <span id="theme-icon">☀</span>
+                    <span id="theme-lbl">Light</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Your Team</div>
+                <div class="section-actions">
+                    <span class="team-count" id="team-count">0 / 6</span>
+                    <button class="btn-ghost" onclick="clearTeam()">Clear All</button>
+                </div>
+            </div>
+            <div class="team-grid" id="team-grid"></div>
+            <div id="analysis-root"></div>
+        </div>
+    </main>
+
+    <div id="ac-portal"></div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ─── TYPE DATA ──────────────────────────────────────────────────────────────
+        const TYPES = ['normal', 'fire', 'water', 'electric', 'grass', 'ice', 'fighting', 'poison',
+            'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'];
+
+        const TYPE_COLORS = {
+            normal: '#9A9BAD', fire: '#F97B4B', water: '#5390DD', electric: '#EFC54A', grass: '#57A84C',
+            ice: '#6ECECE', fighting: '#C03630', poison: '#AA45B2', ground: '#D9852F', flying: '#8D96E0',
+            psychic: '#EE547A', bug: '#9DAE22', rock: '#BEA236', ghost: '#6863B1', dragon: '#5B64E8',
+            dark: '#625468', steel: '#9B9FBA', fairy: '#D980A0'
+        };
+
+        // TYPE_CHART[attacker][defender] = multiplier (only non-1× listed; default = 1)
+        const TYPE_CHART = {
+            normal: { rock: .5, ghost: 0, steel: .5 },
+            fire: { fire: .5, water: .5, rock: .5, dragon: .5, grass: 2, ice: 2, bug: 2, steel: 2 },
+            water: { water: .5, grass: .5, dragon: .5, fire: 2, ground: 2, rock: 2 },
+            electric: { electric: .5, grass: .5, dragon: .5, ground: 0, water: 2, flying: 2 },
+            grass: { fire: .5, grass: .5, poison: .5, flying: .5, bug: .5, dragon: .5, steel: .5, water: 2, ground: 2, rock: 2 },
+            ice: { fire: .5, water: .5, ice: .5, steel: .5, grass: 2, ground: 2, flying: 2, dragon: 2 },
+            fighting: { poison: .5, flying: .5, psychic: .5, bug: .5, fairy: .5, ghost: 0, normal: 2, ice: 2, rock: 2, dark: 2, steel: 2 },
+            poison: { poison: .5, ground: .5, rock: .5, ghost: .5, steel: 0, grass: 2, fairy: 2 },
+            ground: { grass: .5, bug: .5, flying: 0, fire: 2, electric: 2, poison: 2, rock: 2, steel: 2 },
+            flying: { electric: .5, rock: .5, steel: .5, grass: 2, fighting: 2, bug: 2 },
+            psychic: { psychic: .5, steel: .5, dark: 0, fighting: 2, poison: 2 },
+            bug: { fire: .5, fighting: .5, flying: .5, ghost: .5, steel: .5, fairy: .5, poison: .5, grass: 2, psychic: 2, dark: 2 },
+            rock: { fighting: .5, ground: .5, steel: .5, fire: 2, ice: 2, flying: 2, bug: 2 },
+            ghost: { normal: 0, dark: .5, psychic: 2, ghost: 2 },
+            dragon: { steel: .5, fairy: 0, dragon: 2 },
+            dark: { fighting: .5, dark: .5, fairy: .5, psychic: 2, ghost: 2 },
+            steel: { fire: .5, water: .5, electric: .5, steel: .5, ice: 2, rock: 2, fairy: 2 },
+            fairy: { fire: .5, poison: .5, steel: .5, fighting: 2, dragon: 2, dark: 2 }
+        };
+
+        function getEff(atk, def) { const r = TYPE_CHART[atk]; return r && r[def] !== undefined ? r[def] : 1 }
+
+        function getDefMult(atkType, pokeTypes) {
+            return pokeTypes.reduce((acc, t) => acc * getEff(atkType, t), 1);
+        }
+
+        // ─── STATE ──────────────────────────────────────────────────────────────────
+        let team = Array(6).fill(null); // null | {name,id,types,artwork,sprite}
+        let pokemonList = [];            // [{name,url,id}]
+        let pokemonCache = {};           // name -> full poke data
+        let listLoaded = false;
+        let activeSlot = -1;
+        let acHighlight = -1;
+
+        // ─── HELPERS ────────────────────────────────────────────────────────────────
+        function extractId(url) {
+            const parts = url.replace(/\/$/, '').split('/');
+            return parseInt(parts[parts.length - 1], 10);
+        }
+
+        function formatName(name) {
+            const specials = {
+                'nidoran-m': 'Nidoran♂', 'nidoran-f': 'Nidoran♀',
+                'mr-mime': 'Mr. Mime', 'mr-rime': 'Mr. Rime', 'mime-jr': 'Mime Jr.',
+                'porygon-z': 'Porygon-Z', 'ho-oh': 'Ho-Oh', 'jangmo-o': 'Jangmo-o',
+                'hakamo-o': 'Hakamo-o', 'kommo-o': 'Kommo-o', 'type-null': 'Type: Null',
+                'tapu-koko': 'Tapu Koko', 'tapu-lele': 'Tapu Lele',
+                'tapu-bulu': 'Tapu Bulu', 'tapu-fini': 'Tapu Fini',
+                'great-tusk': 'Great Tusk', 'scream-tail': 'Scream Tail',
+                'brute-bonnet': 'Brute Bonnet', 'flutter-mane': 'Flutter Mane',
+                'slither-wing': 'Slither Wing', 'sandy-shocks': 'Sandy Shocks',
+                'iron-treads': 'Iron Treads', 'iron-bundle': 'Iron Bundle',
+                'iron-hands': 'Iron Hands', 'iron-jugulis': 'Iron Jugulis',
+                'iron-moth': 'Iron Moth', 'iron-thorns': 'Iron Thorns',
+                'roaring-moon': 'Roaring Moon', 'iron-valiant': 'Iron Valiant',
+                'walking-wake': 'Walking Wake', 'iron-leaves': 'Iron Leaves',
+                'ting-lu': 'Ting-Lu', 'chien-pao': 'Chien-Pao',
+                'wo-chien': 'Wo-Chien', 'chi-yu': 'Chi-Yu',
+                'koraidon': 'Koraidon', 'miraidon': 'Miraidon'
+            };
+            if (specials[name]) return specials[name];
+            return name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        function spriteUrl(id) {
+            return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+        }
+        function artworkUrl(id) {
+            return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+        }
+
+        function typeBadge(type) {
+            const c = TYPE_COLORS[type] || '#888';
+            return `<span class="type-badge" style="background:${c}">${type}</span>`;
+        }
+
+        // ─── API ─────────────────────────────────────────────────────────────────────
+        async function fetchPokemonList() {
+            setPill('loading', 'Loading Pokédex…');
+            // Try localStorage cache first
+            const cached = localStorage.getItem('ptb_list_v2');
+            if (cached) {
+                try {
+                    pokemonList = JSON.parse(cached);
+                    listLoaded = true;
+                    setPill('ready', `${pokemonList.length} Pokémon ready`);
+                    return;
+                } catch (e) { }
+            }
+            try {
+                const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=2000&offset=0');
+                if (!res.ok) throw new Error('API error');
+                const data = await res.json();
+                pokemonList = data.results.map(p => ({ name: p.name, id: extractId(p.url) }));
+                listLoaded = true;
+                localStorage.setItem('ptb_list_v2', JSON.stringify(pokemonList));
+                setPill('ready', `${pokemonList.length} Pokémon ready`);
+            } catch (e) {
+                setPill('error', 'API unavailable');
+                toast('Failed to load Pokédex. Check your connection.', 'err');
+            }
+        }
+
+        async function fetchPokemon(name) {
+            if (pokemonCache[name]) return pokemonCache[name];
+            // Try localStorage cache
+            const cacheKey = `ptb_poke_${name}`;
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                try {
+                    const p = JSON.parse(cached);
+                    pokemonCache[name] = p;
+                    return p;
+                } catch (e) { }
+            }
+            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+            if (!res.ok) throw new Error(`Not found: ${name}`);
+            const data = await res.json();
+            const types = data.types.map(t => t.type.name);
+            const p = {
+                name: data.name,
+                id: data.id,
+                types,
+                artwork: data.sprites?.other?.['official-artwork']?.front_default || artworkUrl(data.id),
+                sprite: data.sprites?.front_default || spriteUrl(data.id)
+            };
+            pokemonCache[name] = p;
+            try { localStorage.setItem(cacheKey, JSON.stringify(p)) } catch (e) { }
+            return p;
+        }
+
+        // ─── TEAM MANAGEMENT ────────────────────────────────────────────────────────
+        async function selectPokemon(slotIdx, name) {
+            const slot = document.querySelector(`.poke-slot[data-slot="${slotIdx}"]`);
+            showSlotLoading(slotIdx, true);
+            closeAllDropdowns();
+            try {
+                const p = await fetchPokemon(name);
+                team[slotIdx] = p;
+                saveTeam();
+                renderSlot(slotIdx);
+                renderAnalysis();
+                updateTeamCount();
+            } catch (e) {
+                toast(`Could not load "${formatName(name)}"`, 'err');
+            } finally {
+                showSlotLoading(slotIdx, false);
+            }
+        }
+
+        function removeFromTeam(slotIdx) {
+            team[slotIdx] = null;
+            saveTeam();
+            renderSlot(slotIdx);
+            renderAnalysis();
+            updateTeamCount();
+        }
+
+        function clearTeam() {
+            team = Array(6).fill(null);
+            saveTeam();
+            renderTeamGrid();
+            renderAnalysis();
+            updateTeamCount();
+        }
+
+        // ─── STORAGE ─────────────────────────────────────────────────────────────────
+        function saveTeam() {
+            const names = team.map(p => p ? p.name : null);
+            localStorage.setItem('ptb_team_v2', JSON.stringify(names));
+        }
+
+        async function loadTeam() {
+            const saved = localStorage.getItem('ptb_team_v2');
+            if (!saved) return;
+            let names;
+            try { names = JSON.parse(saved) } catch (e) { return }
+            const promises = names.map(async (name, i) => {
+                if (!name) return;
+                try {
+                    const p = await fetchPokemon(name);
+                    team[i] = p;
+                } catch (e) { }
+            });
+            await Promise.all(promises);
+            renderTeamGrid();
+            renderAnalysis();
+            updateTeamCount();
+        }
+
+        // ─── RENDER ──────────────────────────────────────────────────────────────────
+        function renderTeamGrid() {
+            const grid = document.getElementById('team-grid');
+            grid.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const div = document.createElement('div');
+                div.className = 'poke-slot' + (team[i] ? ' filled' : '');
+                div.dataset.slot = i;
+                div.innerHTML = buildSlotHTML(i);
+                grid.appendChild(div);
+                attachSlotEvents(i);
+            }
+        }
+
+        function renderSlot(i) {
+            const existing = document.querySelector(`.poke-slot[data-slot="${i}"]`);
+            if (!existing) return;
+            const wasFilled = existing.classList.contains('filled');
+            existing.className = 'poke-slot' + (team[i] ? ' filled' : '');
+            existing.dataset.slot = i;
+            existing.innerHTML = buildSlotHTML(i);
+            attachSlotEvents(i);
+        }
+
+        function buildSlotHTML(i) {
+            const p = team[i];
+            const imgSrc = p ? (p.artwork || artworkUrl(p.id)) : '';
+            const spriteEl = p
+                ? `<img class="poke-sprite" src="${imgSrc}" alt="${p.name}"
+          onerror="this.src='${spriteUrl(p.id)}'" loading="lazy">`
+                : `<span class="slot-empty-icon">⬡</span>`;
+            const typesHTML = p ? p.types.map(typeBadge).join('') : '';
+            const nameHTML = p ? formatName(p.name) : '<span style="color:var(--text-3);font-size:13px;font-weight:500">Empty Slot</span>';
+            return `
+    <div class="sprite-area">
+      <div class="sprite-ring"></div>
+      ${spriteEl}
+      <div class="slot-loading-overlay" id="loading-${i}" style="display:none">
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <div class="slot-body">
+      <div class="slot-num">SLOT ${String(i + 1).padStart(2, '0')}</div>
+      <div class="slot-name">${nameHTML}</div>
+      <div class="slot-types">${typesHTML}</div>
+      <div class="search-wrap" id="search-wrap-${i}">
+        <input
+          class="search-input"
+          id="search-${i}"
+          type="text"
+          placeholder="${p ? 'Change Pokémon…' : 'Search Pokémon…'}"
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <button class="search-x" id="search-x-${i}" onclick="clearSearch(${i})">×</button>
+      </div>
+      <div class="slot-actions">
+        <button class="slot-remove" onclick="removeFromTeam(${i})">
+          <span style="font-size:13px">×</span> Remove
+        </button>
+      </div>
+    </div>`;
+        }
+
+        function attachSlotEvents(i) {
+            const input = document.getElementById(`search-${i}`);
+            const xBtn = document.getElementById(`search-x-${i}`);
+            if (!input) return;
+
+            input.addEventListener('input', () => {
+                const q = input.value.trim();
+                xBtn.classList.toggle('show', q.length > 0);
+                if (q.length > 0) showDropdown(i, q);
+                else closeDropdown();
+            });
+
+            input.addEventListener('focus', () => {
+                const q = input.value.trim();
+                if (q.length > 0) showDropdown(i, q);
+            });
+
+            input.addEventListener('blur', () => {
+                // small delay so mousedown on item fires first
+                setTimeout(() => { if (portalSlot === i) closeDropdown(); }, 150);
+            });
+
+            input.addEventListener('keydown', (e) => {
+                const items = portal.querySelectorAll('.ac-item');
+                if (!items.length) return;
+                if (e.key === 'ArrowDown') { e.preventDefault(); moveHighlight(items, 1) }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); moveHighlight(items, -1) }
+                else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const hi = portal.querySelector('.ac-item.hi');
+                    if (hi) {
+                        selectPokemon(i, hi.dataset.name);
+                        clearSearch(i);
+                    }
+                }
+                else if (e.key === 'Escape') { closeDropdown() }
+            });
+
+            // Reposition portal on scroll/resize
+            input.addEventListener('scroll', () => { if (portalSlot === i) positionPortal(input) }, true);
+        }
+
+        function clearSearch(i) {
+            const input = document.getElementById(`search-${i}`);
+            const xBtn = document.getElementById(`search-x-${i}`);
+            if (input) { input.value = ''; input.focus() }
+            if (xBtn) xBtn.classList.remove('show');
+            closeDropdown(i);
+        }
+
+        function moveHighlight(items, dir) {
+            let cur = -1;
+            items.forEach((el, idx) => { if (el.classList.contains('hi')) cur = idx; });
+            items.forEach(el => el.classList.remove('hi'));
+            let next = cur + dir;
+            if (next < 0) next = items.length - 1;
+            if (next >= items.length) next = 0;
+            items[next].classList.add('hi');
+            items[next].scrollIntoView({ block: 'nearest' });
+        }
+
+        // ─── PORTAL DROPDOWN ─────────────────────────────────────────────────────────
+        let portalSlot = -1;
+        const portal = document.getElementById('ac-portal');
+
+        function showDropdown(slotIdx, query) {
+            const input = document.getElementById(`search-${slotIdx}`);
+            if (!input) return;
+
+            portalSlot = slotIdx;
+            portal.classList.add('open');
+            positionPortal(input);
+
+            if (!listLoaded) {
+                portal.innerHTML = '<div class="ac-loading-msg">Loading Pokédex…</div>';
+                return;
+            }
+            const q = query.toLowerCase();
+            const starts = pokemonList.filter(p => p.name.startsWith(q));
+            const contains = pokemonList.filter(p => !p.name.startsWith(q) && p.name.includes(q));
+            const results = [...starts, ...contains].slice(0, 9);
+
+            if (!results.length) {
+                portal.innerHTML = '<div class="ac-no-result">No Pokémon found</div>';
+                return;
+            }
+            portal.innerHTML = results.map(p => `
+    <div class="ac-item" data-name="${p.name}">
+      <img src="${spriteUrl(p.id)}" alt="${p.name}" onerror="this.style.opacity=0">
+      <span class="ac-item-name">${formatName(p.name)}</span>
+    </div>
+  `).join('');
+
+            portal.querySelectorAll('.ac-item').forEach(el => {
+                el.addEventListener('mousedown', e => {
+                    e.preventDefault(); // prevent blur before click
+                    const name = el.dataset.name;
+                    selectPokemon(slotIdx, name);
+                    clearSearch(slotIdx);
+                });
+            });
+        }
+
+        function positionPortal(input) {
+            const r = input.getBoundingClientRect();
+            portal.style.left = r.left + 'px';
+            portal.style.top = (r.bottom + 5) + 'px';
+            portal.style.width = r.width + 'px';
+        }
+
+        function closeDropdown() {
+            portal.classList.remove('open');
+            portalSlot = -1;
+        }
+
+        function closeAllDropdowns() { closeDropdown() }
+
+        function showSlotLoading(i, show) {
+            const el = document.getElementById(`loading-${i}`);
+            if (el) el.style.display = show ? 'flex' : 'none';
+        }
+
+        function updateTeamCount() {
+            const n = team.filter(Boolean).length;
+            const el = document.getElementById('team-count');
+            if (el) el.textContent = `${n} / 6`;
+        }
+
+        // ─── ANALYSIS ────────────────────────────────────────────────────────────────
+        function analyzeOffense() {
+            const filled = team.filter(Boolean);
+            if (!filled.length) return null;
+            const teamTypes = new Set(filled.flatMap(p => p.types));
+            const result = {};
+            for (const def of TYPES) {
+                let best = 0;
+                let bestAtk = null;
+                for (const atk of teamTypes) {
+                    const e = getEff(atk, def);
+                    if (e > best) { best = e; bestAtk = atk }
+                }
+                result[def] = { mult: best, atk: bestAtk };
+            }
+            return result;
+        }
+
+        function analyzeDefense() {
+            const filled = team.filter(Boolean);
+            if (!filled.length) return null;
+            const result = {};
+            for (const atk of TYPES) {
+                const counts = { immune: 0, quadResist: 0, resist: 0, neutral: 0, weak: 0, quadWeak: 0 };
+                for (const p of filled) {
+                    const m = getDefMult(atk, p.types);
+                    if (m === 0) counts.immune++;
+                    else if (m <= 0.25) counts.quadResist++;
+                    else if (m < 1) counts.resist++;
+                    else if (m >= 4) counts.quadWeak++;
+                    else if (m >= 2) counts.weak++;
+                    else counts.neutral++;
+                }
+                result[atk] = counts;
+            }
+            return result;
+        }
+
+        function calcBalance(offense, defense) {
+            if (!offense || !defense) return null;
+            const filled = team.filter(Boolean);
+            // Coverage gaps: types with no super effective coverage
+            let gaps = 0;
+            for (const def of TYPES) { if (offense[def].mult < 2) gaps++ }
+            // Major weaknesses: types hitting 3+ pokemon for >=2x
+            let majorWeak = 0;
+            for (const atk of TYPES) {
+                const c = defense[atk];
+                if ((c.weak + c.quadWeak) >= 3) majorWeak++;
+            }
+            let score = 100 - gaps * 4 - majorWeak * 12;
+            score = Math.max(0, Math.min(100, score));
+            let level, cls;
+            if (score >= 80) { level = 'Excellent'; cls = 'bal-excellent' }
+            else if (score >= 60) { level = 'Good'; cls = 'bal-good' }
+            else if (score >= 40) { level = 'Moderate'; cls = 'bal-moderate' }
+            else { level = 'Poor'; cls = 'bal-poor' }
+            return { score, gaps, majorWeak, level, cls, filled: filled.length };
+        }
+
+        function renderAnalysis() {
+            const root = document.getElementById('analysis-root');
+            const filled = team.filter(Boolean);
+            if (!filled.length) {
+                root.innerHTML = `
+      <div class="analysis-empty">
+        <div class="analysis-empty-icon">⬡</div>
+        Add Pokémon to your team to see type analysis
+      </div>`;
+                return;
+            }
+            const offense = analyzeOffense();
+            const defense = analyzeDefense();
+            const balance = calcBalance(offense, defense);
+
+            // Coverage gaps list
+            const gaps = TYPES.filter(t => offense[t].mult < 2).map(formatName);
+            // Type coverage counts
+            const superEff = TYPES.filter(t => offense[t].mult >= 2).length;
+
+            // Build weak/resist/immune lists for defense
+            const weakTo = TYPES
+                .filter(t => (defense[t].weak + defense[t].quadWeak) > 0)
+                .sort((a, b) => (defense[b].weak + defense[b].quadWeak) - (defense[a].weak + defense[a].quadWeak));
+            const resistTo = TYPES
+                .filter(t => (defense[t].resist + defense[t].quadResist) > 0)
+                .sort((a, b) => (defense[b].resist + defense[b].quadResist) - (defense[a].resist + defense[a].quadResist));
+            const immuneTo = TYPES
+                .filter(t => defense[t].immune > 0);
+
+            root.innerHTML = `
+    <div class="section-header" style="margin-top:8px">
+      <div class="section-label">Analysis</div>
+    </div>
+    <div class="analysis-wrap">
+      <div class="synergy-card">
+        <div class="card-title"><span class="card-title-icon">◎</span> Team Synergy</div>
+        <div class="synergy-stats">
+          <div class="syn-stat">
+            <div class="syn-val">${filled.length}</div>
+            <div class="syn-lbl">Pokémon</div>
+          </div>
+          <div class="syn-stat">
+            <div class="syn-val" style="color:var(--good)">${superEff}</div>
+            <div class="syn-lbl">Types Covered</div>
+          </div>
+          <div class="syn-stat">
+            <div class="syn-val" style="color:${balance.gaps > 5 ? 'var(--danger)' : balance.gaps > 2 ? 'var(--warn)' : 'var(--good)'}">${balance.gaps}</div>
+            <div class="syn-lbl">Coverage Gaps</div>
+          </div>
+          <div class="syn-stat">
+            <div class="syn-val" style="color:${balance.majorWeak > 3 ? 'var(--danger)' : balance.majorWeak > 1 ? 'var(--warn)' : 'var(--good)'}">${balance.majorWeak}</div>
+            <div class="syn-lbl">Major Weaknesses</div>
+          </div>
+        </div>
+        <div class="balance-row">
+          <span class="balance-lbl">Overall Balance:</span>
+          <span class="balance-badge ${balance.cls}">● ${balance.level}</span>
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-3)">${balance.score}/100</span>
+        </div>
+        ${balance.gaps > 0 ? `
+        <div class="insight-row">
+          <span style="font-size:11px;color:var(--text-3)">Coverage gaps:</span>
+          ${gaps.slice(0, 8).map(g => `<span class="insight-chip">${g}</span>`).join('')}
+          ${gaps.length > 8 ? `<span class="insight-chip">+${gaps.length - 8} more</span>` : ''}
+        </div>`: ''}
+      </div>
+      <div class="analysis-grid">
+        <div class="analysis-card">
+          <div class="card-title"><span class="card-title-icon">⚔</span> Offensive Coverage</div>
+          <div class="coverage-grid">
+            ${TYPES.map(def => {
+                const { mult, atk } = offense[def];
+                let cls, label;
+                if (mult >= 2) { cls = 'eff-super'; label = '2×' }
+                else if (mult === 1) { cls = 'eff-neutral'; label = '1×' }
+                else if (mult > 0 && mult < 1) { cls = 'eff-resist'; label = '½×' }
+                else { cls = 'eff-zero'; label = '—' }
+                if (mult >= 4) { label = '4×' }
+                return `<div class="cov-item">
+                <span class="type-badge" style="background:${TYPE_COLORS[def] || '#888'}">${def}</span>
+                <span class="cov-eff ${cls}">${label}</span>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+        <div class="analysis-card">
+          <div class="card-title"><span class="card-title-icon">🛡</span> Defensive Analysis</div>
+          <div class="def-section">
+            <div class="def-label lbl-weak">⬤ Weak To</div>
+            <div class="def-chips">
+              ${weakTo.length ? weakTo.map(t => {
+                const c = defense[t];
+                const cnt = c.weak + c.quadWeak;
+                const clr = TYPE_COLORS[t] || '#888';
+                return `<div class="def-chip chip-weak">
+                  <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${clr};flex-shrink:0"></span>
+                  <span style="color:var(--text-1)">${formatName(t)}</span>
+                  <span class="chip-count">×${cnt}</span>
+                </div>`;
+            }).join('') : '<div class="def-empty">No shared weaknesses</div>'}
+            </div>
+          </div>
+          <div class="def-section">
+            <div class="def-label lbl-resist">⬤ Resistant To</div>
+            <div class="def-chips">
+              ${resistTo.length ? resistTo.map(t => {
+                const c = defense[t];
+                const cnt = c.resist + c.quadResist;
+                const clr = TYPE_COLORS[t] || '#888';
+                return `<div class="def-chip chip-resist">
+                  <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${clr};flex-shrink:0"></span>
+                  <span style="color:var(--text-1)">${formatName(t)}</span>
+                  <span class="chip-count">×${cnt}</span>
+                </div>`;
+            }).join('') : '<div class="def-empty">No resistances</div>'}
+            </div>
+          </div>
+          ${immuneTo.length ? `
+          <div class="def-section">
+            <div class="def-label lbl-immune">⬤ Immune To</div>
+            <div class="def-chips">
+              ${immuneTo.map(t => {
+                const clr = TYPE_COLORS[t] || '#888';
+                return `<div class="def-chip chip-immune">
+                  <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${clr};flex-shrink:0"></span>
+                  <span style="color:var(--text-1)">${formatName(t)}</span>
+                  <span class="chip-count">×${defense[t].immune}</span>
+                </div>`;
+            }).join('')}
+            </div>
+          </div>` : ''}
+        </div>
+      </div>
+    </div>`;
+        }
+
+        // ─── UI UTILITIES ─────────────────────────────────────────────────────────────
+        let toastTimer;
+        function toast(msg, type = 'ok') {
+            const el = document.getElementById('toast');
+            if (!el) return;
+            el.textContent = msg;
+            el.className = `toast show ${type}`;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+        }
+
+        function setPill(state, msg) {
+            const el = document.getElementById('api-pill');
+            if (!el) return;
+            el.className = `api-pill ${state}`;
+            el.textContent = msg;
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.dataset.theme === 'dark';
+            html.dataset.theme = isDark ? 'light' : 'dark';
+            const icon = document.getElementById('theme-icon');
+            const lbl = document.getElementById('theme-lbl');
+            if (icon) icon.textContent = isDark ? '☽' : '☀';
+            if (lbl) lbl.textContent = isDark ? 'Dark' : 'Light';
+            localStorage.setItem('ptb_theme', isDark ? 'light' : 'dark');
+        }
+
+        // Click outside to close dropdown
+        document.addEventListener('mousedown', e => {
+            if (!e.target.closest('.search-wrap') && !e.target.closest('#ac-portal')) closeDropdown();
+        });
+
+        // Reposition on scroll / resize
+        window.addEventListener('scroll', () => {
+            if (portalSlot >= 0) {
+                const input = document.getElementById(`search-${portalSlot}`);
+                if (input) positionPortal(input); else closeDropdown();
+            }
+        }, true);
+        window.addEventListener('resize', () => { if (portalSlot >= 0) closeDropdown() });
+
+        // ─── INIT ─────────────────────────────────────────────────────────────────────
+        async function init() {
+            // Restore theme
+            const savedTheme = localStorage.getItem('ptb_theme');
+            if (savedTheme) {
+                document.documentElement.dataset.theme = savedTheme;
+                const icon = document.getElementById('theme-icon');
+                const lbl = document.getElementById('theme-lbl');
+                if (savedTheme === 'light') {
+                    if (icon) icon.textContent = '☽';
+                    if (lbl) lbl.textContent = 'Dark';
+                }
+            }
+            // Render empty slots first
+            renderTeamGrid();
+            renderAnalysis();
+            // Load API list
+            await fetchPokemonList();
+            // Load saved team
+            await loadTeam();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
