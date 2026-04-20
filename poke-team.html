@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Team Builder — Synergy &amp; Coverage Analyzer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="icon" href="poke-logo.ico">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
@@ -82,11 +81,11 @@
             content: '';
             position: fixed;
             inset: 0;
+            pointer-events: none;
+            z-index: 0;
             background:
                 radial-gradient(ellipse 70% 50% at 15% 10%, rgba(90, 110, 255, 0.055) 0%, transparent 65%),
                 radial-gradient(ellipse 55% 45% at 85% 90%, rgba(61, 255, 168, 0.035) 0%, transparent 65%);
-            pointer-events: none;
-            z-index: 0;
         }
 
         .container {
@@ -119,7 +118,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 14px;
+            flex-wrap: wrap;
         }
 
         .brand {
@@ -131,21 +131,21 @@
         .brand-logo {
             width: 38px;
             height: 38px;
-            background: linear-gradient(135deg, var(--accent) 0%, #8B5FFF 100%);
             border-radius: 10px;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--accent) 0%, #8B5FFF 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            flex-shrink: 0;
         }
 
         .brand-text h1 {
             font-family: 'Syne', sans-serif;
             font-size: 17px;
             font-weight: 800;
-            letter-spacing: -0.3px;
-            line-height: 1.2;
+            letter-spacing: -.3px;
+            line-height: 1.2
         }
 
         .brand-text p {
@@ -153,13 +153,14 @@
             color: var(--text-3);
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.9px
+            letter-spacing: .9px
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 12px
+            gap: 10px;
+            flex-wrap: wrap
         }
 
         .api-pill {
@@ -167,10 +168,10 @@
             font-weight: 700;
             padding: 4px 10px;
             border-radius: 20px;
+            white-space: nowrap;
             border: 1px solid var(--border);
             color: var(--text-3);
             background: var(--surface2);
-            white-space: nowrap;
         }
 
         .api-pill.loading {
@@ -188,11 +189,11 @@
             border-color: var(--danger-border)
         }
 
-        .theme-btn {
+        .icon-btn {
             background: var(--surface2);
             border: 1px solid var(--border);
             border-radius: 24px;
-            padding: 6px 14px;
+            padding: 6px 13px;
             cursor: pointer;
             font-size: 12px;
             font-family: 'Manrope', sans-serif;
@@ -202,11 +203,47 @@
             align-items: center;
             gap: 6px;
             transition: all var(--t);
+            white-space: nowrap;
         }
 
-        .theme-btn:hover {
+        .icon-btn:hover {
             background: var(--surface3);
             color: var(--text-1)
+        }
+
+        /* LAYOUT TOGGLE */
+        .layout-toggle {
+            display: flex;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .lt-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px 10px;
+            color: var(--text-3);
+            transition: all var(--t);
+            display: flex;
+            align-items: center;
+        }
+
+        .lt-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor
+        }
+
+        .lt-btn:hover {
+            color: var(--text-1)
+        }
+
+        .lt-btn.active {
+            background: var(--accent-dim);
+            color: var(--accent)
         }
 
         /* MAIN */
@@ -247,13 +284,14 @@
         .section-actions {
             display: flex;
             align-items: center;
-            gap: 10px
+            gap: 8px;
+            flex-wrap: wrap
         }
 
         .team-count {
             font-family: 'Space Mono', monospace;
             font-size: 12px;
-            color: var(--text-3);
+            color: var(--text-3)
         }
 
         .btn-ghost {
@@ -274,27 +312,119 @@
             color: var(--danger)
         }
 
-        /* TEAM GRID */
+        .btn-save {
+            background: var(--accent-dim);
+            border: 1px solid rgba(90, 110, 255, 0.3);
+            border-radius: var(--radius-xs);
+            padding: 5px 12px;
+            font-size: 11.5px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all var(--t);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-save:hover {
+            background: var(--accent);
+            color: #fff
+        }
+
+        .btn-save:disabled {
+            opacity: 0.38;
+            cursor: not-allowed;
+            pointer-events: none
+        }
+
+        /* TEAM GRID — GRID MODE */
         .team-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 14px;
-            margin-bottom: 36px;
+            margin-bottom: 30px;
         }
 
-        @media(max-width:800px) {
-            .team-grid {
+        @media(max-width:820px) {
+            .team-grid:not(.layout-list) {
                 grid-template-columns: repeat(2, 1fr)
             }
         }
 
         @media(max-width:500px) {
-            .team-grid {
+            .team-grid:not(.layout-list) {
                 grid-template-columns: 1fr
             }
         }
 
-        /* POKEMON SLOT CARD */
+        /* TEAM GRID — LIST MODE */
+        .team-grid.layout-list {
+            grid-template-columns: 1fr;
+            gap: 8px
+        }
+
+        .team-grid.layout-list .poke-slot {
+            display: flex;
+            flex-direction: row;
+            min-height: 88px
+        }
+
+        .team-grid.layout-list .sprite-area {
+            width: 88px;
+            min-width: 88px;
+            height: auto;
+            border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+            flex-shrink: 0;
+        }
+
+        .team-grid.layout-list .poke-sprite {
+            width: 68px;
+            height: 68px
+        }
+
+        .team-grid.layout-list .sprite-ring {
+            width: 74px;
+            height: 74px
+        }
+
+        .team-grid.layout-list .slot-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 16px;
+            flex-wrap: wrap;
+        }
+
+        .team-grid.layout-list .slot-main-info {
+            min-width: 150px;
+            flex: 1
+        }
+
+        .team-grid.layout-list .slot-search-col {
+            flex: 1;
+            min-width: 150px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
+        }
+
+        .team-grid.layout-list .slot-actions {
+            margin-top: 0
+        }
+
+        .team-grid.layout-list .poke-slot:hover {
+            transform: translateX(3px) translateY(0)
+        }
+
+        .team-grid.layout-list .poke-slot:hover .poke-sprite {
+            transform: scale(1.08)
+        }
+
+        /* SLOT CARD */
         .poke-slot {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -332,7 +462,7 @@
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(20px)
+                transform: translateY(18px)
             }
 
             to {
@@ -385,9 +515,9 @@
             object-fit: contain;
             position: relative;
             z-index: 1;
+            image-rendering: pixelated;
             transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
             filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
-            image-rendering: pixelated;
         }
 
         .poke-slot.filled .poke-sprite {
@@ -402,17 +532,17 @@
             font-size: 36px;
             opacity: 0.13;
             position: relative;
-            z-index: 1;
+            z-index: 1
         }
 
         .slot-loading-overlay {
             position: absolute;
             inset: 0;
+            z-index: 10;
             background: rgba(7, 8, 15, 0.55);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10;
         }
 
         [data-theme="light"] .slot-loading-overlay {
@@ -425,7 +555,7 @@
             border: 2px solid var(--border);
             border-top-color: var(--accent);
             border-radius: 50%;
-            animation: spin 0.7s linear infinite;
+            animation: spin .7s linear infinite;
         }
 
         @keyframes spin {
@@ -434,7 +564,7 @@
             }
         }
 
-        /* SLOT BODY */
+        /* SLOT BODY (GRID) */
         .slot-body {
             padding: 13px 14px 14px
         }
@@ -443,7 +573,7 @@
             font-family: 'Space Mono', monospace;
             font-size: 10px;
             color: var(--text-3);
-            margin-bottom: 5px;
+            margin-bottom: 5px
         }
 
         .slot-name {
@@ -462,7 +592,7 @@
             gap: 5px;
             flex-wrap: wrap;
             margin-bottom: 11px;
-            min-height: 22px;
+            min-height: 22px
         }
 
         .type-badge {
@@ -473,7 +603,7 @@
             font-size: 10.5px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: .5px;
             color: #fff;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
         }
@@ -530,7 +660,7 @@
             display: block
         }
 
-        /* AUTOCOMPLETE PORTAL — single element appended to body, positioned via JS */
+        /* PORTAL DROPDOWN */
         #ac-portal {
             position: fixed;
             background: var(--surface2);
@@ -554,7 +684,7 @@
             gap: 10px;
             padding: 8px 13px;
             cursor: pointer;
-            transition: background var(--t);
+            transition: background var(--t)
         }
 
         .ac-item:hover,
@@ -576,13 +706,7 @@
             color: var(--text-1)
         }
 
-        .ac-no-result {
-            padding: 14px;
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-3)
-        }
-
+        .ac-no-result,
         .ac-loading-msg {
             padding: 14px;
             text-align: center;
@@ -590,7 +714,7 @@
             color: var(--text-3)
         }
 
-        /* SLOT REMOVE */
+        /* SLOT ACTIONS */
         .slot-actions {
             margin-top: 9px;
             display: flex;
@@ -622,7 +746,7 @@
             color: #fff
         }
 
-        /* ANALYSIS SECTION */
+        /* ANALYSIS */
         .analysis-wrap {
             margin-bottom: 16px
         }
@@ -632,7 +756,7 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
             padding: 20px 22px;
-            margin-bottom: 14px;
+            margin-bottom: 14px
         }
 
         .card-title {
@@ -645,18 +769,14 @@
             margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 7px;
-        }
-
-        .card-title-icon {
-            font-size: 15px
+            gap: 7px
         }
 
         .synergy-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 16px
         }
 
         @media(max-width:640px) {
@@ -669,7 +789,7 @@
             background: var(--surface2);
             border-radius: var(--radius-md);
             padding: 13px 14px;
-            text-align: center;
+            text-align: center
         }
 
         .syn-val {
@@ -677,7 +797,7 @@
             font-size: 26px;
             font-weight: 800;
             line-height: 1;
-            margin-bottom: 4px;
+            margin-bottom: 4px
         }
 
         .syn-lbl {
@@ -685,7 +805,7 @@
             color: var(--text-3);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.6px
+            letter-spacing: .6px
         }
 
         .balance-row {
@@ -694,7 +814,7 @@
             gap: 10px;
             padding-top: 14px;
             border-top: 1px solid var(--border);
-            flex-wrap: wrap;
+            flex-wrap: wrap
         }
 
         .balance-lbl {
@@ -710,7 +830,7 @@
             padding: 5px 14px;
             border-radius: 100px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 700
         }
 
         .bal-excellent {
@@ -742,9 +862,7 @@
             align-items: center;
             gap: 8px;
             flex-wrap: wrap;
-            margin-top: 10px;
-            font-size: 11.5px;
-            color: var(--text-2);
+            margin-top: 10px
         }
 
         .insight-chip {
@@ -753,14 +871,13 @@
             font-size: 10.5px;
             font-weight: 700;
             background: var(--surface3);
-            color: var(--text-2);
+            color: var(--text-2)
         }
 
-        /* ANALYSIS GRID */
         .analysis-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            gap: 14px
         }
 
         @media(max-width:720px) {
@@ -773,14 +890,13 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            padding: 20px 22px;
+            padding: 20px 22px
         }
 
-        /* OFFENSE COVERAGE */
         .coverage-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 5px;
+            gap: 5px
         }
 
         .cov-item {
@@ -790,7 +906,7 @@
             padding: 5px 9px;
             border-radius: var(--radius-xs);
             background: var(--surface2);
-            gap: 6px;
+            gap: 6px
         }
 
         .cov-item .type-badge {
@@ -801,7 +917,7 @@
         .cov-eff {
             font-size: 11px;
             font-weight: 700;
-            font-family: 'Space Mono', monospace;
+            font-family: 'Space Mono', monospace
         }
 
         .eff-super {
@@ -820,7 +936,6 @@
             color: var(--danger)
         }
 
-        /* DEFENSE */
         .def-section {
             margin-bottom: 14px
         }
@@ -833,11 +948,11 @@
             font-size: 10.5px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: .8px;
             margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 5px
         }
 
         .def-label.lbl-weak {
@@ -865,7 +980,7 @@
             padding: 4px 10px;
             border-radius: 100px;
             font-size: 10.5px;
-            font-weight: 700;
+            font-weight: 700
         }
 
         .chip-weak {
@@ -886,8 +1001,8 @@
         .chip-count {
             font-size: 9.5px;
             font-family: 'Space Mono', monospace;
-            opacity: 0.75;
-            margin-left: 1px;
+            opacity: .75;
+            margin-left: 1px
         }
 
         .def-empty {
@@ -896,7 +1011,6 @@
             padding: 8px 0
         }
 
-        /* EMPTY ANALYSIS */
         .analysis-empty {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -904,13 +1018,362 @@
             padding: 40px 20px;
             text-align: center;
             color: var(--text-3);
-            font-size: 13px;
+            font-size: 13px
         }
 
         .analysis-empty-icon {
             font-size: 40px;
             margin-bottom: 12px;
-            opacity: 0.4
+            opacity: .4
+        }
+
+        /* SAVED TEAMS SECTION */
+        .saved-section {
+            margin-bottom: 30px
+        }
+
+        .saved-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 14px 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            transition: border-color var(--t), background var(--t);
+            user-select: none;
+        }
+
+        .saved-toggle:hover {
+            background: var(--surface2);
+            border-color: rgba(90, 110, 255, 0.25)
+        }
+
+        .saved-toggle.open {
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            border-bottom: 1px solid transparent
+        }
+
+        .saved-toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .saved-icon {
+            width: 15px;
+            height: 15px;
+            fill: var(--text-3);
+            flex-shrink: 0
+        }
+
+        .saved-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .saved-badge {
+            background: var(--accent-dim);
+            color: var(--accent);
+            border: 1px solid rgba(90, 110, 255, 0.25);
+            border-radius: 20px;
+            padding: 2px 9px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .saved-chevron {
+            font-size: 10px;
+            color: var(--text-3);
+            transition: transform 220ms ease
+        }
+
+        .saved-toggle.open .saved-chevron {
+            transform: rotate(180deg)
+        }
+
+        .saved-body {
+            background: var(--surface);
+            border: 1px solid rgba(90, 110, 255, 0.2);
+            border-top: none;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 350ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .saved-body.open {
+            max-height: 1400px
+        }
+
+        .saved-inner {
+            padding: 16px 16px 18px
+        }
+
+        .saved-empty {
+            text-align: center;
+            padding: 28px 20px;
+            font-size: 13px;
+            color: var(--text-3);
+            line-height: 1.6
+        }
+
+        .saved-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 10px
+        }
+
+        .saved-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 13px 12px;
+            transition: border-color var(--t), transform var(--t), box-shadow var(--t);
+        }
+
+        .saved-card:hover {
+            border-color: rgba(90, 110, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm)
+        }
+
+        .saved-card-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .saved-card-date {
+            font-size: 10.5px;
+            color: var(--text-3);
+            font-weight: 600;
+            margin-bottom: 9px
+        }
+
+        .saved-sprites {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 10px;
+            flex-wrap: wrap
+        }
+
+        .saved-sprite-wrap {
+            width: 36px;
+            height: 36px;
+            background: var(--surface3);
+            border-radius: var(--radius-xs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .saved-sprite-wrap img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+            image-rendering: pixelated
+        }
+
+        .saved-sprite-wrap.empty {
+            opacity: .22
+        }
+
+        .saved-card-actions {
+            display: flex;
+            gap: 6px
+        }
+
+        .saved-load {
+            flex: 1;
+            background: var(--accent-dim);
+            border: 1px solid rgba(90, 110, 255, 0.25);
+            border-radius: var(--radius-xs);
+            padding: 5px 0;
+            font-size: 11px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all var(--t);
+            text-align: center;
+        }
+
+        .saved-load:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent)
+        }
+
+        .saved-delete {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            padding: 5px 9px;
+            font-size: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            color: var(--text-3);
+            cursor: pointer;
+            transition: all var(--t);
+        }
+
+        .saved-delete:hover {
+            border-color: var(--danger-border);
+            color: var(--danger)
+        }
+
+        /* MODAL */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(5px);
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 200ms ease;
+        }
+
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: all
+        }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border-focus);
+            border-radius: var(--radius-lg);
+            padding: 26px 26px 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+            transform: scale(.95) translateY(10px);
+            transition: transform 230ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-backdrop.open .modal {
+            transform: scale(1) translateY(0)
+        }
+
+        .modal-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 5px
+        }
+
+        .modal-sub {
+            font-size: 12px;
+            color: var(--text-2);
+            margin-bottom: 18px
+        }
+
+        .modal-preview {
+            display: flex;
+            gap: 7px;
+            margin-bottom: 18px;
+            flex-wrap: wrap
+        }
+
+        .mprev {
+            width: 44px;
+            height: 44px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .mprev img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            image-rendering: pixelated
+        }
+
+        .mprev.empty {
+            opacity: .3
+        }
+
+        .modal-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 13px;
+            font-size: 14px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 600;
+            color: var(--text-1);
+            outline: none;
+            transition: border-color var(--t);
+            margin-bottom: 16px;
+        }
+
+        .modal-input:focus {
+            border-color: var(--border-focus)
+        }
+
+        .modal-input::placeholder {
+            color: var(--text-3)
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end
+        }
+
+        .modal-cancel {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            padding: 8px 18px;
+            font-size: 13px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            color: var(--text-2);
+            cursor: pointer;
+            transition: all var(--t);
+        }
+
+        .modal-cancel:hover {
+            border-color: var(--text-2);
+            color: var(--text-1)
+        }
+
+        .modal-confirm {
+            background: var(--accent);
+            border: 1px solid transparent;
+            border-radius: var(--radius-xs);
+            padding: 8px 22px;
+            font-size: 13px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all var(--t);
+        }
+
+        .modal-confirm:hover {
+            background: #7080ff
         }
 
         /* TOAST */
@@ -924,12 +1387,12 @@
             padding: 11px 16px;
             font-size: 12.5px;
             font-weight: 600;
-            z-index: 9999;
+            z-index: 9998;
             box-shadow: var(--shadow);
             transform: translateY(70px);
             opacity: 0;
-            transition: all 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
             max-width: 260px;
+            transition: all 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .toast.show {
@@ -981,9 +1444,8 @@
             </div>
             <div class="header-right">
                 <span class="api-pill loading" id="api-pill">Loading Pokédex…</span>
-                <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">
-                    <span id="theme-icon">☀</span>
-                    <span id="theme-lbl">Light</span>
+                <button class="icon-btn" onclick="toggleTheme()">
+                    <span id="theme-icon">☀</span><span id="theme-lbl">Light</span>
                 </button>
             </div>
         </div>
@@ -991,34 +1453,98 @@
 
     <main>
         <div class="container">
+
+            <!-- TEAM BUILDER -->
             <div class="section-header">
                 <div class="section-label">Your Team</div>
                 <div class="section-actions">
                     <span class="team-count" id="team-count">0 / 6</span>
-                    <button class="btn-ghost" onclick="clearTeam()">Clear All</button>
+
+                    <div class="layout-toggle">
+                        <button class="lt-btn active" id="lt-grid" onclick="setLayout('grid')" title="Grid view">
+                            <svg viewBox="0 0 16 16">
+                                <rect x="1" y="1" width="6" height="6" rx="1.2" />
+                                <rect x="9" y="1" width="6" height="6" rx="1.2" />
+                                <rect x="1" y="9" width="6" height="6" rx="1.2" />
+                                <rect x="9" y="9" width="6" height="6" rx="1.2" />
+                            </svg>
+                        </button>
+                        <button class="lt-btn" id="lt-list" onclick="setLayout('list')" title="List view">
+                            <svg viewBox="0 0 16 16">
+                                <rect x="1" y="1.5" width="14" height="3.5" rx="1" />
+                                <rect x="1" y="6.5" width="14" height="3.5" rx="1" />
+                                <rect x="1" y="11.5" width="14" height="3.5" rx="1" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <button class="btn-save" id="btn-save" onclick="openSaveModal()" disabled>
+                        <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" style="flex-shrink:0">
+                            <path
+                                d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h7.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2zM5 11h6v1H5v-1zm0-2h6v1H5V9z" />
+                        </svg>
+                        Save Team
+                    </button>
+
+                    <button class="btn-ghost" onclick="clearTeam()">Clear</button>
                 </div>
             </div>
+
             <div class="team-grid" id="team-grid"></div>
+
+            <!-- SAVED TEAMS -->
+            <div class="saved-section">
+                <div class="saved-toggle" id="saved-toggle" onclick="toggleSaved()">
+                    <div class="saved-toggle-left">
+                        <svg class="saved-icon" viewBox="0 0 16 16">
+                            <path
+                                d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h7.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2zM5 11h6v1H5v-1zm0-2h6v1H5V9z" />
+                        </svg>
+                        <span class="saved-label">Saved Teams</span>
+                        <span class="saved-badge" id="saved-badge">0</span>
+                    </div>
+                    <span class="saved-chevron">▼</span>
+                </div>
+                <div class="saved-body" id="saved-body">
+                    <div class="saved-inner" id="saved-inner"></div>
+                </div>
+            </div>
+
+            <!-- ANALYSIS -->
             <div id="analysis-root"></div>
+
         </div>
     </main>
+
+    <!-- SAVE MODAL -->
+    <div class="modal-backdrop" id="modal-backdrop" onclick="backdropClick(event)">
+        <div class="modal">
+            <div class="modal-title">Save Team</div>
+            <div class="modal-sub">Give your team a name to save it for later.</div>
+            <div class="modal-preview" id="modal-preview"></div>
+            <input class="modal-input" id="modal-input" type="text"
+                placeholder="e.g. Sun Team, Rain Balance, Weather Core…" maxlength="40" autocomplete="off"
+                spellcheck="false">
+            <div class="modal-actions">
+                <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+                <button class="modal-confirm" onclick="confirmSave()">Save</button>
+            </div>
+        </div>
+    </div>
 
     <div id="ac-portal"></div>
     <div class="toast" id="toast"></div>
 
     <script>
-        // ─── TYPE DATA ──────────────────────────────────────────────────────────────
+        // ── TYPE DATA ─────────────────────────────────────────────────────────────────
         const TYPES = ['normal', 'fire', 'water', 'electric', 'grass', 'ice', 'fighting', 'poison',
             'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'];
-
         const TYPE_COLORS = {
             normal: '#9A9BAD', fire: '#F97B4B', water: '#5390DD', electric: '#EFC54A', grass: '#57A84C',
             ice: '#6ECECE', fighting: '#C03630', poison: '#AA45B2', ground: '#D9852F', flying: '#8D96E0',
             psychic: '#EE547A', bug: '#9DAE22', rock: '#BEA236', ghost: '#6863B1', dragon: '#5B64E8',
             dark: '#625468', steel: '#9B9FBA', fairy: '#D980A0'
         };
-
-        // TYPE_CHART[attacker][defender] = multiplier (only non-1× listed; default = 1)
         const TYPE_CHART = {
             normal: { rock: .5, ghost: 0, steel: .5 },
             fire: { fire: .5, water: .5, rock: .5, dragon: .5, grass: 2, ice: 2, bug: 2, steel: 2 },
@@ -1039,631 +1565,421 @@
             steel: { fire: .5, water: .5, electric: .5, steel: .5, ice: 2, rock: 2, fairy: 2 },
             fairy: { fire: .5, poison: .5, steel: .5, fighting: 2, dragon: 2, dark: 2 }
         };
+        function eff(atk, def) { const r = TYPE_CHART[atk]; return (r && r[def] !== undefined) ? r[def] : 1 }
+        function defMult(atkType, types) { return types.reduce((a, t) => a * eff(atkType, t), 1) }
 
-        function getEff(atk, def) { const r = TYPE_CHART[atk]; return r && r[def] !== undefined ? r[def] : 1 }
+        // ── STATE ─────────────────────────────────────────────────────────────────────
+        let team = Array(6).fill(null);
+        let pokeList = [];
+        let pokeCache = {};
+        let listReady = false;
+        let layout = 'grid';
+        let saved = [];
+        let panelOpen = false;
 
-        function getDefMult(atkType, pokeTypes) {
-            return pokeTypes.reduce((acc, t) => acc * getEff(atkType, t), 1);
-        }
-
-        // ─── STATE ──────────────────────────────────────────────────────────────────
-        let team = Array(6).fill(null); // null | {name,id,types,artwork,sprite}
-        let pokemonList = [];            // [{name,url,id}]
-        let pokemonCache = {};           // name -> full poke data
-        let listLoaded = false;
-        let activeSlot = -1;
-        let acHighlight = -1;
-
-        // ─── HELPERS ────────────────────────────────────────────────────────────────
-        function extractId(url) {
-            const parts = url.replace(/\/$/, '').split('/');
-            return parseInt(parts[parts.length - 1], 10);
-        }
-
-        function formatName(name) {
-            const specials = {
-                'nidoran-m': 'Nidoran♂', 'nidoran-f': 'Nidoran♀',
-                'mr-mime': 'Mr. Mime', 'mr-rime': 'Mr. Rime', 'mime-jr': 'Mime Jr.',
-                'porygon-z': 'Porygon-Z', 'ho-oh': 'Ho-Oh', 'jangmo-o': 'Jangmo-o',
-                'hakamo-o': 'Hakamo-o', 'kommo-o': 'Kommo-o', 'type-null': 'Type: Null',
-                'tapu-koko': 'Tapu Koko', 'tapu-lele': 'Tapu Lele',
-                'tapu-bulu': 'Tapu Bulu', 'tapu-fini': 'Tapu Fini',
-                'great-tusk': 'Great Tusk', 'scream-tail': 'Scream Tail',
-                'brute-bonnet': 'Brute Bonnet', 'flutter-mane': 'Flutter Mane',
-                'slither-wing': 'Slither Wing', 'sandy-shocks': 'Sandy Shocks',
-                'iron-treads': 'Iron Treads', 'iron-bundle': 'Iron Bundle',
-                'iron-hands': 'Iron Hands', 'iron-jugulis': 'Iron Jugulis',
-                'iron-moth': 'Iron Moth', 'iron-thorns': 'Iron Thorns',
-                'roaring-moon': 'Roaring Moon', 'iron-valiant': 'Iron Valiant',
-                'walking-wake': 'Walking Wake', 'iron-leaves': 'Iron Leaves',
-                'ting-lu': 'Ting-Lu', 'chien-pao': 'Chien-Pao',
-                'wo-chien': 'Wo-Chien', 'chi-yu': 'Chi-Yu',
-                'koraidon': 'Koraidon', 'miraidon': 'Miraidon'
+        // ── HELPERS ───────────────────────────────────────────────────────────────────
+        function xid(url) { const p = url.replace(/\/$/, '').split('/'); return parseInt(p[p.length - 1], 10) }
+        function fname(n) {
+            const s = {
+                'nidoran-m': 'Nidoran♂', 'nidoran-f': 'Nidoran♀', 'mr-mime': 'Mr. Mime', 'mr-rime': 'Mr. Rime',
+                'mime-jr': 'Mime Jr.', 'porygon-z': 'Porygon-Z', 'ho-oh': 'Ho-Oh', 'type-null': 'Type: Null',
+                'jangmo-o': 'Jangmo-o', 'hakamo-o': 'Hakamo-o', 'kommo-o': 'Kommo-o',
+                'tapu-koko': 'Tapu Koko', 'tapu-lele': 'Tapu Lele', 'tapu-bulu': 'Tapu Bulu', 'tapu-fini': 'Tapu Fini',
+                'great-tusk': 'Great Tusk', 'scream-tail': 'Scream Tail', 'brute-bonnet': 'Brute Bonnet',
+                'flutter-mane': 'Flutter Mane', 'slither-wing': 'Slither Wing', 'sandy-shocks': 'Sandy Shocks',
+                'iron-treads': 'Iron Treads', 'iron-bundle': 'Iron Bundle', 'iron-hands': 'Iron Hands',
+                'iron-jugulis': 'Iron Jugulis', 'iron-moth': 'Iron Moth', 'iron-thorns': 'Iron Thorns',
+                'roaring-moon': 'Roaring Moon', 'iron-valiant': 'Iron Valiant', 'walking-wake': 'Walking Wake',
+                'iron-leaves': 'Iron Leaves', 'ting-lu': 'Ting-Lu', 'chien-pao': 'Chien-Pao',
+                'wo-chien': 'Wo-Chien', 'chi-yu': 'Chi-Yu'
             };
-            if (specials[name]) return specials[name];
-            return name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            if (s[n]) return s[n];
+            return n.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
         }
+        function spr(id) { return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png` }
+        function art(id) { return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png` }
+        function tbadge(t) { return `<span class="type-badge" style="background:${TYPE_COLORS[t] || '#888'}">${t}</span>` }
+        function fdate(ts) { return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) }
+        function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 5) }
 
-        function spriteUrl(id) {
-            return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
-        }
-        function artworkUrl(id) {
-            return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
-        }
-
-        function typeBadge(type) {
-            const c = TYPE_COLORS[type] || '#888';
-            return `<span class="type-badge" style="background:${c}">${type}</span>`;
-        }
-
-        // ─── API ─────────────────────────────────────────────────────────────────────
-        async function fetchPokemonList() {
+        // ── API ───────────────────────────────────────────────────────────────────────
+        async function loadList() {
             setPill('loading', 'Loading Pokédex…');
-            // Try localStorage cache first
-            const cached = localStorage.getItem('ptb_list_v2');
-            if (cached) {
-                try {
-                    pokemonList = JSON.parse(cached);
-                    listLoaded = true;
-                    setPill('ready', `${pokemonList.length} Pokémon ready`);
-                    return;
-                } catch (e) { }
-            }
+            const c = localStorage.getItem('ptb_list_v2');
+            if (c) { try { pokeList = JSON.parse(c); listReady = true; setPill('ready', `${pokeList.length} Pokémon ready`); return } catch (e) { } }
             try {
-                const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=2000&offset=0');
-                if (!res.ok) throw new Error('API error');
-                const data = await res.json();
-                pokemonList = data.results.map(p => ({ name: p.name, id: extractId(p.url) }));
-                listLoaded = true;
-                localStorage.setItem('ptb_list_v2', JSON.stringify(pokemonList));
-                setPill('ready', `${pokemonList.length} Pokémon ready`);
+                const r = await fetch('https://pokeapi.co/api/v2/pokemon?limit=2000&offset=0');
+                if (!r.ok) throw 0;
+                const d = await r.json();
+                pokeList = d.results.map(p => ({ name: p.name, id: xid(p.url) }));
+                listReady = true;
+                localStorage.setItem('ptb_list_v2', JSON.stringify(pokeList));
+                setPill('ready', `${pokeList.length} Pokémon ready`);
             } catch (e) {
                 setPill('error', 'API unavailable');
-                toast('Failed to load Pokédex. Check your connection.', 'err');
+                showToast('Failed to load Pokédex. Check your connection.', 'err');
             }
         }
-
-        async function fetchPokemon(name) {
-            if (pokemonCache[name]) return pokemonCache[name];
-            // Try localStorage cache
-            const cacheKey = `ptb_poke_${name}`;
-            const cached = localStorage.getItem(cacheKey);
-            if (cached) {
-                try {
-                    const p = JSON.parse(cached);
-                    pokemonCache[name] = p;
-                    return p;
-                } catch (e) { }
-            }
-            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-            if (!res.ok) throw new Error(`Not found: ${name}`);
-            const data = await res.json();
-            const types = data.types.map(t => t.type.name);
+        async function getPoke(name) {
+            if (pokeCache[name]) return pokeCache[name];
+            const ck = `ptb_poke_${name}`; const lc = localStorage.getItem(ck);
+            if (lc) { try { const p = JSON.parse(lc); pokeCache[name] = p; return p } catch (e) { } }
+            const r = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+            if (!r.ok) throw new Error('Not found: ' + name);
+            const d = await r.json();
             const p = {
-                name: data.name,
-                id: data.id,
-                types,
-                artwork: data.sprites?.other?.['official-artwork']?.front_default || artworkUrl(data.id),
-                sprite: data.sprites?.front_default || spriteUrl(data.id)
+                name: d.name, id: d.id, types: d.types.map(t => t.type.name),
+                artwork: d.sprites?.other?.['official-artwork']?.front_default || art(d.id),
+                sprite: d.sprites?.front_default || spr(d.id)
             };
-            pokemonCache[name] = p;
-            try { localStorage.setItem(cacheKey, JSON.stringify(p)) } catch (e) { }
+            pokeCache[name] = p;
+            try { localStorage.setItem(ck, JSON.stringify(p)) } catch (e) { }
             return p;
         }
 
-        // ─── TEAM MANAGEMENT ────────────────────────────────────────────────────────
-        async function selectPokemon(slotIdx, name) {
-            const slot = document.querySelector(`.poke-slot[data-slot="${slotIdx}"]`);
-            showSlotLoading(slotIdx, true);
-            closeAllDropdowns();
+        // ── TEAM MANAGEMENT ───────────────────────────────────────────────────────────
+        async function selectPoke(i, name) {
+            showLoading(i, true); closePortal();
             try {
-                const p = await fetchPokemon(name);
-                team[slotIdx] = p;
-                saveTeam();
-                renderSlot(slotIdx);
-                renderAnalysis();
-                updateTeamCount();
-            } catch (e) {
-                toast(`Could not load "${formatName(name)}"`, 'err');
-            } finally {
-                showSlotLoading(slotIdx, false);
-            }
+                const p = await getPoke(name);
+                team[i] = p; saveTeam(); renderSlot(i); renderAnalysis(); updateCount(); updateSaveBtn();
+            } catch (e) { showToast(`Could not load "${fname(name)}"`, 'err') }
+            finally { showLoading(i, false) }
+        }
+        function removePoke(i) { team[i] = null; saveTeam(); renderSlot(i); renderAnalysis(); updateCount(); updateSaveBtn() }
+        function clearTeam() { team = Array(6).fill(null); saveTeam(); renderGrid(); renderAnalysis(); updateCount(); updateSaveBtn() }
+
+        // ── STORAGE — CURRENT TEAM ────────────────────────────────────────────────────
+        function saveTeam() { localStorage.setItem('ptb_team_v2', JSON.stringify(team.map(p => p ? p.name : null))) }
+        async function restoreTeam() {
+            const s = localStorage.getItem('ptb_team_v2'); if (!s) return;
+            let names; try { names = JSON.parse(s) } catch (e) { return }
+            await Promise.all(names.map(async (n, i) => { if (n) try { team[i] = await getPoke(n) } catch (e) { } }));
+            renderGrid(); renderAnalysis(); updateCount(); updateSaveBtn();
         }
 
-        function removeFromTeam(slotIdx) {
-            team[slotIdx] = null;
-            saveTeam();
-            renderSlot(slotIdx);
-            renderAnalysis();
-            updateTeamCount();
-        }
+        // ── STORAGE — SAVED TEAMS ─────────────────────────────────────────────────────
+        function loadSaved() { try { saved = JSON.parse(localStorage.getItem('ptb_saved') || '[]') } catch (e) { saved = [] } }
+        function writeSaved() { localStorage.setItem('ptb_saved', JSON.stringify(saved)) }
 
-        function clearTeam() {
+        // ── SAVE MODAL ────────────────────────────────────────────────────────────────
+        function openSaveModal() {
+            if (!team.filter(Boolean).length) { showToast('Add some Pokémon first!', 'err'); return }
+            document.getElementById('modal-preview').innerHTML = team.map(p =>
+                p ? `<div class="mprev"><img src="${p.sprite || spr(p.id)}" alt="${p.name}" onerror="this.src='${art(p.id)}'"></div>`
+                    : `<div class="mprev empty"><div style="width:18px;height:18px;border-radius:50%;background:var(--border)"></div></div>`
+            ).join('');
+            const inp = document.getElementById('modal-input'); inp.value = '';
+            document.getElementById('modal-backdrop').classList.add('open');
+            setTimeout(() => inp.focus(), 230);
+        }
+        function closeModal() { document.getElementById('modal-backdrop').classList.remove('open') }
+        function backdropClick(e) { if (e.target === document.getElementById('modal-backdrop')) closeModal() }
+        function confirmSave() {
+            const name = document.getElementById('modal-input').value.trim();
+            if (!name) { showToast('Please enter a team name', 'err'); return }
+            const entry = { id: uid(), name, date: Date.now(), pokemon: team.map(p => p ? p.name : null) };
+            saved.unshift(entry); writeSaved();
+            closeModal(); renderSaved(); updateBadge(); showToast(`"${name}" saved!`, 'ok');
+        }
+        document.getElementById('modal-input').addEventListener('keydown', e => {
+            if (e.key === 'Enter') confirmSave();
+            if (e.key === 'Escape') closeModal();
+        });
+
+        async function loadSavedTeam(id) {
+            const entry = saved.find(s => s.id === id); if (!entry) return;
             team = Array(6).fill(null);
-            saveTeam();
-            renderTeamGrid();
-            renderAnalysis();
-            updateTeamCount();
+            await Promise.all(entry.pokemon.map(async (n, i) => { if (n) try { team[i] = await getPoke(n) } catch (e) { } }));
+            saveTeam(); renderGrid(); renderAnalysis(); updateCount(); updateSaveBtn();
+            showToast(`Loaded "${entry.name}"`, 'ok');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function deleteSaved(id) {
+            const idx = saved.findIndex(s => s.id === id); if (idx === -1) return;
+            const name = saved[idx].name;
+            saved.splice(idx, 1); writeSaved(); renderSaved(); updateBadge();
+            showToast(`"${name}" deleted`, 'ok');
         }
 
-        // ─── STORAGE ─────────────────────────────────────────────────────────────────
-        function saveTeam() {
-            const names = team.map(p => p ? p.name : null);
-            localStorage.setItem('ptb_team_v2', JSON.stringify(names));
+        // ── SAVED PANEL ───────────────────────────────────────────────────────────────
+        function toggleSaved() {
+            panelOpen = !panelOpen;
+            document.getElementById('saved-toggle').classList.toggle('open', panelOpen);
+            document.getElementById('saved-body').classList.toggle('open', panelOpen);
+            if (panelOpen) renderSaved();
+        }
+        function renderSaved() {
+            const el = document.getElementById('saved-inner');
+            if (!saved.length) {
+                el.innerHTML = `<div class="saved-empty">No saved teams yet.<br>Build a team and hit <strong>Save Team</strong> to keep it here.</div>`;
+                return;
+            }
+            el.innerHTML = `<div class="saved-grid">${saved.map(e => {
+                const sprites = e.pokemon.map(n => {
+                    if (!n) return `<div class="saved-sprite-wrap empty"><div style="width:8px;height:8px;border-radius:50%;background:var(--text-3)"></div></div>`;
+                    const c = pokeCache[n]; const pl = pokeList.find(p => p.name === n);
+                    const src = c ? c.sprite : (pl ? spr(pl.id) : '');
+                    return `<div class="saved-sprite-wrap"><img src="${src}" alt="${n}" onerror="this.style.opacity=.1"></div>`;
+                }).join('');
+                return `<div class="saved-card">
+      <div class="saved-card-name" title="${e.name}">${e.name}</div>
+      <div class="saved-card-date">${fdate(e.date)}</div>
+      <div class="saved-sprites">${sprites}</div>
+      <div class="saved-card-actions">
+        <button class="saved-load" onclick="loadSavedTeam('${e.id}')">Load Team</button>
+        <button class="saved-delete" onclick="deleteSaved('${e.id}')" title="Delete">✕</button>
+      </div>
+    </div>`;
+            }).join('')}</div>`;
+        }
+        function updateBadge() {
+            const el = document.getElementById('saved-badge');
+            if (el) el.textContent = saved.length;
         }
 
-        async function loadTeam() {
-            const saved = localStorage.getItem('ptb_team_v2');
-            if (!saved) return;
-            let names;
-            try { names = JSON.parse(saved) } catch (e) { return }
-            const promises = names.map(async (name, i) => {
-                if (!name) return;
-                try {
-                    const p = await fetchPokemon(name);
-                    team[i] = p;
-                } catch (e) { }
-            });
-            await Promise.all(promises);
-            renderTeamGrid();
-            renderAnalysis();
-            updateTeamCount();
+        // ── LAYOUT ────────────────────────────────────────────────────────────────────
+        function setLayout(mode) {
+            layout = mode;
+            localStorage.setItem('ptb_layout', mode);
+            document.getElementById('lt-grid').classList.toggle('active', mode === 'grid');
+            document.getElementById('lt-list').classList.toggle('active', mode === 'list');
+            renderGrid();
         }
 
-        // ─── RENDER ──────────────────────────────────────────────────────────────────
-        function renderTeamGrid() {
-            const grid = document.getElementById('team-grid');
-            grid.innerHTML = '';
+        // ── RENDER ────────────────────────────────────────────────────────────────────
+        function renderGrid() {
+            const g = document.getElementById('team-grid');
+            g.innerHTML = '';
+            g.classList.toggle('layout-list', layout === 'list');
             for (let i = 0; i < 6; i++) {
-                const div = document.createElement('div');
-                div.className = 'poke-slot' + (team[i] ? ' filled' : '');
-                div.dataset.slot = i;
-                div.innerHTML = buildSlotHTML(i);
-                grid.appendChild(div);
-                attachSlotEvents(i);
+                const d = document.createElement('div');
+                d.className = 'poke-slot' + (team[i] ? ' filled' : '');
+                d.dataset.slot = i;
+                d.innerHTML = slotHTML(i);
+                g.appendChild(d);
+                wireSlot(i);
             }
         }
-
         function renderSlot(i) {
-            const existing = document.querySelector(`.poke-slot[data-slot="${i}"]`);
-            if (!existing) return;
-            const wasFilled = existing.classList.contains('filled');
-            existing.className = 'poke-slot' + (team[i] ? ' filled' : '');
-            existing.dataset.slot = i;
-            existing.innerHTML = buildSlotHTML(i);
-            attachSlotEvents(i);
+            const el = document.querySelector(`.poke-slot[data-slot="${i}"]`); if (!el) return;
+            el.className = 'poke-slot' + (team[i] ? ' filled' : '');
+            el.innerHTML = slotHTML(i); wireSlot(i);
         }
-
-        function buildSlotHTML(i) {
+        function slotHTML(i) {
             const p = team[i];
-            const imgSrc = p ? (p.artwork || artworkUrl(p.id)) : '';
-            const spriteEl = p
-                ? `<img class="poke-sprite" src="${imgSrc}" alt="${p.name}"
-          onerror="this.src='${spriteUrl(p.id)}'" loading="lazy">`
-                : `<span class="slot-empty-icon">⬡</span>`;
-            const typesHTML = p ? p.types.map(typeBadge).join('') : '';
-            const nameHTML = p ? formatName(p.name) : '<span style="color:var(--text-3);font-size:13px;font-weight:500">Empty Slot</span>';
-            return `
-    <div class="sprite-area">
-      <div class="sprite-ring"></div>
-      ${spriteEl}
-      <div class="slot-loading-overlay" id="loading-${i}" style="display:none">
-        <div class="spinner"></div>
+            const img = p ? `<img class="poke-sprite" src="${p.artwork || art(p.id)}" alt="${p.name}" onerror="this.src='${spr(p.id)}'" loading="lazy">` : `<span class="slot-empty-icon">⬡</span>`;
+            const types = p ? p.types.map(tbadge).join('') : '';
+            const name = p ? fname(p.name) : `<span style="color:var(--text-3);font-size:13px;font-weight:500">Empty Slot</span>`;
+            const loader = `<div class="slot-loading-overlay" id="ld-${i}" style="display:none"><div class="spinner"></div></div>`;
+            const search = `<div class="search-wrap" id="sw-${i}"><input class="search-input" id="si-${i}" type="text" placeholder="${p ? 'Change Pokémon…' : 'Search Pokémon…'}" autocomplete="off" spellcheck="false"><button class="search-x" id="sx-${i}" onclick="clearSearch(${i})">×</button></div>`;
+            const actions = `<div class="slot-actions"><button class="slot-remove" onclick="removePoke(${i})"><span style="font-size:13px">×</span> Remove</button></div>`;
+            const spriteArea = `<div class="sprite-area"><div class="sprite-ring"></div>${img}${loader}</div>`;
+
+            if (layout === 'list') return `${spriteArea}
+    <div class="slot-body">
+      <div class="slot-main-info">
+        <div class="slot-num">SLOT ${String(i + 1).padStart(2, '0')}</div>
+        <div class="slot-name">${name}</div>
+        <div class="slot-types">${types}</div>
       </div>
-    </div>
+      <div class="slot-search-col">${search}${actions}</div>
+    </div>`;
+
+            return `${spriteArea}
     <div class="slot-body">
       <div class="slot-num">SLOT ${String(i + 1).padStart(2, '0')}</div>
-      <div class="slot-name">${nameHTML}</div>
-      <div class="slot-types">${typesHTML}</div>
-      <div class="search-wrap" id="search-wrap-${i}">
-        <input
-          class="search-input"
-          id="search-${i}"
-          type="text"
-          placeholder="${p ? 'Change Pokémon…' : 'Search Pokémon…'}"
-          autocomplete="off"
-          spellcheck="false"
-        >
-        <button class="search-x" id="search-x-${i}" onclick="clearSearch(${i})">×</button>
-      </div>
-      <div class="slot-actions">
-        <button class="slot-remove" onclick="removeFromTeam(${i})">
-          <span style="font-size:13px">×</span> Remove
-        </button>
-      </div>
+      <div class="slot-name">${name}</div>
+      <div class="slot-types">${types}</div>
+      ${search}${actions}
     </div>`;
         }
 
-        function attachSlotEvents(i) {
-            const input = document.getElementById(`search-${i}`);
-            const xBtn = document.getElementById(`search-x-${i}`);
-            if (!input) return;
-
-            input.addEventListener('input', () => {
-                const q = input.value.trim();
-                xBtn.classList.toggle('show', q.length > 0);
-                if (q.length > 0) showDropdown(i, q);
-                else closeDropdown();
+        // ── SLOT EVENTS ───────────────────────────────────────────────────────────────
+        function wireSlot(i) {
+            const inp = document.getElementById(`si-${i}`);
+            const xb = document.getElementById(`sx-${i}`);
+            if (!inp) return;
+            inp.addEventListener('input', () => {
+                const q = inp.value.trim();
+                xb.classList.toggle('show', q.length > 0);
+                q.length ? showPortal(i, q) : closePortal();
             });
-
-            input.addEventListener('focus', () => {
-                const q = input.value.trim();
-                if (q.length > 0) showDropdown(i, q);
-            });
-
-            input.addEventListener('blur', () => {
-                // small delay so mousedown on item fires first
-                setTimeout(() => { if (portalSlot === i) closeDropdown(); }, 150);
-            });
-
-            input.addEventListener('keydown', (e) => {
+            inp.addEventListener('focus', () => { const q = inp.value.trim(); if (q) showPortal(i, q) });
+            inp.addEventListener('blur', () => setTimeout(() => { if (portalSlot === i) closePortal() }, 150));
+            inp.addEventListener('keydown', e => {
                 const items = portal.querySelectorAll('.ac-item');
-                if (!items.length) return;
-                if (e.key === 'ArrowDown') { e.preventDefault(); moveHighlight(items, 1) }
-                else if (e.key === 'ArrowUp') { e.preventDefault(); moveHighlight(items, -1) }
-                else if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const hi = portal.querySelector('.ac-item.hi');
-                    if (hi) {
-                        selectPokemon(i, hi.dataset.name);
-                        clearSearch(i);
-                    }
-                }
-                else if (e.key === 'Escape') { closeDropdown() }
+                if (e.key === 'ArrowDown') { e.preventDefault(); hMove(items, 1) }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); hMove(items, -1) }
+                else if (e.key === 'Enter') { e.preventDefault(); const h = portal.querySelector('.ac-item.hi'); if (h) { selectPoke(i, h.dataset.name); clearSearch(i) } }
+                else if (e.key === 'Escape') closePortal();
             });
-
-            // Reposition portal on scroll/resize
-            input.addEventListener('scroll', () => { if (portalSlot === i) positionPortal(input) }, true);
         }
-
         function clearSearch(i) {
-            const input = document.getElementById(`search-${i}`);
-            const xBtn = document.getElementById(`search-x-${i}`);
-            if (input) { input.value = ''; input.focus() }
-            if (xBtn) xBtn.classList.remove('show');
-            closeDropdown(i);
+            const inp = document.getElementById(`si-${i}`); const xb = document.getElementById(`sx-${i}`);
+            if (inp) { inp.value = ''; inp.focus() } if (xb) xb.classList.remove('show'); closePortal();
         }
-
-        function moveHighlight(items, dir) {
-            let cur = -1;
-            items.forEach((el, idx) => { if (el.classList.contains('hi')) cur = idx; });
+        function hMove(items, dir) {
+            let cur = -1; items.forEach((el, idx) => { if (el.classList.contains('hi')) cur = idx });
             items.forEach(el => el.classList.remove('hi'));
-            let next = cur + dir;
-            if (next < 0) next = items.length - 1;
-            if (next >= items.length) next = 0;
-            items[next].classList.add('hi');
-            items[next].scrollIntoView({ block: 'nearest' });
+            let n = cur + dir; if (n < 0) n = items.length - 1; if (n >= items.length) n = 0;
+            if (items[n]) { items[n].classList.add('hi'); items[n].scrollIntoView({ block: 'nearest' }) }
         }
 
-        // ─── PORTAL DROPDOWN ─────────────────────────────────────────────────────────
+        // ── PORTAL DROPDOWN ───────────────────────────────────────────────────────────
         let portalSlot = -1;
         const portal = document.getElementById('ac-portal');
 
-        function showDropdown(slotIdx, query) {
-            const input = document.getElementById(`search-${slotIdx}`);
-            if (!input) return;
-
-            portalSlot = slotIdx;
-            portal.classList.add('open');
-            positionPortal(input);
-
-            if (!listLoaded) {
-                portal.innerHTML = '<div class="ac-loading-msg">Loading Pokédex…</div>';
-                return;
-            }
-            const q = query.toLowerCase();
-            const starts = pokemonList.filter(p => p.name.startsWith(q));
-            const contains = pokemonList.filter(p => !p.name.startsWith(q) && p.name.includes(q));
-            const results = [...starts, ...contains].slice(0, 9);
-
-            if (!results.length) {
-                portal.innerHTML = '<div class="ac-no-result">No Pokémon found</div>';
-                return;
-            }
-            portal.innerHTML = results.map(p => `
-    <div class="ac-item" data-name="${p.name}">
-      <img src="${spriteUrl(p.id)}" alt="${p.name}" onerror="this.style.opacity=0">
-      <span class="ac-item-name">${formatName(p.name)}</span>
-    </div>
-  `).join('');
-
+        function showPortal(idx, q) {
+            const inp = document.getElementById(`si-${idx}`); if (!inp) return;
+            portalSlot = idx; portal.classList.add('open'); posPortal(inp);
+            if (!listReady) { portal.innerHTML = '<div class="ac-loading-msg">Loading Pokédex…</div>'; return }
+            const ql = q.toLowerCase();
+            const st = pokeList.filter(p => p.name.startsWith(ql));
+            const co = pokeList.filter(p => !p.name.startsWith(ql) && p.name.includes(ql));
+            const res = [...st, ...co].slice(0, 9);
+            if (!res.length) { portal.innerHTML = '<div class="ac-no-result">No Pokémon found</div>'; return }
+            portal.innerHTML = res.map(p => `<div class="ac-item" data-name="${p.name}"><img src="${spr(p.id)}" alt="${p.name}" onerror="this.style.opacity=0"><span class="ac-item-name">${fname(p.name)}</span></div>`).join('');
             portal.querySelectorAll('.ac-item').forEach(el => {
-                el.addEventListener('mousedown', e => {
-                    e.preventDefault(); // prevent blur before click
-                    const name = el.dataset.name;
-                    selectPokemon(slotIdx, name);
-                    clearSearch(slotIdx);
-                });
+                el.addEventListener('mousedown', e => { e.preventDefault(); selectPoke(idx, el.dataset.name); clearSearch(idx) });
             });
         }
+        function posPortal(inp) {
+            const r = inp.getBoundingClientRect();
+            portal.style.left = r.left + 'px'; portal.style.top = (r.bottom + 5) + 'px'; portal.style.width = r.width + 'px';
+        }
+        function closePortal() { portal.classList.remove('open'); portalSlot = -1 }
 
-        function positionPortal(input) {
-            const r = input.getBoundingClientRect();
-            portal.style.left = r.left + 'px';
-            portal.style.top = (r.bottom + 5) + 'px';
-            portal.style.width = r.width + 'px';
+        document.addEventListener('mousedown', e => {
+            if (!e.target.closest('.search-wrap') && !e.target.closest('#ac-portal')) closePortal();
+        });
+        window.addEventListener('scroll', () => {
+            if (portalSlot >= 0) { const inp = document.getElementById(`si-${portalSlot}`); inp ? posPortal(inp) : closePortal() }
+        }, true);
+        window.addEventListener('resize', () => { if (portalSlot >= 0) closePortal() });
+
+        // ── UI HELPERS ────────────────────────────────────────────────────────────────
+        function showLoading(i, v) { const el = document.getElementById(`ld-${i}`); if (el) el.style.display = v ? 'flex' : 'none' }
+        function updateCount() { const n = team.filter(Boolean).length; const el = document.getElementById('team-count'); if (el) el.textContent = `${n} / 6` }
+        function updateSaveBtn() { const btn = document.getElementById('btn-save'); if (btn) btn.disabled = !team.filter(Boolean).length }
+        let toastT;
+        function showToast(msg, type = 'ok') {
+            const el = document.getElementById('toast'); if (!el) return;
+            el.textContent = msg; el.className = `toast show ${type}`;
+            clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 3200);
+        }
+        function setPill(s, m) { const el = document.getElementById('api-pill'); if (!el) return; el.className = `api-pill ${s}`; el.textContent = m }
+        function toggleTheme() {
+            const html = document.documentElement, dark = html.dataset.theme === 'dark';
+            html.dataset.theme = dark ? 'light' : 'dark';
+            document.getElementById('theme-icon').textContent = dark ? '☽' : '☀';
+            document.getElementById('theme-lbl').textContent = dark ? 'Dark' : 'Light';
+            localStorage.setItem('ptb_theme', dark ? 'light' : 'dark');
         }
 
-        function closeDropdown() {
-            portal.classList.remove('open');
-            portalSlot = -1;
+        // ── ANALYSIS ─────────────────────────────────────────────────────────────────
+        function analyzeOff() {
+            const f = team.filter(Boolean); if (!f.length) return null;
+            const ts = new Set(f.flatMap(p => p.types)); const res = {};
+            for (const d of TYPES) { let best = 0, ba = null; for (const a of ts) { const e = eff(a, d); if (e > best) { best = e; ba = a } } res[d] = { mult: best, atk: ba } }
+            return res;
         }
-
-        function closeAllDropdowns() { closeDropdown() }
-
-        function showSlotLoading(i, show) {
-            const el = document.getElementById(`loading-${i}`);
-            if (el) el.style.display = show ? 'flex' : 'none';
-        }
-
-        function updateTeamCount() {
-            const n = team.filter(Boolean).length;
-            const el = document.getElementById('team-count');
-            if (el) el.textContent = `${n} / 6`;
-        }
-
-        // ─── ANALYSIS ────────────────────────────────────────────────────────────────
-        function analyzeOffense() {
-            const filled = team.filter(Boolean);
-            if (!filled.length) return null;
-            const teamTypes = new Set(filled.flatMap(p => p.types));
-            const result = {};
-            for (const def of TYPES) {
-                let best = 0;
-                let bestAtk = null;
-                for (const atk of teamTypes) {
-                    const e = getEff(atk, def);
-                    if (e > best) { best = e; bestAtk = atk }
+        function analyzeDef() {
+            const f = team.filter(Boolean); if (!f.length) return null;
+            const res = {};
+            for (const a of TYPES) {
+                const c = { immune: 0, quadResist: 0, resist: 0, neutral: 0, weak: 0, quadWeak: 0 };
+                for (const p of f) {
+                    const m = defMult(a, p.types);
+                    if (m === 0) c.immune++; else if (m <= .25) c.quadResist++; else if (m < 1) c.resist++;
+                    else if (m >= 4) c.quadWeak++; else if (m >= 2) c.weak++; else c.neutral++;
                 }
-                result[def] = { mult: best, atk: bestAtk };
+                res[a] = c;
             }
-            return result;
+            return res;
         }
-
-        function analyzeDefense() {
-            const filled = team.filter(Boolean);
-            if (!filled.length) return null;
-            const result = {};
-            for (const atk of TYPES) {
-                const counts = { immune: 0, quadResist: 0, resist: 0, neutral: 0, weak: 0, quadWeak: 0 };
-                for (const p of filled) {
-                    const m = getDefMult(atk, p.types);
-                    if (m === 0) counts.immune++;
-                    else if (m <= 0.25) counts.quadResist++;
-                    else if (m < 1) counts.resist++;
-                    else if (m >= 4) counts.quadWeak++;
-                    else if (m >= 2) counts.weak++;
-                    else counts.neutral++;
-                }
-                result[atk] = counts;
-            }
-            return result;
+        function calcBal(o, d) {
+            if (!o || !d) return null;
+            let gaps = 0; for (const t of TYPES) { if (o[t].mult < 2) gaps++ }
+            let mw = 0; for (const t of TYPES) { const c = d[t]; if ((c.weak + c.quadWeak) >= 3) mw++ }
+            let sc = Math.max(0, Math.min(100, 100 - gaps * 4 - mw * 12));
+            let lv, cl;
+            if (sc >= 80) { lv = 'Excellent'; cl = 'bal-excellent' }
+            else if (sc >= 60) { lv = 'Good'; cl = 'bal-good' }
+            else if (sc >= 40) { lv = 'Moderate'; cl = 'bal-moderate' }
+            else { lv = 'Poor'; cl = 'bal-poor' }
+            return { score: sc, gaps, mw, lv, cl };
         }
-
-        function calcBalance(offense, defense) {
-            if (!offense || !defense) return null;
-            const filled = team.filter(Boolean);
-            // Coverage gaps: types with no super effective coverage
-            let gaps = 0;
-            for (const def of TYPES) { if (offense[def].mult < 2) gaps++ }
-            // Major weaknesses: types hitting 3+ pokemon for >=2x
-            let majorWeak = 0;
-            for (const atk of TYPES) {
-                const c = defense[atk];
-                if ((c.weak + c.quadWeak) >= 3) majorWeak++;
-            }
-            let score = 100 - gaps * 4 - majorWeak * 12;
-            score = Math.max(0, Math.min(100, score));
-            let level, cls;
-            if (score >= 80) { level = 'Excellent'; cls = 'bal-excellent' }
-            else if (score >= 60) { level = 'Good'; cls = 'bal-good' }
-            else if (score >= 40) { level = 'Moderate'; cls = 'bal-moderate' }
-            else { level = 'Poor'; cls = 'bal-poor' }
-            return { score, gaps, majorWeak, level, cls, filled: filled.length };
-        }
-
         function renderAnalysis() {
             const root = document.getElementById('analysis-root');
-            const filled = team.filter(Boolean);
-            if (!filled.length) {
-                root.innerHTML = `
-      <div class="analysis-empty">
-        <div class="analysis-empty-icon">⬡</div>
-        Add Pokémon to your team to see type analysis
-      </div>`;
-                return;
-            }
-            const offense = analyzeOffense();
-            const defense = analyzeDefense();
-            const balance = calcBalance(offense, defense);
-
-            // Coverage gaps list
-            const gaps = TYPES.filter(t => offense[t].mult < 2).map(formatName);
-            // Type coverage counts
-            const superEff = TYPES.filter(t => offense[t].mult >= 2).length;
-
-            // Build weak/resist/immune lists for defense
-            const weakTo = TYPES
-                .filter(t => (defense[t].weak + defense[t].quadWeak) > 0)
-                .sort((a, b) => (defense[b].weak + defense[b].quadWeak) - (defense[a].weak + defense[a].quadWeak));
-            const resistTo = TYPES
-                .filter(t => (defense[t].resist + defense[t].quadResist) > 0)
-                .sort((a, b) => (defense[b].resist + defense[b].quadResist) - (defense[a].resist + defense[a].quadResist));
-            const immuneTo = TYPES
-                .filter(t => defense[t].immune > 0);
-
+            const f = team.filter(Boolean);
+            if (!f.length) { root.innerHTML = `<div class="analysis-empty"><div class="analysis-empty-icon">⬡</div>Add Pokémon to your team to see type analysis</div>`; return }
+            const o = analyzeOff(), d = analyzeDef(), b = calcBal(o, d);
+            const gapNames = TYPES.filter(t => o[t].mult < 2).map(fname);
+            const sup = TYPES.filter(t => o[t].mult >= 2).length;
+            const weak = TYPES.filter(t => (d[t].weak + d[t].quadWeak) > 0).sort((a, b) => (d[b].weak + d[b].quadWeak) - (d[a].weak + d[a].quadWeak));
+            const res = TYPES.filter(t => (d[t].resist + d[t].quadResist) > 0).sort((a, b) => (d[b].resist + d[b].quadResist) - (d[a].resist + d[a].quadResist));
+            const imm = TYPES.filter(t => d[t].immune > 0);
+            const dot = (t) => `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${TYPE_COLORS[t] || '#888'};flex-shrink:0"></span>`;
             root.innerHTML = `
-    <div class="section-header" style="margin-top:8px">
-      <div class="section-label">Analysis</div>
+  <div class="section-header" style="margin-top:4px"><div class="section-label">Analysis</div></div>
+  <div class="analysis-wrap">
+    <div class="synergy-card">
+      <div class="card-title">◎ Team Synergy</div>
+      <div class="synergy-stats">
+        <div class="syn-stat"><div class="syn-val">${f.length}</div><div class="syn-lbl">Pokémon</div></div>
+        <div class="syn-stat"><div class="syn-val" style="color:var(--good)">${sup}</div><div class="syn-lbl">Types Covered</div></div>
+        <div class="syn-stat"><div class="syn-val" style="color:${b.gaps > 5 ? 'var(--danger)' : b.gaps > 2 ? 'var(--warn)' : 'var(--good)'}">${b.gaps}</div><div class="syn-lbl">Coverage Gaps</div></div>
+        <div class="syn-stat"><div class="syn-val" style="color:${b.mw > 3 ? 'var(--danger)' : b.mw > 1 ? 'var(--warn)' : 'var(--good)'}">${b.mw}</div><div class="syn-lbl">Major Weaknesses</div></div>
+      </div>
+      <div class="balance-row">
+        <span class="balance-lbl">Overall Balance:</span>
+        <span class="balance-badge ${b.cl}">● ${b.lv}</span>
+        <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-3)">${b.score}/100</span>
+      </div>
+      ${b.gaps > 0 ? `<div class="insight-row"><span style="font-size:11px;color:var(--text-3)">Gaps:</span>${gapNames.slice(0, 9).map(g => `<span class="insight-chip">${g}</span>`).join('')}${gapNames.length > 9 ? `<span class="insight-chip">+${gapNames.length - 9}</span>` : ''}</div>` : ''}
     </div>
-    <div class="analysis-wrap">
-      <div class="synergy-card">
-        <div class="card-title"><span class="card-title-icon">◎</span> Team Synergy</div>
-        <div class="synergy-stats">
-          <div class="syn-stat">
-            <div class="syn-val">${filled.length}</div>
-            <div class="syn-lbl">Pokémon</div>
-          </div>
-          <div class="syn-stat">
-            <div class="syn-val" style="color:var(--good)">${superEff}</div>
-            <div class="syn-lbl">Types Covered</div>
-          </div>
-          <div class="syn-stat">
-            <div class="syn-val" style="color:${balance.gaps > 5 ? 'var(--danger)' : balance.gaps > 2 ? 'var(--warn)' : 'var(--good)'}">${balance.gaps}</div>
-            <div class="syn-lbl">Coverage Gaps</div>
-          </div>
-          <div class="syn-stat">
-            <div class="syn-val" style="color:${balance.majorWeak > 3 ? 'var(--danger)' : balance.majorWeak > 1 ? 'var(--warn)' : 'var(--good)'}">${balance.majorWeak}</div>
-            <div class="syn-lbl">Major Weaknesses</div>
-          </div>
-        </div>
-        <div class="balance-row">
-          <span class="balance-lbl">Overall Balance:</span>
-          <span class="balance-badge ${balance.cls}">● ${balance.level}</span>
-          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-3)">${balance.score}/100</span>
-        </div>
-        ${balance.gaps > 0 ? `
-        <div class="insight-row">
-          <span style="font-size:11px;color:var(--text-3)">Coverage gaps:</span>
-          ${gaps.slice(0, 8).map(g => `<span class="insight-chip">${g}</span>`).join('')}
-          ${gaps.length > 8 ? `<span class="insight-chip">+${gaps.length - 8} more</span>` : ''}
-        </div>`: ''}
-      </div>
-      <div class="analysis-grid">
-        <div class="analysis-card">
-          <div class="card-title"><span class="card-title-icon">⚔</span> Offensive Coverage</div>
-          <div class="coverage-grid">
-            ${TYPES.map(def => {
-                const { mult, atk } = offense[def];
-                let cls, label;
-                if (mult >= 2) { cls = 'eff-super'; label = '2×' }
-                else if (mult === 1) { cls = 'eff-neutral'; label = '1×' }
-                else if (mult > 0 && mult < 1) { cls = 'eff-resist'; label = '½×' }
-                else { cls = 'eff-zero'; label = '—' }
-                if (mult >= 4) { label = '4×' }
-                return `<div class="cov-item">
-                <span class="type-badge" style="background:${TYPE_COLORS[def] || '#888'}">${def}</span>
-                <span class="cov-eff ${cls}">${label}</span>
-              </div>`;
-            }).join('')}
-          </div>
-        </div>
-        <div class="analysis-card">
-          <div class="card-title"><span class="card-title-icon">🛡</span> Defensive Analysis</div>
-          <div class="def-section">
-            <div class="def-label lbl-weak">⬤ Weak To</div>
-            <div class="def-chips">
-              ${weakTo.length ? weakTo.map(t => {
-                const c = defense[t];
-                const cnt = c.weak + c.quadWeak;
-                const clr = TYPE_COLORS[t] || '#888';
-                return `<div class="def-chip chip-weak">
-                  <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${clr};flex-shrink:0"></span>
-                  <span style="color:var(--text-1)">${formatName(t)}</span>
-                  <span class="chip-count">×${cnt}</span>
-                </div>`;
-            }).join('') : '<div class="def-empty">No shared weaknesses</div>'}
-            </div>
-          </div>
-          <div class="def-section">
-            <div class="def-label lbl-resist">⬤ Resistant To</div>
-            <div class="def-chips">
-              ${resistTo.length ? resistTo.map(t => {
-                const c = defense[t];
-                const cnt = c.resist + c.quadResist;
-                const clr = TYPE_COLORS[t] || '#888';
-                return `<div class="def-chip chip-resist">
-                  <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${clr};flex-shrink:0"></span>
-                  <span style="color:var(--text-1)">${formatName(t)}</span>
-                  <span class="chip-count">×${cnt}</span>
-                </div>`;
-            }).join('') : '<div class="def-empty">No resistances</div>'}
-            </div>
-          </div>
-          ${immuneTo.length ? `
-          <div class="def-section">
-            <div class="def-label lbl-immune">⬤ Immune To</div>
-            <div class="def-chips">
-              ${immuneTo.map(t => {
-                const clr = TYPE_COLORS[t] || '#888';
-                return `<div class="def-chip chip-immune">
-                  <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${clr};flex-shrink:0"></span>
-                  <span style="color:var(--text-1)">${formatName(t)}</span>
-                  <span class="chip-count">×${defense[t].immune}</span>
-                </div>`;
-            }).join('')}
-            </div>
-          </div>` : ''}
+    <div class="analysis-grid">
+      <div class="analysis-card">
+        <div class="card-title">⚔ Offensive Coverage</div>
+        <div class="coverage-grid">
+          ${TYPES.map(t => { const { mult } = o[t]; let cl, lb; if (mult >= 4) { cl = 'eff-super'; lb = '4×' } else if (mult >= 2) { cl = 'eff-super'; lb = '2×' } else if (mult === 1) { cl = 'eff-neutral'; lb = '1×' } else if (mult > 0) { cl = 'eff-resist'; lb = '½×' } else { cl = 'eff-zero'; lb = '—' }; return `<div class="cov-item"><span class="type-badge" style="background:${TYPE_COLORS[t] || '#888'}">${t}</span><span class="cov-eff ${cl}">${lb}</span></div>` }).join('')}
         </div>
       </div>
-    </div>`;
+      <div class="analysis-card">
+        <div class="card-title">🛡 Defensive Analysis</div>
+        <div class="def-section">
+          <div class="def-label lbl-weak">⬤ Weak To</div>
+          <div class="def-chips">
+            ${weak.length ? weak.map(t => `<div class="def-chip chip-weak">${dot(t)}<span style="color:var(--text-1)">${fname(t)}</span><span class="chip-count">×${d[t].weak + d[t].quadWeak}</span></div>`).join('') : '<div class="def-empty">No shared weaknesses</div>'}
+          </div>
+        </div>
+        <div class="def-section">
+          <div class="def-label lbl-resist">⬤ Resistant To</div>
+          <div class="def-chips">
+            ${res.length ? res.map(t => `<div class="def-chip chip-resist">${dot(t)}<span style="color:var(--text-1)">${fname(t)}</span><span class="chip-count">×${d[t].resist + d[t].quadResist}</span></div>`).join('') : '<div class="def-empty">No resistances</div>'}
+          </div>
+        </div>
+        ${imm.length ? `<div class="def-section"><div class="def-label lbl-immune">⬤ Immune To</div><div class="def-chips">${imm.map(t => `<div class="def-chip chip-immune">${dot(t)}<span style="color:var(--text-1)">${fname(t)}</span><span class="chip-count">×${d[t].immune}</span></div>`).join('')}</div></div>` : ''}
+      </div>
+    </div>
+  </div>`;
         }
 
-        // ─── UI UTILITIES ─────────────────────────────────────────────────────────────
-        let toastTimer;
-        function toast(msg, type = 'ok') {
-            const el = document.getElementById('toast');
-            if (!el) return;
-            el.textContent = msg;
-            el.className = `toast show ${type}`;
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
-        }
-
-        function setPill(state, msg) {
-            const el = document.getElementById('api-pill');
-            if (!el) return;
-            el.className = `api-pill ${state}`;
-            el.textContent = msg;
-        }
-
-        function toggleTheme() {
-            const html = document.documentElement;
-            const isDark = html.dataset.theme === 'dark';
-            html.dataset.theme = isDark ? 'light' : 'dark';
-            const icon = document.getElementById('theme-icon');
-            const lbl = document.getElementById('theme-lbl');
-            if (icon) icon.textContent = isDark ? '☽' : '☀';
-            if (lbl) lbl.textContent = isDark ? 'Dark' : 'Light';
-            localStorage.setItem('ptb_theme', isDark ? 'light' : 'dark');
-        }
-
-        // Click outside to close dropdown
-        document.addEventListener('mousedown', e => {
-            if (!e.target.closest('.search-wrap') && !e.target.closest('#ac-portal')) closeDropdown();
-        });
-
-        // Reposition on scroll / resize
-        window.addEventListener('scroll', () => {
-            if (portalSlot >= 0) {
-                const input = document.getElementById(`search-${portalSlot}`);
-                if (input) positionPortal(input); else closeDropdown();
-            }
-        }, true);
-        window.addEventListener('resize', () => { if (portalSlot >= 0) closeDropdown() });
-
-        // ─── INIT ─────────────────────────────────────────────────────────────────────
+        // ── INIT ──────────────────────────────────────────────────────────────────────
         async function init() {
-            // Restore theme
-            const savedTheme = localStorage.getItem('ptb_theme');
-            if (savedTheme) {
-                document.documentElement.dataset.theme = savedTheme;
-                const icon = document.getElementById('theme-icon');
-                const lbl = document.getElementById('theme-lbl');
-                if (savedTheme === 'light') {
-                    if (icon) icon.textContent = '☽';
-                    if (lbl) lbl.textContent = 'Dark';
-                }
-            }
-            // Render empty slots first
-            renderTeamGrid();
-            renderAnalysis();
-            // Load API list
-            await fetchPokemonList();
-            // Load saved team
-            await loadTeam();
+            const th = localStorage.getItem('ptb_theme');
+            if (th) { document.documentElement.dataset.theme = th; if (th === 'light') { document.getElementById('theme-icon').textContent = '☽'; document.getElementById('theme-lbl').textContent = 'Dark' } }
+            const la = localStorage.getItem('ptb_layout') || 'grid';
+            layout = la;
+            document.getElementById('lt-grid').classList.toggle('active', la === 'grid');
+            document.getElementById('lt-list').classList.toggle('active', la === 'list');
+            document.getElementById('team-grid').classList.toggle('layout-list', la === 'list');
+            loadSaved(); updateBadge();
+            renderGrid(); renderAnalysis();
+            await loadList();
+            await restoreTeam();
         }
-
         init();
     </script>
 </body>
