@@ -6,49 +6,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
   <link rel="icon" href="img-resizer.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Syne:wght@600;700;800&display=swap"
+    rel="stylesheet">
   <title>Image Resizer</title>
   <style>
     /* =========================
        Base / Theme Variables
        ========================= */
     :root {
-      --bg: #f4f7fb;
-      --bg-elev: rgba(255, 255, 255, 0.82);
-      --card: rgba(255, 255, 255, 0.9);
+      --bg: #f0f4fa;
+      --bg-elev: rgba(255, 255, 255, 0.88);
+      --card: rgba(255, 255, 255, 0.92);
       --card-strong: #ffffff;
-      --text: #111827;
+      --text: #0d1526;
       --muted: #6b7280;
-      --line: rgba(17, 24, 39, 0.08);
+      --line: rgba(17, 24, 39, 0.07);
       --accent: #2563eb;
       --accent-2: #1d4ed8;
       --accent-soft: rgba(37, 99, 235, 0.1);
       --good: #16a34a;
+      --good-soft: rgba(22, 163, 74, 0.1);
       --warn: #ea580c;
+      --warn-soft: rgba(234, 88, 12, 0.1);
       --danger: #dc2626;
-      --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
-      --shadow-soft: 0 10px 25px rgba(15, 23, 42, 0.08);
+      --shadow: 0 24px 48px rgba(15, 23, 42, 0.09);
+      --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.07);
       --radius: 22px;
       --radius-sm: 14px;
       --transition: 180ms ease;
-      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font: 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
     }
 
     [data-theme="dark"] {
-      --bg: #0b1220;
-      --bg-elev: rgba(17, 24, 39, 0.78);
-      --card: rgba(17, 24, 39, 0.84);
-      --card-strong: #111827;
-      --text: #f3f4f6;
-      --muted: #9ca3af;
-      --line: rgba(255, 255, 255, 0.08);
+      --bg: #080e1c;
+      --bg-elev: rgba(13, 20, 38, 0.85);
+      --card: rgba(15, 22, 40, 0.88);
+      --card-strong: #0f1828;
+      --text: #eef0f6;
+      --muted: #8892a4;
+      --line: rgba(255, 255, 255, 0.07);
       --accent: #60a5fa;
       --accent-2: #3b82f6;
       --accent-soft: rgba(96, 165, 250, 0.12);
       --good: #4ade80;
+      --good-soft: rgba(74, 222, 128, 0.1);
       --warn: #fb923c;
+      --warn-soft: rgba(251, 146, 60, 0.1);
       --danger: #f87171;
-      --shadow: 0 22px 48px rgba(0, 0, 0, 0.28);
-      --shadow-soft: 0 12px 28px rgba(0, 0, 0, 0.24);
+      --shadow: 0 24px 56px rgba(0, 0, 0, 0.34);
+      --shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.26);
     }
 
     * {
@@ -60,13 +70,32 @@
       height: 100%;
     }
 
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(127, 127, 127, 0.25);
+      border-radius: 99px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(127, 127, 127, 0.45);
+    }
+
     body {
       margin: 0;
       font-family: var(--font);
       color: var(--text);
       background:
-        radial-gradient(900px 500px at 10% -10%, rgba(37, 99, 235, 0.12), transparent 60%),
-        radial-gradient(700px 380px at 100% 0%, rgba(96, 165, 250, 0.11), transparent 45%),
+        radial-gradient(ellipse 900px 500px at 10% -10%, rgba(37, 99, 235, 0.13), transparent 60%),
+        radial-gradient(ellipse 700px 380px at 95% 5%, rgba(139, 92, 246, 0.1), transparent 50%),
+        radial-gradient(ellipse 600px 600px at 50% 120%, rgba(96, 165, 250, 0.07), transparent 60%),
         var(--bg);
       transition: background var(--transition), color var(--transition);
     }
@@ -81,10 +110,17 @@
       cursor: pointer;
     }
 
+    h1,
+    h2,
+    h3 {
+      font-family: var(--font-display);
+      letter-spacing: -0.03em;
+    }
+
     .app {
-      width: min(1280px, calc(100% - 24px));
+      width: min(1300px, calc(100% - 24px));
       margin: 0 auto;
-      padding: 18px 0 22px;
+      padding: 18px 0 28px;
     }
 
     /* =========================
@@ -96,17 +132,21 @@
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 18px;
-      padding: 16px 18px;
+      padding: 14px 18px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--bg-elev);
-      backdrop-filter: blur(16px);
-      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    [data-theme="dark"] .topbar {
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.04);
     }
 
     .brand {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 14px;
       min-width: 0;
     }
@@ -119,26 +159,32 @@
       place-items: center;
       background: linear-gradient(135deg, var(--accent), #8b5cf6);
       color: white;
-      box-shadow: 0 12px 26px rgba(37, 99, 235, 0.24);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       flex: 0 0 auto;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .brand-mark:hover {
+      transform: rotate(-6deg) scale(1.05);
+      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
     }
 
     .brand h1 {
       margin: 0;
-      font-size: clamp(1.2rem, 2vw, 1.7rem);
+      font-size: clamp(1.15rem, 2vw, 1.65rem);
       line-height: 1.15;
-      letter-spacing: -0.03em;
     }
 
     .brand p {
-      margin: 4px 0 0;
+      margin: 3px 0 0;
       color: var(--muted);
-      font-size: 0.96rem;
+      font-size: 0.93rem;
+      font-weight: 300;
     }
 
     .top-actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
     }
@@ -149,18 +195,24 @@
     .secondary-btn {
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 11px 14px;
-      transition: transform var(--transition), background var(--transition), border-color var(--transition), opacity var(--transition);
+      padding: 10px 16px;
+      transition: transform 150ms ease, background var(--transition), border-color var(--transition), opacity var(--transition), box-shadow 150ms ease;
       background: var(--card);
       color: var(--text);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.03);
+      font-weight: 500;
+      font-size: 0.92rem;
     }
 
     .ghost-btn:hover,
-    .primary-btn:hover,
-    .danger-btn:hover,
     .secondary-btn:hover {
       transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .ghost-btn:active,
+    .secondary-btn:active,
+    .danger-btn:active {
+      transform: translateY(0) scale(0.97);
     }
 
     .primary-btn {
@@ -168,6 +220,32 @@
       color: white;
       border-color: transparent;
       font-weight: 700;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .primary-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.22) 50%, transparent 60%);
+      background-size: 200% 100%;
+      background-position: 200% 0;
+      transition: background-position 500ms ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    .primary-btn:hover::after {
+      background-position: -50% 0;
+    }
+
+    .primary-btn:active {
+      transform: translateY(0) scale(0.97);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
     }
 
     .danger-btn {
@@ -175,19 +253,35 @@
       color: var(--danger);
     }
 
-    .secondary-btn {
-      background: var(--accent-soft);
-      color: var(--text);
-      border-color: transparent;
-      font-weight: 600;
+    .danger-btn:hover {
+      background: rgba(220, 38, 38, 0.07);
+      transform: translateY(-1px);
     }
 
     .primary-btn:disabled,
     .secondary-btn:disabled,
     .danger-btn:disabled,
     .ghost-btn:disabled {
-      opacity: 0.5;
+      opacity: 0.45;
       pointer-events: none;
+    }
+
+    /* Theme toggle pill */
+    .theme-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+    }
+
+    .theme-toggle-btn .toggle-icon {
+      font-size: 1rem;
+      line-height: 1;
+      transition: transform 300ms ease;
+    }
+
+    .theme-toggle-btn:hover .toggle-icon {
+      transform: rotate(20deg);
     }
 
     /* =========================
@@ -204,33 +298,35 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--bg-elev);
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
       box-shadow: var(--shadow);
       overflow: hidden;
     }
 
     .panel-header {
-      padding: 16px 18px;
+      padding: 15px 20px;
       border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      background: rgba(127, 127, 127, 0.02);
     }
 
     .panel-header h2 {
       margin: 0;
-      font-size: 1.02rem;
-      letter-spacing: -0.01em;
+      font-size: 1rem;
     }
 
     .panel-header .sub {
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
+      font-weight: 300;
+      margin-top: 2px;
     }
 
     .panel-body {
-      padding: 18px;
+      padding: 20px;
     }
 
     .stack {
@@ -241,31 +337,77 @@
     /* =========================
        Upload Area
        ========================= */
+    @keyframes dashedBorder {
+      to {
+        stroke-dashoffset: -40;
+      }
+    }
+
+    @keyframes dropzonePulse {
+
+      0%,
+      100% {
+        border-color: rgba(59, 130, 246, 0.3);
+      }
+
+      50% {
+        border-color: rgba(59, 130, 246, 0.65);
+      }
+    }
+
+    @keyframes floatUp {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-4px);
+      }
+    }
+
     .dropzone {
-      border: 1.5px dashed rgba(59, 130, 246, 0.45);
-      background: linear-gradient(180deg, rgba(37, 99, 235, 0.08), transparent);
+      border: 1.5px dashed rgba(59, 130, 246, 0.35);
+      background: linear-gradient(180deg, rgba(37, 99, 235, 0.06), rgba(37, 99, 235, 0.02));
       border-radius: var(--radius);
-      padding: 26px 18px;
+      padding: 28px 18px;
       text-align: center;
-      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+      transition: background var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
       position: relative;
       overflow: hidden;
+      animation: dropzonePulse 4s ease-in-out infinite;
+    }
+
+    .dropzone::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: calc(var(--radius) - 1px);
+      background: radial-gradient(ellipse at 50% 0%, rgba(37, 99, 235, 0.06), transparent 70%);
+      pointer-events: none;
     }
 
     .dropzone.dragover {
-      transform: scale(1.01);
-      background: linear-gradient(180deg, rgba(37, 99, 235, 0.16), rgba(37, 99, 235, 0.04));
+      transform: scale(1.012);
+      background: linear-gradient(180deg, rgba(37, 99, 235, 0.14), rgba(37, 99, 235, 0.06));
       border-color: var(--accent);
+      border-style: solid;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1), var(--shadow-soft);
+      animation: none;
     }
 
     .dropzone h3 {
-      margin: 10px 0 6px;
-      font-size: 1.05rem;
+      margin: 10px 0 5px;
+      font-size: 1.08rem;
+      font-family: var(--font-display);
     }
 
     .dropzone p {
       margin: 0;
       color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 300;
     }
 
     .dropzone strong {
@@ -273,15 +415,24 @@
     }
 
     .drop-icon {
-      width: 58px;
-      height: 58px;
+      width: 60px;
+      height: 60px;
       margin: 0 auto;
       display: grid;
       place-items: center;
-      border-radius: 18px;
+      border-radius: 20px;
       background: var(--accent-soft);
       color: var(--accent);
-      font-size: 1.45rem;
+      border: 1px solid rgba(37, 99, 235, 0.15);
+      transition: transform var(--transition), background var(--transition);
+      animation: floatUp 3s ease-in-out infinite;
+    }
+
+    .dropzone:hover .drop-icon,
+    .dropzone.dragover .drop-icon {
+      animation: none;
+      transform: scale(1.1) translateY(-2px);
+      background: rgba(37, 99, 235, 0.18);
     }
 
     .upload-row {
@@ -289,7 +440,7 @@
       gap: 10px;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 16px;
+      margin-top: 18px;
     }
 
     input[type="file"] {
@@ -307,7 +458,7 @@
 
     .control {
       display: grid;
-      gap: 8px;
+      gap: 7px;
     }
 
     .control.full {
@@ -315,41 +466,91 @@
     }
 
     .control label {
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       color: var(--muted);
-    }
-
-    .field,
-    select,
-    input[type="text"],
-    input[type="number"],
-    input[type="range"] {
-      width: 100%;
+      font-weight: 500;
+      letter-spacing: 0.01em;
     }
 
     .field,
     select,
     input[type="text"],
     input[type="number"] {
+      width: 100%;
       background: var(--card-strong);
       color: var(--text);
       border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px 13px;
+      border-radius: 13px;
+      padding: 11px 13px;
       outline: none;
       transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      font-size: 0.95rem;
     }
 
     .field:focus,
     select:focus,
     input[type="text"]:focus,
     input[type="number"]:focus {
-      border-color: rgba(59, 130, 246, 0.7);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+      border-color: rgba(59, 130, 246, 0.6);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
+    select {
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 13px center;
+      padding-right: 36px;
+    }
+
+    /* Custom range inputs */
     input[type="range"] {
-      accent-color: var(--accent);
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 99px;
+      background: rgba(127, 127, 127, 0.15);
+      outline: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3), 0 0 0 3px rgba(255, 255, 255, 0.9);
+      transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+
+    [data-theme="dark"] input[type="range"]::-webkit-slider-thumb {
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4), 0 0 0 3px rgba(15, 24, 40, 0.9);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.18);
+      box-shadow: 0 3px 14px rgba(37, 99, 235, 0.4), 0 0 0 3px rgba(255, 255, 255, 0.9);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: 3px solid white;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    input[type="range"]:disabled {
+      opacity: 0.4;
     }
 
     .range-meta {
@@ -357,13 +558,19 @@
       justify-content: space-between;
       gap: 10px;
       align-items: center;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--muted);
+    }
+
+    .range-meta strong {
+      color: var(--accent);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
     }
 
     .inline-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -374,14 +581,19 @@
       gap: 10px;
       color: var(--text);
       user-select: none;
+      font-size: 0.94rem;
     }
 
     .checkbox input {
       width: 18px;
       height: 18px;
       accent-color: var(--accent);
+      cursor: pointer;
     }
 
+    /* =========================
+       Mini Stats
+       ========================= */
     .mini-stats {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -389,28 +601,74 @@
     }
 
     .stat {
-      padding: 12px;
+      padding: 13px 14px;
       border-radius: 16px;
-      background: rgba(127, 127, 127, 0.07);
+      background: rgba(127, 127, 127, 0.06);
       border: 1px solid var(--line);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .stat.savings {
+      background: var(--good-soft);
+      border-color: rgba(22, 163, 74, 0.2);
+    }
+
+    .stat.inflated {
+      background: var(--warn-soft);
+      border-color: rgba(234, 88, 12, 0.2);
     }
 
     .stat .k {
       display: block;
       color: var(--muted);
-      font-size: 0.84rem;
-      margin-bottom: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
     }
 
     .stat .v {
       font-weight: 700;
       letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      font-size: 1.02rem;
+    }
+
+    .stat.savings .v {
+      color: var(--good);
+    }
+
+    .stat.inflated .v {
+      color: var(--warn);
+    }
+
+    .savings-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 99px;
+      margin-left: 6px;
+      vertical-align: middle;
+      letter-spacing: 0.02em;
+    }
+
+    .savings-badge.good {
+      background: var(--good-soft);
+      color: var(--good);
+    }
+
+    .savings-badge.warn {
+      background: var(--warn-soft);
+      color: var(--warn);
     }
 
     .hint {
-      font-size: 0.87rem;
+      font-size: 0.86rem;
       color: var(--muted);
-      line-height: 1.5;
+      line-height: 1.55;
+      font-weight: 300;
     }
 
     /* =========================
@@ -430,34 +688,42 @@
     .image-card {
       border-radius: var(--radius);
       border: 1px solid var(--line);
-      background: rgba(127, 127, 127, 0.06);
+      background: rgba(127, 127, 127, 0.04);
       overflow: hidden;
       min-height: 320px;
       display: flex;
       flex-direction: column;
+      transition: box-shadow var(--transition);
+    }
+
+    .image-card:hover {
+      box-shadow: var(--shadow-soft);
     }
 
     .image-card header {
-      padding: 12px 14px;
+      padding: 11px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
       border-bottom: 1px solid var(--line);
+      background: rgba(127, 127, 127, 0.02);
     }
 
     .image-card header h3 {
       margin: 0;
-      font-size: 0.98rem;
+      font-size: 0.9rem;
     }
 
     .badge {
-      font-size: 0.8rem;
+      font-size: 0.77rem;
+      font-weight: 600;
       color: var(--muted);
-      padding: 6px 9px;
+      padding: 5px 10px;
       border-radius: 999px;
-      background: rgba(127, 127, 127, 0.08);
+      background: rgba(127, 127, 127, 0.09);
       white-space: nowrap;
+      letter-spacing: 0.03em;
     }
 
     .image-stage {
@@ -468,12 +734,24 @@
       padding: 14px;
       min-height: 240px;
       background:
-        linear-gradient(45deg, rgba(127, 127, 127, 0.06) 25%, transparent 25%),
-        linear-gradient(-45deg, rgba(127, 127, 127, 0.06) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, rgba(127, 127, 127, 0.06) 75%),
-        linear-gradient(-45deg, transparent 75%, rgba(127, 127, 127, 0.06) 75%);
-      background-size: 24px 24px;
-      background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+        linear-gradient(45deg, rgba(127, 127, 127, 0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(127, 127, 127, 0.05) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(127, 127, 127, 0.05) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(127, 127, 127, 0.05) 75%);
+      background-size: 22px 22px;
+      background-position: 0 0, 0 11px, 11px -11px, -11px 0px;
+    }
+
+    @keyframes imgFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .image-stage img {
@@ -481,15 +759,18 @@
       max-height: 100%;
       object-fit: contain;
       border-radius: 14px;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
       background: white;
+      animation: imgFadeIn 300ms ease forwards;
     }
 
     .empty-state {
       color: var(--muted);
       text-align: center;
       padding: 18px;
-      line-height: 1.5;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      font-weight: 300;
     }
 
     .meta-grid {
@@ -498,6 +779,9 @@
       gap: 10px;
     }
 
+    /* =========================
+       Status / Progress
+       ========================= */
     .status-bar {
       display: flex;
       align-items: center;
@@ -508,25 +792,37 @@
 
     .progress-wrap {
       width: 100%;
-      height: 10px;
+      height: 8px;
       border-radius: 999px;
       overflow: hidden;
-      background: rgba(127, 127, 127, 0.15);
+      background: rgba(127, 127, 127, 0.12);
       border: 1px solid var(--line);
       display: none;
+    }
+
+    @keyframes shimmer {
+      from {
+        background-position: 200% center;
+      }
+
+      to {
+        background-position: -200% center;
+      }
     }
 
     .progress-bar {
       width: 0%;
       height: 100%;
-      background: linear-gradient(90deg, var(--accent), #8b5cf6);
+      background: linear-gradient(90deg, var(--accent-2), #8b5cf6, var(--accent), #8b5cf6, var(--accent-2));
+      background-size: 300% auto;
       border-radius: inherit;
-      transition: width 160ms ease;
+      transition: width 200ms ease;
+      animation: shimmer 2s linear infinite;
     }
 
     .status-text {
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
 
     .error {
@@ -534,25 +830,36 @@
       font-size: 0.92rem;
       line-height: 1.45;
       min-height: 1.3em;
+      font-weight: 500;
     }
 
     .success {
       color: var(--good);
       font-size: 0.92rem;
       min-height: 1.3em;
+      font-weight: 500;
     }
 
     .footer-note {
-      margin-top: 14px;
+      margin-top: 18px;
       color: var(--muted);
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 0.86rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 300;
+    }
+
+    .footer-note svg {
+      opacity: 0.6;
     }
 
     .sep {
       height: 1px;
       background: var(--line);
-      margin: 6px 0;
+      margin: 4px 0;
     }
 
     .sr-only {
@@ -565,6 +872,17 @@
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
       border: 0;
+    }
+
+    .secondary-btn {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: rgba(37, 99, 235, 0.12);
+      font-weight: 600;
+    }
+
+    [data-theme="dark"] .secondary-btn {
+      color: var(--accent);
     }
 
     @media (max-width: 980px) {
@@ -623,14 +941,24 @@
     <!-- Header -->
     <header class="topbar">
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true">🖼️</div>
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="4" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+          </svg>
+        </div>
         <div>
           <h1>Image Resizer</h1>
-          <p>Resize, compress, and download images instantly in your browser.</p>
+          <p>Resize, compress &amp; download — entirely in your browser.</p>
         </div>
       </div>
       <div class="top-actions">
-        <button class="ghost-btn" id="themeToggle" type="button" aria-pressed="false">Dark mode</button>
+        <button class="ghost-btn theme-toggle-btn" id="themeToggle" type="button" aria-pressed="false">
+          <span class="toggle-icon" id="themeIcon">🌙</span>
+          <span id="themeLabel">Dark mode</span>
+        </button>
         <button class="danger-btn" id="resetBtn" type="button" disabled>Reset</button>
       </div>
     </header>
@@ -640,8 +968,8 @@
       <section class="panel">
         <div class="panel-header">
           <div>
-            <h2>Upload & Settings</h2>
-            <div class="sub">Drag and drop an image or pick a file.</div>
+            <h2>Upload &amp; Settings</h2>
+            <div class="sub">Drag &amp; drop an image or pick a file.</div>
           </div>
           <div class="badge" id="supportBadge">JPG · PNG · WEBP · GIF</div>
         </div>
@@ -649,9 +977,16 @@
         <div class="panel-body stack">
           <!-- Upload Zone -->
           <div class="dropzone" id="dropzone">
-            <div class="drop-icon">⬆️</div>
+            <div class="drop-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 16 12 12 8 16" />
+                <line x1="12" y1="12" x2="12" y2="21" />
+                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+              </svg>
+            </div>
             <h3>Drop your image here</h3>
-            <p>or click the button below to select a file.</p>
+            <p>or click below to browse a file</p>
             <div class="upload-row">
               <label class="primary-btn" for="fileInput">Choose image</label>
               <button class="secondary-btn" id="sampleBtn" type="button">Load demo</button>
@@ -702,7 +1037,8 @@
             </div>
 
             <div class="control full">
-              <label for="qualityRange">Quality <span id="qualityValue">92</span></label>
+              <label for="qualityRange">Quality <strong id="qualityValue"
+                  style="color:var(--accent);">92</strong></label>
               <input id="qualityRange" type="range" min="1" max="100" value="92" disabled />
             </div>
 
@@ -714,13 +1050,23 @@
 
           <div class="mini-stats">
             <div class="stat"><span class="k">Original</span><span class="v" id="originalDim">—</span></div>
-            <div class="stat"><span class="k">New preview</span><span class="v" id="newDim">—</span></div>
-            <div class="stat"><span class="k">Source size</span><span class="v" id="originalSize">—</span></div>
-            <div class="stat"><span class="k">Output size</span><span class="v" id="outputSize">—</span></div>
+            <div class="stat"><span class="k">New size</span><span class="v" id="newDim">—</span></div>
+            <div class="stat"><span class="k">Source file</span><span class="v" id="originalSize">—</span></div>
+            <div class="stat" id="outputSizeStat"><span class="k">Output file</span><span class="v"
+                id="outputSize">—</span></div>
           </div>
 
           <div class="inline-row">
-            <button class="primary-btn" id="downloadBtn" type="button" disabled>Download image</button>
+            <button class="primary-btn" id="downloadBtn" type="button" disabled>
+              <svg style="display:inline;vertical-align:-3px;margin-right:6px" width="15" height="15"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Download image
+            </button>
             <button class="ghost-btn" id="copyNameBtn" type="button" disabled>Use suggested name</button>
           </div>
           <div class="hint">Width and height update live. Turn off aspect ratio lock to edit them independently.</div>
@@ -778,7 +1124,14 @@
       </section>
     </main>
 
-    <div class="footer-note">Runs completely in your browser.</div>
+    <div class="footer-note">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+      </svg>
+      Runs completely in your browser. No uploads, no servers, no data leaves your device.
+    </div>
   </div>
 
   <script>
@@ -811,6 +1164,8 @@
     const el = {
       body: document.body,
       themeToggle: document.getElementById('themeToggle'),
+      themeIcon: document.getElementById('themeIcon'),
+      themeLabel: document.getElementById('themeLabel'),
       resetBtn: document.getElementById('resetBtn'),
       fileInput: document.getElementById('fileInput'),
       dropzone: document.getElementById('dropzone'),
@@ -840,6 +1195,7 @@
       newDim: document.getElementById('newDim'),
       originalSize: document.getElementById('originalSize'),
       outputSize: document.getElementById('outputSize'),
+      outputSizeStat: document.getElementById('outputSizeStat'),
       formatBadge: document.getElementById('formatBadge'),
       origMetaBadge: document.getElementById('origMetaBadge'),
       resMetaBadge: document.getElementById('resMetaBadge'),
@@ -856,7 +1212,8 @@
       state.theme = theme;
       document.documentElement.setAttribute('data-theme', theme);
       const dark = theme === 'dark';
-      el.themeToggle.textContent = dark ? 'Light mode' : 'Dark mode';
+      el.themeLabel.textContent = dark ? 'Light mode' : 'Dark mode';
+      el.themeIcon.textContent = dark ? '☀️' : '🌙';
       el.themeToggle.setAttribute('aria-pressed', String(dark));
       localStorage.setItem('image-resizer-theme', theme);
     }
@@ -924,6 +1281,31 @@
       state.resizedObjectUrl = null;
     }
 
+    function updateOutputSizeIndicator(outputBytes) {
+      const stat = el.outputSizeStat;
+      const badge = stat.querySelector('.savings-badge');
+      if (badge) badge.remove();
+
+      if (!state.originalSize || !outputBytes) {
+        stat.classList.remove('savings', 'inflated');
+        return;
+      }
+
+      const saved = state.originalSize - outputBytes;
+      const pct = Math.round(Math.abs(saved) / state.originalSize * 100);
+
+      if (pct >= 3) {
+        const badgeEl = document.createElement('span');
+        badgeEl.className = 'savings-badge ' + (saved > 0 ? 'good' : 'warn');
+        badgeEl.textContent = saved > 0 ? `−${pct}%` : `+${pct}%`;
+        el.outputSize.after(badgeEl);
+        stat.classList.toggle('savings', saved > 0);
+        stat.classList.toggle('inflated', saved < 0);
+      } else {
+        stat.classList.remove('savings', 'inflated');
+      }
+    }
+
     function resetState(keepTheme = true) {
       clearTimeout(state.updateTimer);
       state.file = null;
@@ -962,6 +1344,9 @@
       el.metaOutputType.textContent = '—';
       el.formatBadge.textContent = 'Output: WEBP';
       el.estimateText.textContent = '';
+      el.outputSizeStat.classList.remove('savings', 'inflated');
+      const badge = el.outputSizeStat.querySelector('.savings-badge');
+      if (badge) badge.remove();
       showError('');
       showSuccess('');
       setProcessing(false, 0, 'No image loaded.');
@@ -1090,10 +1475,11 @@
       el.resizedImg.hidden = false;
       el.resizedEmpty.style.display = 'none';
       el.outputSize.textContent = formatBytes(blob.size);
-      el.estimateText.textContent = `Estimated output size: ${formatBytes(blob.size)}`;
+      el.estimateText.textContent = `Estimated output: ${formatBytes(blob.size)}`;
       el.resMetaBadge.textContent = `${formatBytes(blob.size)} • ${settings.format.replace('image/', '').toUpperCase()}`;
       el.statusText.textContent = 'Ready.';
       setProcessing(false, 100, 'Ready.');
+      updateOutputSizeIndicator(blob.size);
     }
 
     function canvasToBlob(canvas, mimeType, quality) {
