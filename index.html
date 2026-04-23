@@ -7,51 +7,64 @@
     <title>My Tools</title>
     <meta name="color-scheme" content="dark light" />
     <link rel="icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg-1: #0b1020;
-            --bg-2: #111a33;
-            --bg-3: rgba(255, 255, 255, 0.06);
-            --bg-4: rgba(255, 255, 255, 0.1);
-            --text: #f5f7ff;
-            --muted: rgba(245, 247, 255, 0.72);
-            --border: rgba(255, 255, 255, 0.12);
-            --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.22);
-            --accent: #8b5cf6;
+            --bg-1: #080e1f;
+            --bg-2: #0d1529;
+            --bg-3: rgba(255, 255, 255, 0.055);
+            --bg-4: rgba(255, 255, 255, 0.09);
+            --text: #eef1ff;
+            --muted: rgba(238, 241, 255, 0.58);
+            --border: rgba(255, 255, 255, 0.09);
+            --border-hover: rgba(139, 92, 246, 0.38);
+            --shadow: 0 24px 64px rgba(0, 0, 0, 0.42);
+            --shadow-soft: 0 8px 28px rgba(0, 0, 0, 0.26);
+            --accent: #9b72f8;
+            --accent-dim: rgba(155, 114, 248, 0.18);
             --accent-2: #22d3ee;
             --danger: #fb7185;
             --success: #34d399;
-            --card-bg: rgba(255, 255, 255, 0.08);
-            --input-bg: rgba(255, 255, 255, 0.08);
-            --input-border: rgba(255, 255, 255, 0.12);
-            --glass-blur: 18px;
+            --card-bg: rgba(255, 255, 255, 0.065);
+            --input-bg: rgba(255, 255, 255, 0.07);
+            --input-border: rgba(255, 255, 255, 0.11);
+            --glass-blur: 20px;
             --radius-xl: 28px;
             --radius-lg: 22px;
             --radius-md: 16px;
-            --radius-sm: 12px;
+            --radius-sm: 10px;
+            --font: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+            --font-mono: 'DM Mono', ui-monospace, monospace;
         }
 
         html[data-theme="light"] {
-            --bg-1: #eef3ff;
-            --bg-2: #f7f9ff;
-            --bg-3: rgba(255, 255, 255, 0.72);
-            --bg-4: rgba(255, 255, 255, 0.92);
-            --text: #131a2a;
-            --muted: rgba(19, 26, 42, 0.68);
-            --border: rgba(19, 26, 42, 0.08);
-            --shadow: 0 20px 60px rgba(34, 45, 73, 0.12);
-            --shadow-soft: 0 10px 28px rgba(34, 45, 73, 0.08);
-            --accent: #6d5efc;
+            --bg-1: #f0f4ff;
+            --bg-2: #f8faff;
+            --bg-3: rgba(255, 255, 255, 0.78);
+            --bg-4: rgba(255, 255, 255, 0.96);
+            --text: #0f1629;
+            --muted: rgba(15, 22, 41, 0.58);
+            --border: rgba(15, 22, 41, 0.08);
+            --border-hover: rgba(109, 74, 252, 0.35);
+            --shadow: 0 24px 60px rgba(30, 40, 80, 0.13);
+            --shadow-soft: 0 8px 28px rgba(30, 40, 80, 0.09);
+            --accent: #6d4afc;
+            --accent-dim: rgba(109, 74, 252, 0.12);
             --accent-2: #0ea5e9;
             --danger: #ef476f;
-            --success: #12b981;
-            --card-bg: rgba(255, 255, 255, 0.72);
-            --input-bg: rgba(255, 255, 255, 0.82);
-            --input-border: rgba(19, 26, 42, 0.08);
+            --success: #10b981;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --input-border: rgba(15, 22, 41, 0.1);
         }
 
-        * {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
         }
 
@@ -59,13 +72,15 @@
         body {
             margin: 0;
             min-height: 100%;
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: var(--font);
             color: var(--text);
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
             background:
-                radial-gradient(1200px 800px at 10% 10%, rgba(139, 92, 246, 0.26), transparent 55%),
-                radial-gradient(900px 700px at 90% 20%, rgba(34, 211, 238, 0.18), transparent 50%),
-                radial-gradient(1000px 700px at 50% 95%, rgba(16, 185, 129, 0.14), transparent 60%),
-                linear-gradient(180deg, var(--bg-1), var(--bg-2));
+                radial-gradient(ellipse 1100px 700px at 8% 12%, rgba(139, 92, 246, 0.22), transparent 55%),
+                radial-gradient(ellipse 800px 600px at 92% 18%, rgba(34, 211, 238, 0.14), transparent 50%),
+                radial-gradient(ellipse 900px 600px at 52% 98%, rgba(16, 185, 129, 0.11), transparent 60%),
+                linear-gradient(170deg, var(--bg-1) 0%, var(--bg-2) 100%);
             background-attachment: fixed;
         }
 
@@ -73,15 +88,14 @@
             overflow-x: hidden;
         }
 
+        /* Subtle dot-grid texture */
         .noise {
             pointer-events: none;
             position: fixed;
             inset: 0;
-            opacity: 0.045;
-            background-image:
-                linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
-            background-size: 28px 28px;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+            background-size: 26px 26px;
+            opacity: 0.06;
             mix-blend-mode: overlay;
             z-index: 0;
         }
@@ -89,59 +103,66 @@
         .app {
             position: relative;
             z-index: 1;
-            width: min(1320px, calc(100% - 32px));
-            margin: 24px auto 48px;
+            width: min(1340px, calc(100% - 32px));
+            margin: 24px auto 56px;
         }
 
         .shell {
             backdrop-filter: blur(var(--glass-blur));
             -webkit-backdrop-filter: blur(var(--glass-blur));
-            background: linear-gradient(180deg, var(--bg-3), transparent);
+            background: linear-gradient(180deg, var(--bg-3) 0%, rgba(255, 255, 255, 0.015) 100%);
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
             border-radius: 32px;
             overflow: hidden;
         }
 
+        /* ── Topbar ─────────────────────────────── */
         .topbar {
             display: flex;
             align-items: center;
             gap: 16px;
             justify-content: space-between;
-            padding: 22px 22px 18px;
+            padding: 20px 24px 18px;
             border-bottom: 1px solid var(--border);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent);
             position: sticky;
             top: 0;
             z-index: 5;
-            backdrop-filter: blur(18px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .brand {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            min-width: 220px;
+            gap: 3px;
+            min-width: 200px;
         }
 
         .brand h1 {
             margin: 0;
-            font-size: clamp(1.35rem, 2vw, 1.8rem);
+            font-size: clamp(1.3rem, 2vw, 1.72rem);
             line-height: 1.1;
-            letter-spacing: -0.04em;
+            letter-spacing: -0.05em;
             font-weight: 800;
+            background: linear-gradient(135deg, var(--text) 30%, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .brand p {
             margin: 0;
             color: var(--muted);
-            font-size: 0.94rem;
+            font-size: 0.875rem;
+            letter-spacing: -0.01em;
         }
 
         .controls {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex: 1;
             justify-content: flex-end;
             flex-wrap: wrap;
@@ -149,17 +170,17 @@
 
         .search-wrap {
             flex: 1;
-            min-width: min(420px, 100%);
-            max-width: 620px;
+            min-width: min(380px, 100%);
+            max-width: 560px;
             position: relative;
         }
 
         .search-wrap svg {
             position: absolute;
-            left: 16px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            opacity: 0.55;
+            opacity: 0.45;
             pointer-events: none;
         }
 
@@ -168,12 +189,12 @@
             border: 1px solid var(--input-border);
             background: var(--input-bg);
             color: var(--text);
-            padding: 14px 16px 14px 46px;
+            padding: 12px 16px 12px 44px;
             border-radius: 999px;
             outline: none;
-            font-size: 0.96rem;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-            transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+            font-size: 0.9rem;
+            font-family: var(--font);
+            transition: border-color .2s, box-shadow .2s, transform .2s;
         }
 
         .search::placeholder {
@@ -181,24 +202,27 @@
         }
 
         .search:focus {
-            border-color: rgba(139, 92, 246, 0.5);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+            border-color: rgba(155, 114, 248, 0.48);
+            box-shadow: 0 0 0 3px rgba(155, 114, 248, 0.14);
             transform: translateY(-1px);
         }
 
+        /* ── Buttons ─────────────────────────────── */
         .btn {
             border: 1px solid var(--border);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.05) 100%);
             color: var(--text);
-            padding: 13px 16px;
+            padding: 11px 16px;
             border-radius: 999px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
+            font-family: var(--font);
+            font-size: 0.875rem;
             letter-spacing: -0.01em;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease, opacity .18s ease;
+            gap: 8px;
+            transition: transform .18s, box-shadow .18s, border-color .18s, background .18s, opacity .18s;
             box-shadow: var(--shadow-soft);
             user-select: none;
             text-decoration: none;
@@ -207,23 +231,24 @@
 
         .btn:hover {
             transform: translateY(-2px);
-            border-color: rgba(139, 92, 246, 0.32);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+            border-color: var(--border-hover);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
         }
 
         .btn:active {
             transform: translateY(0);
-            opacity: 0.92;
+            opacity: 0.9;
         }
 
         .btn.primary {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(34, 211, 238, 0.88));
+            background: linear-gradient(135deg, rgba(155, 114, 248, 0.96) 0%, rgba(34, 211, 238, 0.85) 100%);
             border-color: transparent;
-            color: white;
+            color: #fff;
+            font-weight: 700;
         }
 
         .btn.primary:hover {
-            box-shadow: 0 18px 45px rgba(139, 92, 246, 0.28);
+            box-shadow: 0 16px 40px rgba(155, 114, 248, 0.32);
         }
 
         .btn.ghost {
@@ -231,14 +256,22 @@
         }
 
         .btn.icon-only {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             padding: 0;
             justify-content: center;
+            border-radius: 14px;
         }
 
+        .btn.active-layout {
+            border-color: var(--border-hover);
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        /* ── Content ─────────────────────────────── */
         .content {
-            padding: 22px;
+            padding: 20px 24px 24px;
         }
 
         .stats-row {
@@ -250,9 +283,15 @@
             flex-wrap: wrap;
         }
 
+        .stats-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
         .stat {
             color: var(--muted);
-            font-size: 0.95rem;
+            font-size: 0.875rem;
         }
 
         .stat strong {
@@ -260,107 +299,164 @@
             font-weight: 700;
         }
 
+        .stats-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .layout-btn-group {
+            display: flex;
+            gap: 4px;
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+            border-radius: 12px;
+            padding: 3px;
+        }
+
+        .layout-btn {
+            width: 34px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            border-radius: 9px;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            transition: background .18s, color .18s;
+        }
+
+        .layout-btn.active {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .layout-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.07);
+            color: var(--text);
+        }
+
+        /* ── Grid ─────────────────────────────── */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
             align-items: stretch;
         }
 
+        /* ── Card (Grid mode) ─────────────────── */
         .card {
             position: relative;
             border: 1px solid var(--border);
-            border-radius: 26px;
+            border-radius: 24px;
             background:
-                radial-gradient(800px 250px at 0% 0%, rgba(139, 92, 246, 0.16), transparent 55%),
-                linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.05));
+                radial-gradient(600px 220px at 0% 0%, rgba(155, 114, 248, 0.13), transparent 55%),
+                linear-gradient(175deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.04) 100%);
             box-shadow: var(--shadow-soft);
             backdrop-filter: blur(var(--glass-blur));
             -webkit-backdrop-filter: blur(var(--glass-blur));
-            overflow: hidden;
             padding: 18px;
             display: flex;
             flex-direction: column;
-            min-height: 250px;
-            transition:
-                transform .22s ease,
-                box-shadow .22s ease,
-                border-color .22s ease,
-                background .22s ease;
-            animation: floatIn .42s ease both;
+            gap: 0;
+            min-height: 230px;
+            transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+            animation: floatIn .4s ease both;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
         }
 
         .card:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 22px 54px rgba(0, 0, 0, 0.24);
-            border-color: rgba(139, 92, 246, 0.28);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.26);
+            border-color: var(--border-hover);
         }
 
-        .card::after {
-            content: "";
-            position: absolute;
-            inset: auto -20% -70% -20%;
-            height: 180px;
-            background: radial-gradient(circle at top, rgba(139, 92, 246, 0.24), transparent 65%);
-            filter: blur(8px);
-            opacity: 0;
-            transition: opacity .22s ease;
-            pointer-events: none;
-        }
-
-        .card:hover::after {
-            opacity: 1;
-        }
-
+        /* Top row: icon + mini-actions */
         .card-top {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            gap: 12px;
+            gap: 10px;
+            margin-bottom: 14px;
         }
 
-        .emoji {
-            width: 62px;
-            height: 62px;
-            border-radius: 20px;
+        /* Favicon icon */
+        .icon-wrap {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+            border: 1px solid var(--border);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.2);
             display: grid;
             place-items: center;
-            font-size: 2rem;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
-            border: 1px solid var(--border);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
             flex-shrink: 0;
-            transition: transform .2s ease;
+            overflow: hidden;
+            transition: transform .22s ease;
         }
 
-        .card:hover .emoji {
-            transform: rotate(-3deg) scale(1.05);
+        .card:hover .icon-wrap {
+            transform: rotate(-4deg) scale(1.06);
         }
 
+        .icon-wrap .favicon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 6px;
+            image-rendering: -webkit-optimize-contrast;
+        }
+
+        .icon-wrap .fallback-icon {
+            font-size: 1.6rem;
+            line-height: 1;
+            display: grid;
+            place-items: center;
+            width: 100%;
+            height: 100%;
+            color: var(--muted);
+            font-family: var(--font);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* Mini action buttons */
         .mini-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
             justify-content: flex-end;
         }
 
         .mini-btn {
-            width: 38px;
-            height: 38px;
+            width: 34px;
+            height: 34px;
             border: 1px solid var(--border);
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.07);
             color: var(--text);
-            border-radius: 12px;
+            border-radius: 10px;
             display: grid;
             place-items: center;
             cursor: pointer;
-            transition: transform .18s ease, background .18s ease, border-color .18s ease, opacity .18s ease;
+            font-size: 0.9rem;
+            transition: transform .16s, background .16s, border-color .16s;
         }
 
         .mini-btn:hover {
             transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.22);
-            background: rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.13);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .mini-btn.danger:hover {
@@ -368,24 +464,31 @@
             background: rgba(251, 113, 133, 0.12);
         }
 
+        .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
         .card h2 {
-            margin: 16px 0 8px;
-            font-size: 1.18rem;
-            line-height: 1.2;
-            letter-spacing: -0.03em;
+            margin: 0 0 7px;
+            font-size: 1.08rem;
+            line-height: 1.22;
+            letter-spacing: -0.035em;
+            font-weight: 700;
         }
 
         .desc {
-            margin: 0 0 16px;
+            margin: 0 0 14px;
             color: var(--muted);
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 0.875rem;
+            line-height: 1.55;
             flex: 1;
         }
 
         .card-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
             margin-top: auto;
         }
@@ -393,40 +496,131 @@
         .card-link {
             flex: 1;
             justify-content: center;
+            font-size: 0.84rem;
+            padding: 10px 14px;
         }
 
+        /* ── List view ─────────────────────────── */
+        .grid.list-view {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .grid.list-view .card {
+            flex-direction: row;
+            align-items: center;
+            min-height: unset;
+            padding: 13px 16px;
+            gap: 14px;
+            border-radius: 18px;
+            animation: slideInRow .3s ease both;
+        }
+
+        .grid.list-view .card::before {
+            display: none;
+        }
+
+        .grid.list-view .card-top {
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 0;
+            gap: 0;
+        }
+
+        .grid.list-view .icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            flex-shrink: 0;
+        }
+
+        .grid.list-view .icon-wrap .favicon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .grid.list-view .icon-wrap .fallback-icon {
+            font-size: 1rem;
+        }
+
+        .grid.list-view .mini-actions {
+            display: none;
+        }
+
+        .grid.list-view .card-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .grid.list-view .card h2 {
+            margin: 0 0 2px;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .grid.list-view .card .desc {
+            margin: 0;
+            font-size: 0.82rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .grid.list-view .card-actions {
+            margin-top: 0;
+            flex-shrink: 0;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .grid.list-view .card-link {
+            flex: none;
+            white-space: nowrap;
+        }
+
+        .grid.list-view .card-actions .mini-actions-inline {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* ── Empty state ─────────────────────────── */
         .empty-state {
             border: 1px dashed var(--border);
-            border-radius: 28px;
-            min-height: 360px;
+            border-radius: 26px;
+            min-height: 340px;
             display: grid;
             place-items: center;
             text-align: center;
             padding: 32px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent);
         }
 
         .empty-inner {
-            max-width: 460px;
+            max-width: 440px;
         }
 
         .empty-inner .big {
-            font-size: 3rem;
+            font-size: 2.8rem;
             margin-bottom: 12px;
             display: inline-block;
+            opacity: 0.7;
         }
 
         .empty-inner h3 {
             margin: 0 0 8px;
-            font-size: 1.35rem;
-            letter-spacing: -0.03em;
+            font-size: 1.28rem;
+            letter-spacing: -0.035em;
         }
 
         .empty-inner p {
             margin: 0 0 18px;
             color: var(--muted);
+            font-size: 0.9rem;
         }
 
+        /* ── Modals ─────────────────────────────── */
         .modal,
         .confirm {
             position: fixed;
@@ -434,9 +628,9 @@
             display: grid;
             place-items: center;
             padding: 22px;
-            background: rgba(3, 8, 20, 0.52);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(4, 8, 22, 0.56);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 20;
             opacity: 0;
             pointer-events: none;
@@ -450,15 +644,15 @@
         }
 
         .dialog {
-            width: min(660px, 100%);
-            border-radius: 30px;
+            width: min(640px, 100%);
+            border-radius: 28px;
             border: 1px solid var(--border);
             background:
-                radial-gradient(900px 400px at 0% 0%, rgba(139, 92, 246, 0.18), transparent 40%),
-                linear-gradient(180deg, var(--bg-4), rgba(255, 255, 255, 0.82));
+                radial-gradient(700px 350px at 0% 0%, rgba(155, 114, 248, 0.14), transparent 40%),
+                linear-gradient(180deg, var(--bg-4), rgba(255, 255, 255, 0.78));
             color: var(--text);
             box-shadow: var(--shadow);
-            transform: translateY(22px) scale(0.98);
+            transform: translateY(20px) scale(0.98);
             transition: transform .22s ease, opacity .22s ease;
             opacity: 0;
             overflow: hidden;
@@ -472,8 +666,8 @@
 
         html[data-theme="dark"] .dialog {
             background:
-                radial-gradient(900px 400px at 0% 0%, rgba(139, 92, 246, 0.16), transparent 40%),
-                linear-gradient(180deg, rgba(17, 26, 51, 0.96), rgba(8, 12, 24, 0.94));
+                radial-gradient(700px 350px at 0% 0%, rgba(155, 114, 248, 0.14), transparent 40%),
+                linear-gradient(180deg, rgba(14, 20, 44, 0.97), rgba(6, 10, 22, 0.96));
         }
 
         .dialog-head {
@@ -486,30 +680,31 @@
 
         .dialog-head h3 {
             margin: 0;
-            font-size: 1.35rem;
-            letter-spacing: -0.03em;
+            font-size: 1.28rem;
+            letter-spacing: -0.04em;
+            font-weight: 800;
         }
 
         .dialog-head p {
-            margin: 6px 0 0;
+            margin: 5px 0 0;
             color: var(--muted);
-            font-size: 0.95rem;
+            font-size: 0.875rem;
         }
 
         .dialog-body {
-            padding: 20px 22px 22px;
+            padding: 18px 22px 22px;
         }
 
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            gap: 12px;
         }
 
         .field {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 7px;
         }
 
         .field.full {
@@ -517,53 +712,58 @@
         }
 
         .field label {
-            font-size: 0.92rem;
+            font-size: 0.82rem;
             color: var(--muted);
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            text-transform: uppercase;
         }
 
         .field input,
         .field textarea {
             width: 100%;
             border: 1px solid var(--input-border);
-            border-radius: 18px;
+            border-radius: 14px;
             background: var(--input-bg);
             color: var(--text);
-            padding: 14px 15px;
+            padding: 12px 14px;
             outline: none;
             font: inherit;
-            transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+            font-size: 0.9rem;
+            transition: border-color .18s, box-shadow .18s;
         }
 
         .field textarea {
-            min-height: 104px;
+            min-height: 96px;
             resize: vertical;
         }
 
         .field input:focus,
         .field textarea:focus {
-            border-color: rgba(139, 92, 246, 0.55);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
-            transform: translateY(-1px);
+            border-color: rgba(155, 114, 248, 0.52);
+            box-shadow: 0 0 0 3px rgba(155, 114, 248, 0.12);
         }
 
         .dialog-actions {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
-            margin-top: 18px;
+            gap: 8px;
+            margin-top: 16px;
             flex-wrap: wrap;
         }
 
         .confirm-box {
-            width: min(460px, 100%);
+            width: min(440px, 100%);
         }
 
         .confirm-text {
-            padding: 18px 22px 0;
+            padding: 16px 22px 0;
             color: var(--muted);
-            line-height: 1.55;
+            line-height: 1.6;
+            font-size: 0.9rem;
         }
 
+        /* ── Toast ─────────────────────────────── */
         .toast-wrap {
             position: fixed;
             right: 18px;
@@ -571,69 +771,75 @@
             z-index: 40;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             pointer-events: none;
         }
 
         .toast {
-            min-width: 260px;
-            max-width: 360px;
-            padding: 14px 16px;
-            border-radius: 18px;
+            min-width: 240px;
+            max-width: 340px;
+            padding: 12px 16px;
+            border-radius: 16px;
             color: var(--text);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.07));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.06));
             border: 1px solid var(--border);
             box-shadow: var(--shadow-soft);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            transform: translateY(10px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transform: translateX(12px);
             opacity: 0;
-            animation: toastIn .25s ease forwards;
+            animation: toastIn .24s ease forwards;
             pointer-events: auto;
         }
 
         .toast strong {
             display: block;
-            margin-bottom: 4px;
-            font-size: 0.98rem;
+            margin-bottom: 3px;
+            font-size: 0.92rem;
+            font-weight: 700;
         }
 
         .toast span {
             color: var(--muted);
-            font-size: 0.92rem;
+            font-size: 0.84rem;
         }
 
         .toast.success {
-            border-color: rgba(52, 211, 153, 0.25);
+            border-color: rgba(52, 211, 153, 0.28);
         }
 
         .toast.danger {
-            border-color: rgba(251, 113, 133, 0.28);
+            border-color: rgba(251, 113, 133, 0.3);
         }
 
+        /* ── Footer ─────────────────────────────── */
         .footer-note {
-            padding: 0 22px 22px;
+            padding: 0 24px 22px;
             color: var(--muted);
-            font-size: 0.9rem;
+            font-size: 0.82rem;
+            opacity: 0.7;
+            font-family: var(--font-mono);
         }
 
         .kbd {
-            font-size: 0.8rem;
-            padding: 3px 8px;
-            border-radius: 8px;
+            font-size: 0.78rem;
+            padding: 2px 7px;
+            border-radius: 6px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border);
             color: var(--muted);
+            font-family: var(--font-mono);
         }
 
         .hidden {
             display: none !important;
         }
 
+        /* ── Animations ─────────────────────────── */
         @keyframes floatIn {
             from {
                 opacity: 0;
-                transform: translateY(12px) scale(0.98);
+                transform: translateY(14px) scale(0.97);
             }
 
             to {
@@ -642,14 +848,27 @@
             }
         }
 
-        @keyframes toastIn {
+        @keyframes slideInRow {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateX(0);
             }
         }
 
-        @media (max-width: 880px) {
+        @keyframes toastIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ── Responsive ─────────────────────────── */
+        @media (max-width: 860px) {
             .topbar {
                 flex-direction: column;
                 align-items: stretch;
@@ -675,8 +894,8 @@
 
         @media (max-width: 560px) {
             .app {
-                width: min(100% - 18px, 1320px);
-                margin: 9px auto 24px;
+                width: calc(100% - 18px);
+                margin: 8px auto 20px;
             }
 
             .shell {
@@ -694,7 +913,7 @@
             }
 
             .card {
-                min-height: 230px;
+                min-height: 210px;
             }
         }
     </style>
@@ -713,12 +932,12 @@
 
                 <div class="controls">
                     <div class="search-wrap">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                             <path
                                 d="M21 21L16.65 16.65M10.5 18C14.6421 18 18 14.6421 18 10.5C18 6.35786 14.6421 3 10.5 3C6.35786 3 3 6.35786 3 10.5C3 14.6421 6.35786 18 10.5 18Z"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
                         </svg>
-                        <input id="searchInput" class="search" type="text" placeholder="Search tools..."
+                        <input id="searchInput" class="search" type="text" placeholder="Search tools…"
                             autocomplete="off" />
                     </div>
 
@@ -728,7 +947,10 @@
                     </button>
 
                     <button id="addBtn" class="btn primary" type="button">
-                        <span>＋</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg>
                         <span>Add Tool</span>
                     </button>
                 </div>
@@ -736,15 +958,35 @@
 
             <section class="content">
                 <div class="stats-row">
-                    <div class="stat"><strong id="toolCount">0</strong> tools saved</div>
-                    <div class="stat">Tip: press <span class="kbd">/</span> to search fast</div>
+                    <div class="stats-left">
+                        <div class="stat"><strong id="toolCount">0</strong> tools saved</div>
+                        <div class="stat">Press <span class="kbd">/</span> to search</div>
+                    </div>
+                    <div class="stats-right">
+                        <div class="layout-btn-group" title="Toggle layout">
+                            <button id="layoutGrid" class="layout-btn active" aria-label="Grid view" title="Grid view">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="3" y="3" width="8" height="8" rx="2" />
+                                    <rect x="13" y="3" width="8" height="8" rx="2" />
+                                    <rect x="3" y="13" width="8" height="8" rx="2" />
+                                    <rect x="13" y="13" width="8" height="8" rx="2" />
+                                </svg>
+                            </button>
+                            <button id="layoutList" class="layout-btn" aria-label="List view" title="List view">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.2" stroke-linecap="round">
+                                    <path d="M3 6h18M3 12h18M3 18h18" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="toolGrid" class="grid"></div>
 
                 <div id="emptyState" class="empty-state hidden">
                     <div class="empty-inner">
-                        <div class="big">🧠</div>
+                        <div class="big">🧰</div>
                         <h3>No tools yet</h3>
                         <p>Add your first AI tool and keep every project in one clean dashboard.</p>
                         <button id="emptyAddBtn" class="btn primary" type="button">Add Your First Tool</button>
@@ -753,7 +995,7 @@
             </section>
 
             <div class="footer-note">
-                Saved locally in your browser. Refresh-safe. No backend.
+                Saved locally in your browser · Refresh-safe · No backend
             </div>
         </section>
     </main>
@@ -774,23 +1016,20 @@
                     <input type="hidden" id="toolId" />
 
                     <div class="form-grid">
-                        <div class="field">
-                            <label for="toolEmoji">Emoji Icon</label>
-                            <input id="toolEmoji" type="text" placeholder="🤖" maxlength="4" required />
-                        </div>
-
-                        <div class="field">
+                        <div class="field full">
                             <label for="toolName">Tool Name</label>
                             <input id="toolName" type="text" placeholder="Prompt Forge" required />
                         </div>
 
                         <div class="field full">
                             <label for="toolUrl">Tool URL</label>
-                            <input id="toolUrl" type="text" placeholder="toolname.html" required />
+                            <input id="toolUrl" type="text" placeholder="https://example.com or toolname.html"
+                                required />
                         </div>
 
                         <div class="field full">
-                            <label for="toolDesc">Description (optional)</label>
+                            <label for="toolDesc">Description <span
+                                    style="opacity:.6;text-transform:none;font-weight:400">(optional)</span></label>
                             <textarea id="toolDesc" placeholder="What does this tool do?"></textarea>
                         </div>
                     </div>
@@ -814,17 +1053,13 @@
                 </div>
                 <button id="closeConfirmBtn" class="mini-btn" type="button" aria-label="Close dialog">✕</button>
             </div>
-            <div class="confirm-text" id="confirmText">
-                Are you sure you want to remove this tool?
-            </div>
+            <div class="confirm-text" id="confirmText">Are you sure you want to remove this tool?</div>
             <div class="dialog-body">
                 <div class="dialog-actions">
                     <button id="cancelRemoveBtn" class="btn ghost" type="button">Cancel</button>
                     <button id="confirmRemoveBtn" class="btn"
-                        style="border-color: rgba(251,113,133,0.25); color: var(--text); background: linear-gradient(180deg, rgba(251,113,133,0.22), rgba(251,113,133,0.12));"
-                        type="button">
-                        Remove
-                    </button>
+                        style="border-color:rgba(251,113,133,0.28);background:linear-gradient(180deg,rgba(251,113,133,0.2),rgba(251,113,133,0.1));color:var(--text)"
+                        type="button">Remove</button>
                 </div>
             </div>
         </div>
@@ -836,6 +1071,7 @@
         (() => {
             const STORAGE_KEY = "my_ai_tools_dashboard_v1";
             const THEME_KEY = "my_ai_tools_theme_v1";
+            const LAYOUT_KEY = "my_ai_tools_layout_v1";
 
             const el = {
                 html: document.documentElement,
@@ -848,7 +1084,8 @@
                 themeToggle: document.getElementById("themeToggle"),
                 themeIcon: document.getElementById("themeIcon"),
                 toastWrap: document.getElementById("toastWrap"),
-
+                layoutGrid: document.getElementById("layoutGrid"),
+                layoutList: document.getElementById("layoutList"),
                 modal: document.getElementById("toolModal"),
                 modalTitle: document.getElementById("modalTitle"),
                 modalSubtitle: document.getElementById("modalSubtitle"),
@@ -856,11 +1093,9 @@
                 cancelModalBtn: document.getElementById("cancelModalBtn"),
                 form: document.getElementById("toolForm"),
                 toolId: document.getElementById("toolId"),
-                toolEmoji: document.getElementById("toolEmoji"),
                 toolName: document.getElementById("toolName"),
                 toolUrl: document.getElementById("toolUrl"),
                 toolDesc: document.getElementById("toolDesc"),
-
                 confirmModal: document.getElementById("confirmModal"),
                 confirmText: document.getElementById("confirmText"),
                 closeConfirmBtn: document.getElementById("closeConfirmBtn"),
@@ -872,35 +1107,41 @@
             let editId = null;
             let deleteId = null;
             let lastFocused = null;
+            let layout = "grid"; // 'grid' | 'list'
 
-            const seedTools = [
-                {
-                    id: crypto.randomUUID(),
-                    emoji: "⚡",
-                    name: "Prompt Forge",
-                    url: "https://example.com",
-                    desc: "Fast prompt builder for reusable AI workflows."
-                },
-                {
-                    id: crypto.randomUUID(),
-                    emoji: "🎨",
-                    name: "Image Studio",
-                    url: "https://example.com",
-                    desc: "Create and organize AI image generation presets."
-                },
-                {
-                    id: crypto.randomUUID(),
-                    emoji: "📚",
-                    name: "Research Snap",
-                    url: "https://example.com",
-                    desc: "Collect notes, sources, and summaries in one place."
+            /* ─── Favicon helpers ────────────────────── */
+            function getFaviconUrl(url) {
+                try {
+                    const normalized = url.startsWith("http") ? url : "https://" + url;
+                    const u = new URL(normalized);
+                    // Only fetch favicons for real http(s) URLs
+                    if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+                    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(u.hostname)}&sz=64`;
+                } catch {
+                    return null;
                 }
-            ];
+            }
 
+            function buildIconHTML(tool) {
+                const faviconUrl = getFaviconUrl(tool.url || "");
+                const fallbackContent = tool.emoji
+                    ? escapeHTML(tool.emoji)
+                    : `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>`;
+
+                if (faviconUrl) {
+                    return `
+                        <img class="favicon" src="${escapeAttr(faviconUrl)}" alt=""
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+                        <div class="fallback-icon" style="display:none">${fallbackContent}</div>`;
+                } else {
+                    return `<div class="fallback-icon" style="display:grid">${fallbackContent}</div>`;
+                }
+            }
+
+            /* ─── Theme ───────────────────────────────── */
             function loadTheme() {
-                const saved = localStorage.getItem(THEME_KEY);
-                const theme = saved || "dark";
-                applyTheme(theme);
+                const saved = localStorage.getItem(THEME_KEY) || "dark";
+                applyTheme(saved);
             }
 
             function applyTheme(theme) {
@@ -914,51 +1155,75 @@
                 applyTheme(current === "dark" ? "light" : "dark");
             }
 
-            function loadTools() {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (!raw) {
-                    tools = seedTools;
-                    saveTools();
-                    return;
+            /* ─── Layout ──────────────────────────────── */
+            function loadLayout() {
+                layout = localStorage.getItem(LAYOUT_KEY) || "grid";
+                applyLayout(layout, false);
+            }
+
+            function applyLayout(newLayout, animate = true) {
+                layout = newLayout;
+                localStorage.setItem(LAYOUT_KEY, layout);
+
+                if (layout === "list") {
+                    el.grid.classList.add("list-view");
+                    el.layoutGrid.classList.remove("active");
+                    el.layoutList.classList.add("active");
+                } else {
+                    el.grid.classList.remove("list-view");
+                    el.layoutGrid.classList.add("active");
+                    el.layoutList.classList.remove("active");
                 }
 
+                if (animate) render();
+            }
+
+            /* ─── Data ────────────────────────────────── */
+            const seedTools = [
+                { id: crypto.randomUUID(), name: "ChatGPT", url: "https://chat.openai.com", desc: "OpenAI's conversational AI assistant." },
+                { id: crypto.randomUUID(), name: "Claude", url: "https://claude.ai", desc: "Anthropic's AI assistant for analysis and writing." },
+                { id: crypto.randomUUID(), name: "Midjourney", url: "https://midjourney.com", desc: "AI image generation with stunning artistic results." },
+                { id: crypto.randomUUID(), name: "Perplexity", url: "https://perplexity.ai", desc: "AI-powered search engine with cited sources." },
+                { id: crypto.randomUUID(), name: "Notion", url: "https://notion.so", desc: "All-in-one workspace for notes, tasks and docs." },
+                { id: crypto.randomUUID(), name: "Figma", url: "https://figma.com", desc: "Collaborative design tool for UI and prototypes." },
+            ];
+
+            function loadTools() {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) { tools = seedTools; saveTools(); return; }
                 try {
                     const parsed = JSON.parse(raw);
                     tools = Array.isArray(parsed) ? parsed : [];
-                    if (!tools.length) {
-                        tools = seedTools;
-                        saveTools();
-                    }
-                } catch {
-                    tools = seedTools;
-                    saveTools();
-                }
+                    if (!tools.length) { tools = seedTools; saveTools(); }
+                } catch { tools = seedTools; saveTools(); }
             }
 
             function saveTools() {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(tools));
             }
 
+            /* ─── Toast ────────────────────────────────── */
             function toast(title, message, type = "success") {
                 const node = document.createElement("div");
                 node.className = `toast ${type}`;
                 node.innerHTML = `<strong>${escapeHTML(title)}</strong><span>${escapeHTML(message)}</span>`;
                 el.toastWrap.appendChild(node);
                 setTimeout(() => {
+                    node.style.transition = "opacity .22s, transform .22s";
                     node.style.opacity = "0";
-                    node.style.transform = "translateY(10px)";
-                    setTimeout(() => node.remove(), 220);
-                }, 2500);
+                    node.style.transform = "translateX(12px)";
+                    setTimeout(() => node.remove(), 240);
+                }, 2600);
             }
 
+            /* ─── Render ───────────────────────────────── */
             function escapeHTML(str) {
-                return String(str).replace(/[&<>"']/g, (m) => ({
-                    "&": "&amp;",
-                    "<": "&lt;",
-                    ">": "&gt;",
-                    '"': "&quot;",
-                    "'": "&#39;"
-                }[m]));
+                return String(str).replace(/[&<>"']/g, m =>
+                    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+            }
+
+            function escapeAttr(str) {
+                return String(str).replace(/"/g, "&quot;");
             }
 
             function normalize(s) {
@@ -967,12 +1232,8 @@
 
             function render() {
                 const query = normalize(el.search.value);
-                const filtered = tools.filter(tool => {
-                    const haystack = `${tool.emoji} ${tool.name} ${tool.desc || ""} ${tool.url}`.toLowerCase();
-                    return haystack.includes(query);
-                });
-
-                el.grid.innerHTML = "";
+                const filtered = tools.filter(t =>
+                    `${t.name} ${t.desc || ""} ${t.url}`.toLowerCase().includes(query));
 
                 el.count.textContent = tools.length;
 
@@ -984,35 +1245,62 @@
 
                 el.empty.classList.add("hidden");
                 el.grid.classList.remove("hidden");
+                el.grid.innerHTML = "";
 
                 filtered.forEach((tool, index) => {
                     const card = document.createElement("article");
                     card.className = "card";
-                    card.style.animationDelay = `${Math.min(index * 40, 240)}ms`;
+                    card.style.animationDelay = `${Math.min(index * 38, 220)}ms`;
 
-                    card.innerHTML = `
-            <div class="card-top">
-              <div class="emoji" aria-hidden="true">${escapeHTML(tool.emoji || "🧠")}</div>
-              <div class="mini-actions">
-                <button class="mini-btn" data-action="edit" data-id="${tool.id}" title="Edit tool" aria-label="Edit tool">✎</button>
-                <button class="mini-btn danger" data-action="delete" data-id="${tool.id}" title="Remove tool" aria-label="Remove tool">🗑</button>
-              </div>
-            </div>
-            <h2>${escapeHTML(tool.name)}</h2>
-            <p class="desc">${escapeHTML(tool.desc || "No description added yet.")}</p>
-            <div class="card-actions">
-              <a class="btn primary card-link" href="${escapeAttr(tool.url)}" target="_blank" rel="noopener noreferrer">Open Tool</a>
-            </div>
-          `;
+                    const isListView = el.grid.classList.contains("list-view");
+
+                    if (isListView) {
+                        card.innerHTML = `
+                            <div class="card-top">
+                                <div class="icon-wrap" aria-hidden="true">${buildIconHTML(tool)}</div>
+                            </div>
+                            <div class="card-body">
+                                <h2>${escapeHTML(tool.name)}</h2>
+                                <p class="desc">${escapeHTML(tool.desc || "No description added yet.")}</p>
+                            </div>
+                            <div class="card-actions">
+                                <div class="mini-actions-inline">
+                                    <button class="mini-btn" data-action="edit" data-id="${tool.id}" title="Edit tool" aria-label="Edit tool">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    </button>
+                                    <button class="mini-btn danger" data-action="delete" data-id="${tool.id}" title="Remove tool" aria-label="Remove tool">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                    </button>
+                                </div>
+                                <a class="btn primary card-link" href="${escapeAttr(tool.url)}" target="_blank" rel="noopener noreferrer">Open</a>
+                            </div>`;
+                    } else {
+                        card.innerHTML = `
+                            <div class="card-top">
+                                <div class="icon-wrap" aria-hidden="true">${buildIconHTML(tool)}</div>
+                                <div class="mini-actions">
+                                    <button class="mini-btn" data-action="edit" data-id="${tool.id}" title="Edit tool" aria-label="Edit tool">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    </button>
+                                    <button class="mini-btn danger" data-action="delete" data-id="${tool.id}" title="Remove tool" aria-label="Remove tool">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h2>${escapeHTML(tool.name)}</h2>
+                                <p class="desc">${escapeHTML(tool.desc || "No description added yet.")}</p>
+                            </div>
+                            <div class="card-actions">
+                                <a class="btn primary card-link" href="${escapeAttr(tool.url)}" target="_blank" rel="noopener noreferrer">Open Tool</a>
+                            </div>`;
+                    }
 
                     el.grid.appendChild(card);
                 });
             }
 
-            function escapeAttr(str) {
-                return String(str).replace(/"/g, "&quot;");
-            }
-
+            /* ─── Modal ────────────────────────────────── */
             function openModal(mode = "add", tool = null) {
                 lastFocused = document.activeElement;
                 el.modal.classList.add("open");
@@ -1021,9 +1309,8 @@
                 if (mode === "edit" && tool) {
                     editId = tool.id;
                     el.modalTitle.textContent = "Edit Tool";
-                    el.modalSubtitle.textContent = "Update the details for this tool card.";
+                    el.modalSubtitle.textContent = "Update the details for this tool.";
                     el.toolId.value = tool.id;
-                    el.toolEmoji.value = tool.emoji || "";
                     el.toolName.value = tool.name || "";
                     el.toolUrl.value = tool.url || "";
                     el.toolDesc.value = tool.desc || "";
@@ -1033,7 +1320,6 @@
                     el.modalSubtitle.textContent = "Create a new tool card for your dashboard.";
                     el.toolId.value = "";
                     el.form.reset();
-                    el.toolEmoji.value = "🤖";
                 }
 
                 setTimeout(() => el.toolName.focus(), 60);
@@ -1043,17 +1329,15 @@
                 el.modal.classList.remove("open");
                 el.modal.setAttribute("aria-hidden", "true");
                 editId = null;
-                if (lastFocused && typeof lastFocused.focus === "function") {
-                    lastFocused.focus();
-                }
+                lastFocused?.focus?.();
             }
 
             function openConfirm(id) {
                 deleteId = id;
                 const tool = tools.find(t => t.id === id);
                 el.confirmText.textContent = tool
-                    ? `Remove “${tool.name}”? This will delete it from your dashboard.`
-                    : "Remove this tool? This will delete it from your dashboard.";
+                    ? `Remove "${tool.name}"? This will delete it from your dashboard.`
+                    : "Remove this tool?";
                 lastFocused = document.activeElement;
                 el.confirmModal.classList.add("open");
                 el.confirmModal.setAttribute("aria-hidden", "false");
@@ -1064,123 +1348,98 @@
                 el.confirmModal.classList.remove("open");
                 el.confirmModal.setAttribute("aria-hidden", "true");
                 deleteId = null;
-                if (lastFocused && typeof lastFocused.focus === "function") {
-                    lastFocused.focus();
-                }
+                lastFocused?.focus?.();
             }
 
-            function getToolById(id) {
-                return tools.find(t => t.id === id);
-            }
-
+            /* ─── CRUD ────────────────────────────────── */
             function upsertTool(data) {
                 if (editId) {
                     const idx = tools.findIndex(t => t.id === editId);
                     if (idx !== -1) {
                         tools[idx] = { ...tools[idx], ...data };
-                        saveTools();
-                        render();
-                        toast("Tool updated", `${data.name} was saved successfully.`, "success");
+                        saveTools(); render();
+                        toast("Tool updated", `${data.name} was saved.`, "success");
                     }
                 } else {
-                    tools.unshift({
-                        id: crypto.randomUUID(),
-                        ...data
-                    });
-                    saveTools();
-                    render();
-                    toast("Tool added", `${data.name} is now in your dashboard.`, "success");
+                    tools.unshift({ id: crypto.randomUUID(), ...data });
+                    saveTools(); render();
+                    toast("Tool added", `${data.name} is now on your dashboard.`, "success");
                 }
             }
 
             function removeTool(id) {
-                const tool = getToolById(id);
+                const tool = tools.find(t => t.id === id);
                 tools = tools.filter(t => t.id !== id);
-                saveTools();
-                render();
-                toast("Tool removed", `${tool ? tool.name : "Tool"} was deleted.`, "danger");
+                saveTools(); render();
+                toast("Removed", `${tool ? tool.name : "Tool"} was deleted.`, "danger");
             }
 
-            // Events
+            /* ─── Events ──────────────────────────────── */
             el.themeToggle.addEventListener("click", toggleTheme);
             el.addBtn.addEventListener("click", () => openModal("add"));
             el.emptyAddBtn.addEventListener("click", () => openModal("add"));
             el.closeModalBtn.addEventListener("click", closeModal);
             el.cancelModalBtn.addEventListener("click", closeModal);
-
             el.closeConfirmBtn.addEventListener("click", closeConfirm);
             el.cancelRemoveBtn.addEventListener("click", closeConfirm);
-
             el.search.addEventListener("input", render);
 
-            el.form.addEventListener("submit", (e) => {
-                e.preventDefault();
+            el.layoutGrid.addEventListener("click", () => applyLayout("grid"));
+            el.layoutList.addEventListener("click", () => applyLayout("list"));
 
-                const emoji = el.toolEmoji.value.trim() || "🧠";
+            el.form.addEventListener("submit", e => {
+                e.preventDefault();
                 const name = el.toolName.value.trim();
                 const url = el.toolUrl.value.trim();
                 const desc = el.toolDesc.value.trim();
 
                 if (!name || !url) {
-                   toast("Missing fields", "Tool name and file name are required.", "danger");
+                    toast("Missing fields", "Tool name and URL are required.", "danger");
                     return;
                 }
 
-
-                upsertTool({ emoji, name, url, desc });
+                upsertTool({ name, url, desc });
                 closeModal();
             });
 
-            el.grid.addEventListener("click", (e) => {
+            el.grid.addEventListener("click", e => {
                 const btn = e.target.closest("[data-action]");
                 if (!btn) return;
-
                 const id = btn.getAttribute("data-id");
                 const action = btn.getAttribute("data-action");
-                const tool = getToolById(id);
+                const tool = tools.find(t => t.id === id);
                 if (!tool) return;
-
-                if (action === "edit") {
-                    openModal("edit", tool);
-                } else if (action === "delete") {
-                    openConfirm(id);
-                }
+                if (action === "edit") openModal("edit", tool);
+                if (action === "delete") openConfirm(id);
             });
 
             el.confirmRemoveBtn.addEventListener("click", () => {
-                if (deleteId) {
-                    removeTool(deleteId);
-                    closeConfirm();
-                }
+                if (deleteId) { removeTool(deleteId); closeConfirm(); }
             });
 
-            function closeOnBackdropClick(modalEl, closeFn) {
-                modalEl.addEventListener("click", (e) => {
-                    if (e.target === modalEl) closeFn();
+            [el.modal, el.confirmModal].forEach((m, i) => {
+                m.addEventListener("click", e => {
+                    if (e.target === m) [closeModal, closeConfirm][i]();
                 });
-            }
+            });
 
-            closeOnBackdropClick(el.modal, closeModal);
-            closeOnBackdropClick(el.confirmModal, closeConfirm);
-
-            document.addEventListener("keydown", (e) => {
+            document.addEventListener("keydown", e => {
                 if (e.key === "Escape") {
                     if (el.modal.classList.contains("open")) closeModal();
                     if (el.confirmModal.classList.contains("open")) closeConfirm();
                 }
-
                 if (e.key === "/" && document.activeElement !== el.search) {
                     e.preventDefault();
                     el.search.focus();
                 }
             });
 
-            // Init
+            /* ─── Init ────────────────────────────────── */
             loadTheme();
+            loadLayout();
             loadTools();
             render();
 
-            // Small first-run hint if empty storage
             if (!localStorage.getItem(STORAGE_KEY)) {
                 toast("Ready", "Your dashboard is loaded with starter tools.", "success");
             }
