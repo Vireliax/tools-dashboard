@@ -585,6 +585,50 @@
             gap: 6px;
         }
 
+        /* ── Drag & Drop ─────────────────────────── */
+        .drag-handle {
+            position: absolute;
+            top: 9px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity .18s;
+            cursor: grab;
+            color: var(--muted);
+            line-height: 1;
+            pointer-events: auto;
+            z-index: 2;
+        }
+
+        .card:hover .drag-handle {
+            opacity: 0.45;
+        }
+
+        .card.dragging {
+            opacity: 0.35;
+            transform: scale(0.97) !important;
+            box-shadow: none !important;
+            border-color: var(--accent) !important;
+            cursor: grabbing;
+        }
+
+        .card.drag-over {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 2px var(--accent), 0 20px 50px rgba(0, 0, 0, 0.26) !important;
+            transform: translateY(-6px) !important;
+        }
+
+        .grid.list-view .drag-handle {
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+        }
+
+        /* When dragging, disable hover animations on other cards */
+        .grid.is-dragging .card:not(.dragging):not(.drag-over) {
+            transition: none;
+        }
+
         /* ── Empty state ─────────────────────────── */
         .empty-state {
             border: 1px dashed var(--border);
@@ -1108,30 +1152,50 @@
             let deleteId = null;
             let lastFocused = null;
             let layout = "grid"; // 'grid' | 'list'
+            let dragSrcId = null;
 
             /* ─── Favicon helpers ────────────────────── */
-            function getFaviconUrl(url) {
+            function getFaviconSources(url) {
                 try {
                     const normalized = url.startsWith("http") ? url : "https://" + url;
                     const u = new URL(normalized);
-                    // Only fetch favicons for real http(s) URLs
-                    if (u.protocol !== "https:" && u.protocol !== "http:") return null;
-                    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(u.hostname)}&sz=64`;
+                    if (u.protocol !== "https:" && u.protocol !== "http:") return [];
+                    const h = encodeURIComponent(u.hostname);
+                    return [
+                        // Google's newer favicon API — returns 404 (not a default globe) when missing
+                        `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(u.origin)}&size=64`,
+                        // DuckDuckGo as second fallback
+                        `https://icons.duckduckgo.com/ip3/${u.hostname}.ico`,
+                        // Classic Google favicon service as third
+                        `https://www.google.com/s2/favicons?domain=${h}&sz=64`,
+                    ];
                 } catch {
-                    return null;
+                    return [];
                 }
             }
 
             function buildIconHTML(tool) {
-                const faviconUrl = getFaviconUrl(tool.url || "");
+                const sources = getFaviconSources(tool.url || "");
                 const fallbackContent = tool.emoji
                     ? escapeHTML(tool.emoji)
                     : `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>`;
 
-                if (faviconUrl) {
+                if (sources.length) {
+                    // Encode fallback chain into data attribute; onerror walks through each source
+                    const chain = sources.slice(1).map(s => escapeAttr(s)).join('|');
                     return `
-                        <img class="favicon" src="${escapeAttr(faviconUrl)}" alt=""
-                             onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+                        <img class="favicon" src="${escapeAttr(sources[0])}" alt=""
+                             data-srcs="${chain}"
+                             onerror="
+                               var srcs = this.dataset.srcs ? this.dataset.srcs.split('|').filter(Boolean) : [];
+                               if (srcs.length) {
+                                 this.src = srcs[0];
+                                 this.dataset.srcs = srcs.slice(1).join('|');
+                               } else {
+                                 this.style.display='none';
+                                 this.nextElementSibling.style.display='grid';
+                               }
+                             " />
                         <div class="fallback-icon" style="display:none">${fallbackContent}</div>`;
                 } else {
                     return `<div class="fallback-icon" style="display:grid">${fallbackContent}</div>`;
@@ -1202,7 +1266,70 @@
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(tools));
             }
 
-            /* ─── Toast ────────────────────────────────── */
+            /* ─── Drag & Drop ──────────────────────────── */
+            function setupDragAndDrop() {
+                const query = normalize(el.search.value);
+                // Only enable reordering when not filtering (reordering a filtered subset is confusing)
+                if (query) return;
+
+                const cards = el.grid.querySelectorAll(".card[data-id]");
+                cards.forEach(card => {
+                    card.addEventListener("dragstart", onDragStart);
+                    card.addEventListener("dragover", onDragOver);
+                    card.addEventListener("dragleave", onDragLeave);
+                    card.addEventListener("drop", onDrop);
+                    card.addEventListener("dragend", onDragEnd);
+                });
+            }
+
+            function onDragStart(e) {
+                dragSrcId = this.dataset.id;
+                e.dataTransfer.effectAllowed = "move";
+                e.dataTransfer.setData("text/plain", dragSrcId); // required for Firefox
+                // Defer so the drag image is captured before we style the card
+                requestAnimationFrame(() => {
+                    this.classList.add("dragging");
+                    el.grid.classList.add("is-dragging");
+                });
+            }
+
+            function onDragOver(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+                if (this.dataset.id !== dragSrcId) {
+                    this.classList.add("drag-over");
+                }
+            }
+
+            function onDragLeave() {
+                this.classList.remove("drag-over");
+            }
+
+            function onDrop(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const targetId = this.dataset.id;
+                if (dragSrcId && targetId && dragSrcId !== targetId) {
+                    const srcIdx = tools.findIndex(t => t.id === dragSrcId);
+                    const tgtIdx = tools.findIndex(t => t.id === targetId);
+                    if (srcIdx !== -1 && tgtIdx !== -1) {
+                        const [moved] = tools.splice(srcIdx, 1);
+                        tools.splice(tgtIdx, 0, moved);
+                        saveTools();
+                        render();
+                    }
+                }
+                this.classList.remove("drag-over");
+            }
+
+            function onDragEnd() {
+                el.grid.querySelectorAll(".card").forEach(c =>
+                    c.classList.remove("dragging", "drag-over"));
+                el.grid.classList.remove("is-dragging");
+                dragSrcId = null;
+            }
+
+
             function toast(title, message, type = "success") {
                 const node = document.createElement("div");
                 node.className = `toast ${type}`;
@@ -1251,11 +1378,22 @@
                     const card = document.createElement("article");
                     card.className = "card";
                     card.style.animationDelay = `${Math.min(index * 38, 220)}ms`;
+                    card.dataset.id = tool.id;
+                    card.setAttribute("draggable", "true");
+
+                    const dragHandle = `<span class="drag-handle" title="Drag to reorder" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/>
+                            <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
+                            <circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
+                        </svg>
+                    </span>`;
 
                     const isListView = el.grid.classList.contains("list-view");
 
                     if (isListView) {
                         card.innerHTML = `
+                            ${dragHandle}
                             <div class="card-top">
                                 <div class="icon-wrap" aria-hidden="true">${buildIconHTML(tool)}</div>
                             </div>
@@ -1276,6 +1414,7 @@
                             </div>`;
                     } else {
                         card.innerHTML = `
+                            ${dragHandle}
                             <div class="card-top">
                                 <div class="icon-wrap" aria-hidden="true">${buildIconHTML(tool)}</div>
                                 <div class="mini-actions">
@@ -1298,6 +1437,8 @@
 
                     el.grid.appendChild(card);
                 });
+
+                setupDragAndDrop();
             }
 
             /* ─── Modal ────────────────────────────────── */
