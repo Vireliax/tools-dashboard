@@ -7,28 +7,32 @@
     <title>Discord Webhook Embed Builder</title>
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg0: #070b14;
-            --bg1: #0b1020;
-            --bg2: #10162a;
-            --glass: rgba(255, 255, 255, .06);
-            --glass-2: rgba(255, 255, 255, .09);
-            --line: rgba(255, 255, 255, .10);
-            --line-2: rgba(255, 255, 255, .14);
-            --text: #f4f7ff;
-            --muted: rgba(244, 247, 255, .70);
-            --muted-2: rgba(244, 247, 255, .55);
+            --bg0: #060a12;
+            --bg1: #090e1d;
+            --bg2: #0d1428;
+            --glass: rgba(255, 255, 255, .055);
+            --glass-2: rgba(255, 255, 255, .085);
+            --line: rgba(255, 255, 255, .09);
+            --line-2: rgba(255, 255, 255, .13);
+            --text: #eef1ff;
+            --muted: rgba(238, 241, 255, .65);
+            --muted-2: rgba(238, 241, 255, .50);
             --accent: #5865F2;
             --accent-2: #22d3ee;
             --danger: #fb7185;
             --success: #34d399;
-            --shadow: 0 22px 60px rgba(0, 0, 0, .34);
-            --shadow-soft: 0 12px 30px rgba(0, 0, 0, .20);
-            --r-xl: 30px;
-            --r-lg: 24px;
-            --r-md: 18px;
-            --r-sm: 14px;
+            --shadow: 0 24px 64px rgba(0, 0, 0, .40);
+            --shadow-soft: 0 12px 32px rgba(0, 0, 0, .22);
+            --r-xl: 28px;
+            --r-lg: 22px;
+            --r-md: 16px;
+            --r-sm: 12px;
         }
 
         * {
@@ -45,7 +49,7 @@
                 radial-gradient(900px 720px at 50% 100%, rgba(52, 211, 153, .10), transparent 55%),
                 linear-gradient(180deg, var(--bg0), var(--bg1) 55%, var(--bg2));
             color: var(--text);
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
             overflow-x: hidden;
         }
 
@@ -102,10 +106,10 @@
         }
 
         .hero {
-            border-radius: 34px;
-            padding: 26px;
+            border-radius: 26px;
+            padding: 22px 26px;
             display: flex;
-            gap: 18px;
+            gap: 16px;
             align-items: center;
             justify-content: space-between;
             overflow: hidden;
@@ -126,61 +130,54 @@
         .eyebrow {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             width: fit-content;
-            padding: 8px 12px;
+            padding: 5px 11px;
             border-radius: 999px;
-            background: rgba(88, 101, 242, .14);
-            border: 1px solid rgba(88, 101, 242, .24);
-            color: #dfe4ff;
-            font-size: .82rem;
+            background: rgba(88, 101, 242, .12);
+            border: 1px solid rgba(88, 101, 242, .22);
+            color: #c8cdff;
+            font-size: .73rem;
             font-weight: 700;
-            letter-spacing: .04em;
+            letter-spacing: .07em;
             text-transform: uppercase;
         }
 
         .hero h1 {
-            margin: 14px 0 10px;
-            font-size: clamp(2rem, 3.4vw, 3.35rem);
-            line-height: 1.02;
-            letter-spacing: -.05em;
-        }
-
-        .hero p {
-            margin: 0;
-            max-width: 760px;
-            color: var(--muted);
-            font-size: 1rem;
-            line-height: 1.65;
+            margin: 10px 0 0;
+            font-size: clamp(1.65rem, 2.6vw, 2.5rem);
+            line-height: 1.06;
+            letter-spacing: -.04em;
+            font-weight: 800;
         }
 
         .shortcuts {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 18px;
+            gap: 7px;
+            margin-top: 12px;
         }
 
         .shortcuts span,
         .pill {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
+            gap: 6px;
+            padding: 5px 10px;
             border-radius: 999px;
             border: 1px solid var(--line);
-            background: rgba(255, 255, 255, .04);
-            color: var(--muted);
-            font-size: .88rem;
-            font-weight: 600;
+            background: rgba(255, 255, 255, .035);
+            color: var(--muted-2);
+            font-size: .78rem;
+            font-weight: 500;
         }
 
         .hero-actions {
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-end;
-            gap: 10px;
-            max-width: 640px;
+            gap: 7px;
+            max-width: 580px;
             position: relative;
             z-index: 1;
         }
@@ -189,58 +186,73 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 12px 14px;
-            min-height: 46px;
+            gap: 6px;
+            padding: 9px 14px;
+            min-height: 40px;
             border-radius: 999px;
             border: 1px solid var(--line);
-            background: linear-gradient(180deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .06));
+            background: linear-gradient(180deg, rgba(255, 255, 255, .09), rgba(255, 255, 255, .05));
             color: var(--text);
+            font-weight: 600;
+            font-size: .86rem;
             box-shadow: var(--shadow-soft);
-            transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease, opacity .18s ease;
+            transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease, opacity .16s ease;
             user-select: none;
             white-space: nowrap;
         }
 
+        .btn svg {
+            width: 14px;
+            height: 14px;
+            flex: 0 0 auto;
+            opacity: .75;
+        }
+
         .btn:hover {
             transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, .20);
-            box-shadow: 0 18px 42px rgba(0, 0, 0, .24)
+            border-color: rgba(255, 255, 255, .18);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, .22)
         }
 
         .btn:active {
             transform: translateY(0);
-            opacity: .94
+            opacity: .92
         }
 
         .btn.primary {
             border-color: transparent;
-            background: linear-gradient(135deg, rgba(88, 101, 242, 1), rgba(34, 211, 238, .92));
+            background: linear-gradient(135deg, #5865F2, rgba(34, 211, 238, .85));
             color: white;
-            font-weight: 800;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(88, 101, 242, .28);
+        }
+
+        .btn.primary svg {
+            opacity: 1;
         }
 
         .btn.primary:hover {
-            box-shadow: 0 20px 42px rgba(88, 101, 242, .25)
+            box-shadow: 0 12px 32px rgba(88, 101, 242, .36)
         }
 
         .btn.danger {
-            border-color: rgba(251, 113, 133, .2);
-            background: linear-gradient(180deg, rgba(251, 113, 133, .18), rgba(251, 113, 133, .10));
+            border-color: rgba(251, 113, 133, .20);
+            background: linear-gradient(180deg, rgba(251, 113, 133, .14), rgba(251, 113, 133, .08));
+            color: #ffb3c1;
         }
 
         .btn.ghost {
-            background: rgba(255, 255, 255, .05);
+            background: rgba(255, 255, 255, .04);
         }
 
         .btn.small {
-            min-height: 38px;
-            padding: 10px 12px;
-            font-size: .92rem;
+            min-height: 34px;
+            padding: 7px 12px;
+            font-size: .82rem;
         }
 
         .btn.active {
-            background: linear-gradient(135deg, rgba(88, 101, 242, .92), rgba(88, 101, 242, .54));
+            background: linear-gradient(135deg, rgba(88, 101, 242, .85), rgba(88, 101, 242, .50));
             border-color: rgba(88, 101, 242, .45);
             color: white;
         }
@@ -254,31 +266,33 @@
         }
 
         .panel {
-            border-radius: 30px;
+            border-radius: 24px;
             overflow: hidden;
             position: relative;
         }
 
         .panel-head {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
             gap: 12px;
-            padding: 18px 20px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--line);
-            background: linear-gradient(180deg, rgba(255, 255, 255, .05), transparent);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .04), transparent);
         }
 
         .panel-head h2 {
             margin: 0;
-            font-size: 1.06rem;
-            letter-spacing: -.03em;
+            font-size: .95rem;
+            font-weight: 700;
+            letter-spacing: -.01em;
+            color: var(--text);
         }
 
         .panel-head p {
-            margin: 6px 0 0;
-            color: var(--muted);
-            font-size: .92rem;
+            margin: 3px 0 0;
+            color: var(--muted-2);
+            font-size: .84rem;
         }
 
         .panel-body {
@@ -299,11 +313,10 @@
         }
 
         .section-card {
-            border-radius: 24px;
+            border-radius: 18px;
             border: 1px solid var(--line);
-            background: rgba(255, 255, 255, .045);
-            padding: 18px;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03);
+            background: rgba(255, 255, 255, .035);
+            padding: 16px;
         }
 
         .section-card+.section-card {
@@ -645,7 +658,7 @@
             outline: none;
             padding: 16px;
             resize: vertical;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
             line-height: 1.55;
             font-size: .92rem;
             tab-size: 2;
@@ -914,7 +927,6 @@
             margin: 0;
             color: #dcdee6;
             line-height: 1.55;
-            white-space: pre-wrap;
             word-break: break-word;
         }
 
@@ -963,7 +975,6 @@
             color: #dfe2ea;
             font-size: .9rem;
             line-height: 1.45;
-            white-space: pre-wrap;
             word-break: break-word;
         }
 
@@ -1217,6 +1228,8 @@
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             animation: toastIn .22s ease both;
+            transition: opacity .22s ease, transform .22s ease;
+            cursor: pointer;
         }
 
         .toast strong {
@@ -1254,6 +1267,112 @@
                 opacity: 1;
                 transform: translateY(0) scale(1)
             }
+        }
+
+        @keyframes dialogIn {
+            from {
+                opacity: 0;
+                transform: scale(.96) translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0)
+            }
+        }
+
+        .modal.open .dialog {
+            animation: dialogIn .22s ease both;
+        }
+
+        .char-count {
+            font-size: .8rem;
+            color: var(--muted-2);
+            text-align: right;
+            margin-top: 4px;
+            letter-spacing: .01em;
+            transition: color .18s ease;
+        }
+
+        .char-count.warn {
+            color: #fbbf24;
+        }
+
+        .char-count.over {
+            color: var(--danger);
+            font-weight: 700;
+        }
+
+        .section-card.collapsed .section-card-body {
+            display: none;
+        }
+
+        .section-toggle {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1.1rem;
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            border: 1px solid var(--line-2);
+            background: rgba(255, 255, 255, .05);
+            transition: transform .2s ease, color .18s ease, background .18s ease;
+            flex: 0 0 auto;
+        }
+
+        .section-toggle:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, .09);
+        }
+
+        .section-card.collapsed .section-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .section-head {
+            cursor: default;
+        }
+
+        .section-head.clickable {
+            cursor: pointer;
+        }
+
+        .duplicate-field {
+            border: 1px solid rgba(34, 211, 238, .18);
+            background: rgba(34, 211, 238, .08);
+            color: #b2f0f8;
+            border-radius: 999px;
+            padding: 9px 12px;
+            min-height: 36px;
+            font-size: .88rem;
+            transition: transform .18s ease, opacity .18s ease;
+        }
+
+        .duplicate-field:hover {
+            transform: translateY(-1px);
+            opacity: .9;
+        }
+
+        .field-row-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        kbd {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 7px;
+            border-radius: 7px;
+            border: 1px solid var(--line-2);
+            background: rgba(255, 255, 255, .06);
+            font-size: .8rem;
+            font-family: inherit;
+            color: var(--muted);
+            letter-spacing: .01em;
         }
 
         @media (max-width: 1180px) {
@@ -1339,6 +1458,143 @@
                 justify-content: flex-start
             }
         }
+
+        /* ── Discord Markdown ─────────────────────────────── */
+        .embed-desc strong,
+        .field-value strong {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .embed-desc em,
+        .field-value em {
+            font-style: italic;
+        }
+
+        .embed-desc u,
+        .field-value u {
+            text-decoration: underline;
+        }
+
+        .embed-desc s,
+        .field-value s {
+            text-decoration: line-through;
+            opacity: .7;
+        }
+
+        .dc-h1 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin: 10px 0 6px;
+            color: #fff;
+            letter-spacing: -.03em;
+            border-bottom: 1px solid rgba(255, 255, 255, .10);
+            padding-bottom: 5px;
+        }
+
+        .dc-h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.25;
+            margin: 8px 0 4px;
+            color: #fff;
+            letter-spacing: -.02em;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            padding-bottom: 4px;
+        }
+
+        .dc-h3 {
+            font-size: .95rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin: 6px 0 3px;
+            color: #f0f1f5;
+        }
+
+        .dc-h1:first-child,
+        .dc-h2:first-child,
+        .dc-h3:first-child {
+            margin-top: 0;
+        }
+
+        .dc-blockquote {
+            border-left: 3px solid rgba(255, 255, 255, .22);
+            padding: 2px 0 2px 10px;
+            margin: 4px 0;
+            color: #c0c3ce;
+        }
+
+        .dc-codeblock {
+            background: rgba(0, 0, 0, .38);
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 6px;
+            padding: 9px 12px;
+            margin: 6px 0;
+            overflow-x: auto;
+        }
+
+        .dc-codeblock pre {
+            margin: 0;
+        }
+
+        .dc-codeblock code {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: .8rem;
+            color: #d4d7de;
+            line-height: 1.5;
+        }
+
+        .dc-code-lang {
+            display: block;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: .68rem;
+            color: rgba(255, 255, 255, .35);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .dc-inline-code {
+            background: rgba(0, 0, 0, .30);
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: .83em;
+            color: #d4d7de;
+        }
+
+        .dc-spoiler {
+            background: rgba(255, 255, 255, .11);
+            border-radius: 4px;
+            padding: 0 4px;
+            cursor: pointer;
+            color: transparent;
+            transition: color .14s ease, background .14s ease;
+            user-select: none;
+        }
+
+        .dc-spoiler.revealed {
+            color: inherit;
+            background: rgba(255, 255, 255, .06);
+            cursor: default;
+        }
+
+        .dc-link {
+            color: #7289da;
+            text-decoration: underline;
+        }
+
+        .dc-link:hover {
+            color: #97a5e6;
+        }
+
+        .dc-subtext {
+            font-size: .77em;
+            color: rgba(255, 255, 255, .40);
+        }
+
+        /* ───────────────────────────────────────────────── */
     </style>
 </head>
 
@@ -1346,22 +1602,66 @@
     <div class="app">
         <section class="hero glass">
             <div class="hero-copy">
-                <div class="eyebrow">Discord / Webhook Builder</div>
-                <h1>Build polished embeds in one file.</h1>
-                <p>Create, preview, save, export, and send Discord webhook embeds with a live preview that updates
-                    instantly as you type.</p>
-                <div class="shortcuts"> <span>Ctrl + Enter send</span> <span>Ctrl + S save draft</span> <span>Ctrl +
-                        Shift + J toggle JSON</span> </div>
+                <div class="eyebrow">Discord Webhook Builder</div>
+                <h1>Build polished embeds.</h1>
+                <div class="shortcuts"> <span><kbd>Ctrl</kbd><kbd>↵</kbd> send</span>
+                    <span><kbd>Ctrl</kbd><kbd>S</kbd> save</span>
+                    <span><kbd>Ctrl</kbd><kbd>⇧</kbd><kbd>J</kbd> JSON</span>
+                    <span><kbd>Ctrl</kbd><kbd>⇧</kbd><kbd>A</kbd> add field</span>
+                </div>
             </div>
             <div class="hero-actions">
-                <button id="jsonToggleBtn" class="btn ghost" type="button">JSON Mode</button>
-                <button id="copyEmbedBtn" class="btn ghost" type="button">Copy Embed JSON</button>
-                <button id="copyPayloadBtn" class="btn ghost" type="button">Copy Payload</button>
-                <button id="saveDraftBtn" class="btn ghost" type="button">Save Draft</button>
-                <button id="loadDraftBtn" class="btn ghost" type="button">Load Drafts</button>
-                <button id="importBtn" class="btn ghost" type="button">Import</button>
-                <button id="exportBtn" class="btn ghost" type="button">Export</button>
-                <button id="sendBtn" class="btn primary" type="button">Send Message</button>
+                <button id="jsonToggleBtn" class="btn ghost" type="button"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="16 18 22 12 16 6" />
+                        <polyline points="8 6 2 12 8 18" />
+                    </svg>JSON</button>
+                <button id="copyEmbedBtn" class="btn ghost" type="button"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" />
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>Copy Embed</button>
+                <button id="copyPayloadBtn" class="btn ghost" type="button"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" />
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>Copy Payload</button>
+                <button id="saveDraftBtn" class="btn ghost" type="button"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                    </svg>Save</button>
+                <button id="loadDraftBtn" class="btn ghost" type="button"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 3h18v4H3z" />
+                        <path d="M8 21H5a2 2 0 0 1-2-2v-4" />
+                        <path d="M21 10v9a2 2 0 0 1-2 2h-6" />
+                        <path d="M16 16l3 3 3-3" />
+                        <path d="M19 19v-6" />
+                    </svg>Drafts</button>
+                <button id="importBtn" class="btn ghost" type="button"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>Import</button>
+                <button id="exportBtn" class="btn ghost" type="button"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>Export</button>
+                <button id="resetAllBtn" class="btn danger" type="button"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 .49-4.96" />
+                    </svg>Reset</button>
+                <button id="sendBtn" class="btn primary" type="button"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13" />
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>Send</button>
             </div>
         </section>
 
@@ -1369,165 +1669,195 @@
             <section class="panel editor-panel glass">
                 <div class="panel-head">
                     <div>
-                        <h2>Left Panel — Embed Editor</h2>
-                        <p>Everything you edit updates the preview instantly.</p>
+                        <h2>Embed Editor</h2>
+                        <p>Updates the preview in real time.</p>
                     </div>
-                    <span class="pill">Autosaved locally</span>
+                    <span class="pill">Autosaved</span>
                 </div>
 
                 <div class="panel-body">
                     <div id="builderFormWrap">
                         <form id="editorForm" autocomplete="off">
-                            <section class="section-card">
-                                <div class="section-head">
+                            <section class="section-card" id="section-webhook">
+                                <div class="section-head clickable" data-toggle="section-webhook">
                                     <div>
-                                        <h3>Webhook Settings</h3>
-                                        <p>Set the webhook endpoint and sender overrides.</p>
+                                        <h3>Webhook</h3>
+                                        <p>Endpoint URL and sender overrides.</p>
                                     </div>
+                                    <button class="section-toggle" type="button"
+                                        aria-label="Collapse section">▾</button>
                                 </div>
-                                <div class="grid-2">
-                                    <div class="field full">
-                                        <label for="webhookUrl">Webhook URL</label>
-                                        <input id="webhookUrl" class="input" type="url" data-bind="webhookUrl"
-                                            placeholder="https://discord.com/api/webhooks/..." />
-                                    </div>
-                                    <div class="field">
-                                        <label for="username">Username override</label>
-                                        <input id="username" class="input" type="text" data-bind="username"
-                                            placeholder="Webhook Bot" />
-                                    </div>
-                                    <div class="field">
-                                        <label for="avatarUrl">Avatar URL</label>
-                                        <input id="avatarUrl" class="input" type="url" data-bind="avatarUrl"
-                                            placeholder="https://..." />
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section class="section-card">
-                                <div class="section-head">
-                                    <div>
-                                        <h3>Embed Settings</h3>
-                                        <p>Title, description, accent color, and timestamp.</p>
-                                    </div>
-                                </div>
-                                <div class="grid-2">
-                                    <div class="field">
-                                        <label for="title">Embed Title</label>
-                                        <input id="title" class="input" type="text" data-bind="title"
-                                            placeholder="Launch update" />
-                                    </div>
-                                    <div class="field">
-                                        <label for="titleUrl">Title URL</label>
-                                        <input id="titleUrl" class="input" type="url" data-bind="titleUrl"
-                                            placeholder="https://..." />
-                                    </div>
-                                    <div class="field full">
-                                        <label for="description">Description</label>
-                                        <textarea id="description" class="textarea" data-bind="description"
-                                            placeholder="Describe what this embed is for..."></textarea>
-                                    </div>
-                                    <div class="field">
-                                        <label for="color">Color</label>
-                                        <input id="color" class="input" type="color" data-bind="color" />
-                                    </div>
-                                    <div class="field">
-                                        <label>&nbsp;</label>
-                                        <div class="switch-wrap">
-                                            <div class="switch-label">
-                                                <strong>Timestamp</strong>
-                                                <span>Show an embed timestamp in the footer.</span>
-                                            </div>
-                                            <label class="switch" title="Toggle timestamp">
-                                                <input id="timestamp" type="checkbox" data-bind="timestamp" />
-                                                <span class="slider"></span>
-                                            </label>
+                                <div class="section-card-body">
+                                    <div class="grid-2">
+                                        <div class="field full">
+                                            <label for="webhookUrl">Webhook URL</label>
+                                            <input id="webhookUrl" class="input" type="url" data-bind="webhookUrl"
+                                                placeholder="https://discord.com/api/webhooks/..." />
+                                        </div>
+                                        <div class="field">
+                                            <label for="username">Username override</label>
+                                            <input id="username" class="input" type="text" data-bind="username"
+                                                data-max="80" placeholder="Webhook Bot" />
+                                            <div class="char-count" data-for="username">0 / 80</div>
+                                        </div>
+                                        <div class="field">
+                                            <label for="avatarUrl">Avatar URL</label>
+                                            <input id="avatarUrl" class="input" type="url" data-bind="avatarUrl"
+                                                placeholder="https://..." />
                                         </div>
                                     </div>
                                 </div>
                             </section>
 
-                            <section class="section-card">
-                                <div class="section-head">
+                            <section class="section-card" id="section-embed">
+                                <div class="section-head clickable" data-toggle="section-embed">
                                     <div>
-                                        <h3>Author Section</h3>
-                                        <p>Optional author name, icon, and clickable URL.</p>
+                                        <h3>Embed</h3>
+                                        <p>Title, description, color, and timestamp.</p>
                                     </div>
+                                    <button class="section-toggle" type="button"
+                                        aria-label="Collapse section">▾</button>
                                 </div>
-                                <div class="grid-3">
-                                    <div class="field">
-                                        <label for="authorName">Author Name</label>
-                                        <input id="authorName" class="input" type="text" data-bind="author.name"
-                                            placeholder="Author name" />
-                                    </div>
-                                    <div class="field">
-                                        <label for="authorIconUrl">Author Icon URL</label>
-                                        <input id="authorIconUrl" class="input" type="url" data-bind="author.iconUrl"
-                                            placeholder="https://..." />
-                                    </div>
-                                    <div class="field">
-                                        <label for="authorUrl">Author URL</label>
-                                        <input id="authorUrl" class="input" type="url" data-bind="author.url"
-                                            placeholder="https://..." />
+                                <div class="section-card-body">
+                                    <div class="grid-2">
+                                        <div class="field">
+                                            <label for="title">Embed Title</label>
+                                            <input id="title" class="input" type="text" data-bind="title" data-max="256"
+                                                placeholder="Launch update" />
+                                            <div class="char-count" data-for="title">0 / 256</div>
+                                        </div>
+                                        <div class="field">
+                                            <label for="titleUrl">Title URL</label>
+                                            <input id="titleUrl" class="input" type="url" data-bind="titleUrl"
+                                                placeholder="https://..." />
+                                        </div>
+                                        <div class="field full">
+                                            <label for="description">Description</label>
+                                            <textarea id="description" class="textarea" data-bind="description"
+                                                data-max="4096"
+                                                placeholder="Describe what this embed is for..."></textarea>
+                                            <div class="char-count" data-for="description">0 / 4096</div>
+                                        </div>
+                                        <div class="field">
+                                            <label for="color">Color</label>
+                                            <input id="color" class="input" type="color" data-bind="color" />
+                                        </div>
+                                        <div class="field">
+                                            <label>&nbsp;</label>
+                                            <div class="switch-wrap">
+                                                <div class="switch-label">
+                                                    <strong>Timestamp</strong>
+                                                    <span>Show an embed timestamp in the footer.</span>
+                                                </div>
+                                                <label class="switch" title="Toggle timestamp">
+                                                    <input id="timestamp" type="checkbox" data-bind="timestamp" />
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </section>
 
-                            <section class="section-card">
+                            <section class="section-card" id="section-author">
+                                <div class="section-head clickable" data-toggle="section-author">
+                                    <div>
+                                        <h3>Author</h3>
+                                        <p>Name, icon, and clickable URL.</p>
+                                    </div>
+                                    <button class="section-toggle" type="button"
+                                        aria-label="Collapse section">▾</button>
+                                </div>
+                                <div class="section-card-body">
+                                    <div class="grid-3">
+                                        <div class="field">
+                                            <label for="authorName">Author Name</label>
+                                            <input id="authorName" class="input" type="text" data-bind="author.name"
+                                                data-max="256" placeholder="Author name" />
+                                            <div class="char-count" data-for="authorName">0 / 256</div>
+                                        </div>
+                                        <div class="field">
+                                            <label for="authorIconUrl">Author Icon URL</label>
+                                            <input id="authorIconUrl" class="input" type="url"
+                                                data-bind="author.iconUrl" placeholder="https://..." />
+                                        </div>
+                                        <div class="field">
+                                            <label for="authorUrl">Author URL</label>
+                                            <input id="authorUrl" class="input" type="url" data-bind="author.url"
+                                                placeholder="https://..." />
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="section-card" id="section-fields">
                                 <div class="fields-toolbar">
                                     <div>
-                                        <div class="section-head" style="margin:0">
+                                        <div class="section-head clickable" style="margin:0"
+                                            data-toggle="section-fields">
                                             <div>
-                                                <h3>Embed Content</h3>
-                                                <p>Unlimited fields with drag-and-drop reordering.</p>
+                                                <h3>Fields</h3>
+                                                <p>Up to 25 fields, drag to reorder.</p>
                                             </div>
+                                            <button class="section-toggle" type="button"
+                                                aria-label="Collapse section">▾</button>
                                         </div>
-                                        <div class="hint">Drag the handle on each field card to reorder them.</div>
                                     </div>
                                     <button id="addFieldBtn" class="btn small primary" type="button">+ Add
                                         Field</button>
                                 </div>
-                                <div id="fieldList" class="field-list"></div>
+                                <div class="section-card-body">
+                                    <div id="fieldList" class="field-list"></div>
+                                </div>
                             </section>
 
-                            <section class="section-card">
-                                <div class="section-head">
+                            <section class="section-card" id="section-images">
+                                <div class="section-head clickable" data-toggle="section-images">
                                     <div>
                                         <h3>Images</h3>
-                                        <p>Add a thumbnail or a full image to the embed.</p>
+                                        <p>Thumbnail and full embed image URLs.</p>
                                     </div>
+                                    <button class="section-toggle" type="button"
+                                        aria-label="Collapse section">▾</button>
                                 </div>
-                                <div class="grid-2">
-                                    <div class="field">
-                                        <label for="thumbnailUrl">Thumbnail URL</label>
-                                        <input id="thumbnailUrl" class="input" type="url" data-bind="thumbnailUrl"
-                                            placeholder="https://..." />
-                                    </div>
-                                    <div class="field">
-                                        <label for="imageUrl">Image URL</label>
-                                        <input id="imageUrl" class="input" type="url" data-bind="imageUrl"
-                                            placeholder="https://..." />
+                                <div class="section-card-body">
+                                    <div class="grid-2">
+                                        <div class="field">
+                                            <label for="thumbnailUrl">Thumbnail URL</label>
+                                            <input id="thumbnailUrl" class="input" type="url" data-bind="thumbnailUrl"
+                                                placeholder="https://..." />
+                                        </div>
+                                        <div class="field">
+                                            <label for="imageUrl">Image URL</label>
+                                            <input id="imageUrl" class="input" type="url" data-bind="imageUrl"
+                                                placeholder="https://..." />
+                                        </div>
                                     </div>
                                 </div>
                             </section>
 
-                            <section class="section-card">
-                                <div class="section-head">
+                            <section class="section-card" id="section-footer">
+                                <div class="section-head clickable" data-toggle="section-footer">
                                     <div>
                                         <h3>Footer</h3>
-                                        <p>Optional footer text and footer icon URL.</p>
+                                        <p>Text and icon for the embed footer.</p>
                                     </div>
+                                    <button class="section-toggle" type="button"
+                                        aria-label="Collapse section">▾</button>
                                 </div>
-                                <div class="grid-2">
-                                    <div class="field">
-                                        <label for="footerText">Footer text</label>
-                                        <input id="footerText" class="input" type="text" data-bind="footerText"
-                                            placeholder="Footer text" />
-                                    </div>
-                                    <div class="field">
-                                        <label for="footerIconUrl">Footer icon URL</label>
-                                        <input id="footerIconUrl" class="input" type="url" data-bind="footerIconUrl"
-                                            placeholder="https://..." />
+                                <div class="section-card-body">
+                                    <div class="grid-2">
+                                        <div class="field">
+                                            <label for="footerText">Footer text</label>
+                                            <input id="footerText" class="input" type="text" data-bind="footerText"
+                                                data-max="2048" placeholder="Footer text" />
+                                            <div class="char-count" data-for="footerText">0 / 2048</div>
+                                        </div>
+                                        <div class="field">
+                                            <label for="footerIconUrl">Footer icon URL</label>
+                                            <input id="footerIconUrl" class="input" type="url" data-bind="footerIconUrl"
+                                                placeholder="https://..." />
+                                        </div>
                                     </div>
                                 </div>
                             </section>
@@ -1554,18 +1884,14 @@
                         <div id="jsonStatus" class="json-status"></div>
                     </div>
 
-                    <div class="editor-footnote">
-                        Tip: use Ctrl + Enter to send, Ctrl + S to save a draft, and drag field cards by the handle to
-                        reorder them.
-                    </div>
                 </div>
             </section>
 
             <section class="panel preview-panel glass">
                 <div class="panel-head">
                     <div>
-                        <h2>Right Panel — Live Preview</h2>
-                        <p>Styled to feel like a Discord webhook message.</p>
+                        <h2>Live Preview</h2>
+                        <p>Discord webhook message preview.</p>
                     </div>
                     <span class="pill">Live</span>
                 </div>
@@ -1632,9 +1958,86 @@
     <div id="toastWrap" class="toast-wrap" aria-live="polite" aria-atomic="true"></div>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
     <script> (() => {
-            const STORAGE_CURRENT = "discord_embed_builder_current_v1"; const STORAGE_DRAFTS = "discord_embed_builder_drafts_v1"; const el = { jsonToggleBtn: document.getElementById("jsonToggleBtn"), copyEmbedBtn: document.getElementById("copyEmbedBtn"), copyPayloadBtn: document.getElementById("copyPayloadBtn"), saveDraftBtn: document.getElementById("saveDraftBtn"), loadDraftBtn: document.getElementById("loadDraftBtn"), importBtn: document.getElementById("importBtn"), exportBtn: document.getElementById("exportBtn"), sendBtn: document.getElementById("sendBtn"), builderFormWrap: document.getElementById("builderFormWrap"), editorForm: document.getElementById("editorForm"), fieldList: document.getElementById("fieldList"), addFieldBtn: document.getElementById("addFieldBtn"), jsonWrap: document.getElementById("jsonWrap"), jsonEditor: document.getElementById("jsonEditor"), jsonStatus: document.getElementById("jsonStatus"), formatJsonBtn: document.getElementById("formatJsonBtn"), previewRoot: document.getElementById("previewRoot"), toastWrap: document.getElementById("toastWrap"), importFileInput: document.getElementById("importFileInput"), saveModal: document.getElementById("saveModal"), draftName: document.getElementById("draftName"), confirmSaveDraftBtn: document.getElementById("confirmSaveDraftBtn"), loadModal: document.getElementById("loadModal"), draftList: document.getElementById("draftList"), confirmModal: document.getElementById("confirmModal"), confirmTitle: document.getElementById("confirmTitle"), confirmSubtitle: document.getElementById("confirmSubtitle"), confirmText: document.getElementById("confirmText"), confirmActionBtn: document.getElementById("confirmActionBtn"), confirmCancelBtn: document.getElementById("confirmCancelBtn"), }; let state = defaultState(); let drafts = []; let jsonMode = false; let jsonDirty = false; let jsonTimer = null; let saveTimer = null; let pendingConfirm = null; let pendingFocusFieldId = null; let activeModal = null; let sortable = null; let sending = false; function uid() { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); return "id-" + Math.random().toString(36).slice(2) + Date.now().toString(36); } function safeGet(key) { try { return localStorage.getItem(key); } catch { return null; } } function safeSet(key, value) { try { localStorage.setItem(key, value); } catch { } } function safeParse(raw) { if (!raw) return null; try { return JSON.parse(raw); } catch { return null; } } function defaultState() { return { webhookUrl: "", username: "", avatarUrl: "", title: "", titleUrl: "", description: "", color: "#5865F2", timestamp: true, author: { name: "", iconUrl: "", url: "" }, fields: [], thumbnailUrl: "", imageUrl: "", footerText: "", footerIconUrl: "" }; } function newField() { return { id: uid(), name: "", value: "", inline: false }; } function clone(obj) { return JSON.parse(JSON.stringify(obj)); } function isHexColor(v) { return /^#([0-9a-fA-F]{6})$/.test(String(v || "").trim()); } function hexToInt(hex) { if (!isHexColor(hex)) return 0x5865F2; return parseInt(hex.slice(1), 16); } function intToHex(num) { const n = Number(num); if (!Number.isFinite(n)) return "#5865F2"; return "#" + n.toString(16).padStart(6, "0").slice(-6).toUpperCase(); } function cleanString(v) { return v == null ? "" : String(v); } function normalizeField(field) { return { id: field && field.id ? String(field.id) : uid(), name: cleanString(field && field.name), value: cleanString(field && field.value), inline: !!(field && field.inline) }; } function normalizeState(input) { const base = defaultState(); const source = input && typeof input === "object" ? input : {}; const author = source.author && typeof source.author === "object" ? source.author : {}; const fields = Array.isArray(source.fields) ? source.fields.map(normalizeField) : []; return { webhookUrl: cleanString(source.webhookUrl ?? base.webhookUrl), username: cleanString(source.username ?? base.username), avatarUrl: cleanString(source.avatarUrl ?? base.avatarUrl), title: cleanString(source.title ?? base.title), titleUrl: cleanString(source.titleUrl ?? base.titleUrl), description: cleanString(source.description ?? base.description), color: isHexColor(source.color) ? source.color.toUpperCase() : base.color, timestamp: typeof source.timestamp === "boolean" ? source.timestamp : !!base.timestamp, author: { name: cleanString(author.name), iconUrl: cleanString(author.iconUrl), url: cleanString(author.url) }, fields, thumbnailUrl: cleanString(source.thumbnailUrl ?? base.thumbnailUrl), imageUrl: cleanString(source.imageUrl ?? base.imageUrl), footerText: cleanString(source.footerText ?? base.footerText), footerIconUrl: cleanString(source.footerIconUrl ?? base.footerIconUrl) }; } function payloadToState(payload) { const embed = Array.isArray(payload.embeds) ? (payload.embeds[0] || {}) : (payload.embeds || {}); return normalizeState({ webhookUrl: "", username: cleanString(payload.username), avatarUrl: cleanString(payload.avatar_url), title: cleanString(embed.title), titleUrl: cleanString(embed.url), description: cleanString(embed.description), color: typeof embed.color === "number" ? intToHex(embed.color) : "#5865F2", timestamp: !!embed.timestamp, author: embed.author ? { name: cleanString(embed.author.name), iconUrl: cleanString(embed.author.icon_url), url: cleanString(embed.author.url) } : { name: "", iconUrl: "", url: "" }, fields: Array.isArray(embed.fields) ? embed.fields.map(f => ({ id: uid(), name: cleanString(f.name), value: cleanString(f.value), inline: !!f.inline })) : [], thumbnailUrl: embed.thumbnail ? cleanString(embed.thumbnail.url) : "", imageUrl: embed.image ? cleanString(embed.image.url) : "", footerText: embed.footer ? cleanString(embed.footer.text) : "", footerIconUrl: embed.footer ? cleanString(embed.footer.icon_url) : "" }); } function importToState(data) { if (!data || typeof data !== "object") return defaultState(); if (data.state && typeof data.state === "object") return normalizeState(data.state); if (data.embeds) return payloadToState(data); return normalizeState(data); } function exportConfig() { return { version: 1, state: clone(state) }; } function buildEmbedObject() { const embed = {}; const title = state.title.trim(); const titleUrl = state.titleUrl.trim(); const desc = state.description.trim(); const authorName = state.author.name.trim(); const authorIcon = state.author.iconUrl.trim(); const authorUrl = state.author.url.trim(); const thumbnailUrl = state.thumbnailUrl.trim(); const imageUrl = state.imageUrl.trim(); const footerText = state.footerText.trim(); const footerIconUrl = state.footerIconUrl.trim(); if (title) embed.title = title; if (titleUrl) embed.url = titleUrl; if (desc) embed.description = desc; if (isHexColor(state.color)) embed.color = hexToInt(state.color); if (state.timestamp) embed.timestamp = new Date().toISOString(); if (authorName || authorIcon || authorUrl) { embed.author = {}; if (authorName) embed.author.name = authorName; if (authorIcon) embed.author.icon_url = authorIcon; if (authorUrl) embed.author.url = authorUrl; } const fields = state.fields.map(f => ({ name: f.name.trim(), value: f.value.trim(), inline: !!f.inline })).filter(f => f.name || f.value); if (fields.length) embed.fields = fields; if (thumbnailUrl) embed.thumbnail = { url: thumbnailUrl }; if (imageUrl) embed.image = { url: imageUrl }; if (footerText || footerIconUrl) { embed.footer = {}; if (footerText) embed.footer.text = footerText; if (footerIconUrl) embed.footer.icon_url = footerIconUrl; } return embed; } function buildWebhookPayload() { const payload = { embeds: [buildEmbedObject()] }; const username = state.username.trim(); const avatarUrl = state.avatarUrl.trim(); if (username) payload.username = username; if (avatarUrl) payload.avatar_url = avatarUrl; return payload; } function escapeHTML(str) { return cleanString(str).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m])); } function escapeAttr(str) { return escapeHTML(str); } function textToHtml(str) { return escapeHTML(str).replace(/\n/g, "<br>"); } function cssBg(url) { const raw = cleanString(url).trim(); if (!raw) return ""; return `url("${encodeURI(raw).replace(/"/g, "%22")}")`; } function formatTime() { const now = new Date(); const time = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); return `Today at ${time}`; } function formatDate(ts) { return new Date(ts).toLocaleString([], { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }); } function showToast(title, message, type = "info") { const node = document.createElement("div"); node.className = `toast ${type}`; node.innerHTML = `<strong>${escapeHTML(title)}</strong><span>${escapeHTML(message)}</span>`; el.toastWrap.appendChild(node); setTimeout(() => { node.style.opacity = "0"; node.style.transform = "translateY(8px) scale(.98)"; setTimeout(() => node.remove(), 220); }, 2600); } function copyText(text) { const value = String(text); const done = () => showToast("Copied", "The clipboard was updated.", "success"); if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(value).then(done).catch(fallbackCopy); return; } fallbackCopy(); function fallbackCopy() { const ta = document.createElement("textarea"); ta.value = value; ta.setAttribute("readonly", "readonly"); ta.style.position = "fixed"; ta.style.left = "-9999px"; ta.style.top = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch { showToast("Copy failed", "Your browser blocked clipboard access.", "error"); } ta.remove(); } } function downloadFile(filename, content) { const blob = new Blob([content], { type: "application/json;charset=utf-8" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 250); } function readByPath(obj, path) { return path.split(".").reduce((acc, key) => (acc && key in acc ? acc[key] : ""), obj); } function writeByPath(obj, path, value) { const parts = path.split("."); let cur = obj; for (let i = 0; i < parts.length - 1; i++) { const k = parts[i]; if (!cur[k] || typeof cur[k] !== "object") cur[k] = {}; cur = cur[k]; } cur[parts[parts.length - 1]] = value; } function updateBoundInputs() { document.querySelectorAll("[data-bind]").forEach(node => { const path = node.dataset.bind; const value = readByPath(state, path); if (node.type === "checkbox") node.checked = !!value; else if (node.type === "color") node.value = isHexColor(value) ? value : "#5865F2"; else node.value = value ?? ""; }); } function renderFieldList() {
+            const STORAGE_CURRENT = "discord_embed_builder_current_v1"; const STORAGE_DRAFTS = "discord_embed_builder_drafts_v1"; const el = { jsonToggleBtn: document.getElementById("jsonToggleBtn"), copyEmbedBtn: document.getElementById("copyEmbedBtn"), copyPayloadBtn: document.getElementById("copyPayloadBtn"), saveDraftBtn: document.getElementById("saveDraftBtn"), loadDraftBtn: document.getElementById("loadDraftBtn"), importBtn: document.getElementById("importBtn"), exportBtn: document.getElementById("exportBtn"), sendBtn: document.getElementById("sendBtn"), resetAllBtn: document.getElementById("resetAllBtn"), builderFormWrap: document.getElementById("builderFormWrap"), editorForm: document.getElementById("editorForm"), fieldList: document.getElementById("fieldList"), addFieldBtn: document.getElementById("addFieldBtn"), jsonWrap: document.getElementById("jsonWrap"), jsonEditor: document.getElementById("jsonEditor"), jsonStatus: document.getElementById("jsonStatus"), formatJsonBtn: document.getElementById("formatJsonBtn"), previewRoot: document.getElementById("previewRoot"), toastWrap: document.getElementById("toastWrap"), importFileInput: document.getElementById("importFileInput"), saveModal: document.getElementById("saveModal"), draftName: document.getElementById("draftName"), confirmSaveDraftBtn: document.getElementById("confirmSaveDraftBtn"), loadModal: document.getElementById("loadModal"), draftList: document.getElementById("draftList"), confirmModal: document.getElementById("confirmModal"), confirmTitle: document.getElementById("confirmTitle"), confirmSubtitle: document.getElementById("confirmSubtitle"), confirmText: document.getElementById("confirmText"), confirmActionBtn: document.getElementById("confirmActionBtn"), confirmCancelBtn: document.getElementById("confirmCancelBtn"), }; let state = defaultState(); let drafts = []; let jsonMode = false; let jsonDirty = false; let jsonTimer = null; let saveTimer = null; let pendingConfirm = null; let pendingFocusFieldId = null; let activeModal = null; let sortable = null; let sending = false; function uid() { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); return "id-" + Math.random().toString(36).slice(2) + Date.now().toString(36); } function safeGet(key) { try { return localStorage.getItem(key); } catch { return null; } } function safeSet(key, value) { try { localStorage.setItem(key, value); } catch { } } function safeParse(raw) { if (!raw) return null; try { return JSON.parse(raw); } catch { return null; } } function defaultState() { return { webhookUrl: "", username: "", avatarUrl: "", title: "", titleUrl: "", description: "", color: "#5865F2", timestamp: true, author: { name: "", iconUrl: "", url: "" }, fields: [], thumbnailUrl: "", imageUrl: "", footerText: "", footerIconUrl: "" }; } function newField() { return { id: uid(), name: "", value: "", inline: false }; } function clone(obj) { return JSON.parse(JSON.stringify(obj)); } function isHexColor(v) { return /^#([0-9a-fA-F]{6})$/.test(String(v || "").trim()); } function hexToInt(hex) { if (!isHexColor(hex)) return 0x5865F2; return parseInt(hex.slice(1), 16); } function intToHex(num) { const n = Number(num); if (!Number.isFinite(n)) return "#5865F2"; return "#" + n.toString(16).padStart(6, "0").slice(-6).toUpperCase(); } function cleanString(v) { return v == null ? "" : String(v); } function normalizeField(field) { return { id: field && field.id ? String(field.id) : uid(), name: cleanString(field && field.name), value: cleanString(field && field.value), inline: !!(field && field.inline) }; } function normalizeState(input) { const base = defaultState(); const source = input && typeof input === "object" ? input : {}; const author = source.author && typeof source.author === "object" ? source.author : {}; const fields = Array.isArray(source.fields) ? source.fields.map(normalizeField) : []; return { webhookUrl: cleanString(source.webhookUrl ?? base.webhookUrl), username: cleanString(source.username ?? base.username), avatarUrl: cleanString(source.avatarUrl ?? base.avatarUrl), title: cleanString(source.title ?? base.title), titleUrl: cleanString(source.titleUrl ?? base.titleUrl), description: cleanString(source.description ?? base.description), color: isHexColor(source.color) ? source.color.toUpperCase() : base.color, timestamp: typeof source.timestamp === "boolean" ? source.timestamp : !!base.timestamp, author: { name: cleanString(author.name), iconUrl: cleanString(author.iconUrl), url: cleanString(author.url) }, fields, thumbnailUrl: cleanString(source.thumbnailUrl ?? base.thumbnailUrl), imageUrl: cleanString(source.imageUrl ?? base.imageUrl), footerText: cleanString(source.footerText ?? base.footerText), footerIconUrl: cleanString(source.footerIconUrl ?? base.footerIconUrl) }; } function payloadToState(payload) { const embed = Array.isArray(payload.embeds) ? (payload.embeds[0] || {}) : (payload.embeds || {}); return normalizeState({ webhookUrl: "", username: cleanString(payload.username), avatarUrl: cleanString(payload.avatar_url), title: cleanString(embed.title), titleUrl: cleanString(embed.url), description: cleanString(embed.description), color: typeof embed.color === "number" ? intToHex(embed.color) : "#5865F2", timestamp: !!embed.timestamp, author: embed.author ? { name: cleanString(embed.author.name), iconUrl: cleanString(embed.author.icon_url), url: cleanString(embed.author.url) } : { name: "", iconUrl: "", url: "" }, fields: Array.isArray(embed.fields) ? embed.fields.map(f => ({ id: uid(), name: cleanString(f.name), value: cleanString(f.value), inline: !!f.inline })) : [], thumbnailUrl: embed.thumbnail ? cleanString(embed.thumbnail.url) : "", imageUrl: embed.image ? cleanString(embed.image.url) : "", footerText: embed.footer ? cleanString(embed.footer.text) : "", footerIconUrl: embed.footer ? cleanString(embed.footer.icon_url) : "" }); } function importToState(data) { if (!data || typeof data !== "object") return defaultState(); if (data.state && typeof data.state === "object") return normalizeState(data.state); if (data.embeds) return payloadToState(data); return normalizeState(data); } function exportConfig() { return { version: 1, state: clone(state) }; } function buildEmbedObject() { const embed = {}; const title = state.title.trim(); const titleUrl = state.titleUrl.trim(); const desc = state.description.trim(); const authorName = state.author.name.trim(); const authorIcon = state.author.iconUrl.trim(); const authorUrl = state.author.url.trim(); const thumbnailUrl = state.thumbnailUrl.trim(); const imageUrl = state.imageUrl.trim(); const footerText = state.footerText.trim(); const footerIconUrl = state.footerIconUrl.trim(); if (title) embed.title = title; if (titleUrl) embed.url = titleUrl; if (desc) embed.description = desc; if (isHexColor(state.color)) embed.color = hexToInt(state.color); if (state.timestamp) embed.timestamp = new Date().toISOString(); if (authorName || authorIcon || authorUrl) { embed.author = {}; if (authorName) embed.author.name = authorName; if (authorIcon) embed.author.icon_url = authorIcon; if (authorUrl) embed.author.url = authorUrl; } const fields = state.fields.map(f => ({ name: f.name.trim(), value: f.value.trim(), inline: !!f.inline })).filter(f => f.name || f.value); if (fields.length) embed.fields = fields; if (thumbnailUrl) embed.thumbnail = { url: thumbnailUrl }; if (imageUrl) embed.image = { url: imageUrl }; if (footerText || footerIconUrl) { embed.footer = {}; if (footerText) embed.footer.text = footerText; if (footerIconUrl) embed.footer.icon_url = footerIconUrl; } return embed; } function buildWebhookPayload() { const payload = { embeds: [buildEmbedObject()] }; const username = state.username.trim(); const avatarUrl = state.avatarUrl.trim(); if (username) payload.username = username; if (avatarUrl) payload.avatar_url = avatarUrl; return payload; } function escapeHTML(str) { return cleanString(str).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m])); } function escapeAttr(str) { return escapeHTML(str); } function textToHtml(str) { return escapeHTML(str).replace(/\n/g, "<br>"); }
+
+            /* ── Discord markdown ─────────────────────────── */
+            function inlineDC(str) {
+                let s = escapeHTML(str);
+                // Links [text](url) — must run before other replacements
+                s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) =>
+                    `<a class="dc-link" href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`);
+                // Bold+italic ***
+                s = s.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+                // Bold **
+                s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+                // Italic * (not preceded/followed by *)
+                s = s.replace(/(?<!\*)\*(?!\*)(?!\s)(.+?)(?<!\s)\*(?!\*)/g, '<em>$1</em>');
+                // Underline __
+                s = s.replace(/__(.+?)__/g, '<u>$1</u>');
+                // Italic _ (single)
+                s = s.replace(/(?<!_)_(?!_)(?!\s)(.+?)(?<!\s)_(?!_)/g, '<em>$1</em>');
+                // Strikethrough ~~
+                s = s.replace(/~~(.+?)~~/g, '<s>$1</s>');
+                // Spoiler ||
+                s = s.replace(/\|\|(.+?)\|\|/g, '<span class="dc-spoiler" onclick="this.classList.toggle(\'revealed\')">$1</span>');
+                // Inline code ` (after all other replacements so content is preserved)
+                s = s.replace(/`([^`]+)`/g, '<code class="dc-inline-code">$1</code>');
+                return s;
+            }
+
+            function discordToHtml(str) {
+                if (!str) return '';
+                const lines = str.split('\n');
+                const out = [];
+                let i = 0;
+                while (i < lines.length) {
+                    const line = lines[i];
+                    // Code block ```lang
+                    if (line.startsWith('```')) {
+                        const lang = line.slice(3).trim();
+                        const codeLines = [];
+                        i++;
+                        while (i < lines.length && !lines[i].startsWith('```')) { codeLines.push(lines[i]); i++; }
+                        const langLabel = lang ? `<span class="dc-code-lang">${escapeHTML(lang)}</span>` : '';
+                        out.push(`<div class="dc-codeblock">${langLabel}<pre><code>${escapeHTML(codeLines.join('\n'))}</code></pre></div>`);
+                        i++; continue;
+                    }
+                    // Blockquote > (collect consecutive)
+                    if (line.startsWith('> ') || line === '>') {
+                        const qLines = [];
+                        while (i < lines.length && (lines[i].startsWith('> ') || lines[i] === '>')) {
+                            qLines.push(lines[i].startsWith('> ') ? lines[i].slice(2) : '');
+                            i++;
+                        }
+                        out.push(`<div class="dc-blockquote">${qLines.map(l => inlineDC(l)).join('<br>')}</div>`);
+                        continue;
+                    }
+                    // Headers # ## ###
+                    if (line.startsWith('# ')) { out.push(`<div class="dc-h1">${inlineDC(line.slice(2))}</div>`); i++; continue; }
+                    if (line.startsWith('## ')) { out.push(`<div class="dc-h2">${inlineDC(line.slice(3))}</div>`); i++; continue; }
+                    if (line.startsWith('### ')) { out.push(`<div class="dc-h3">${inlineDC(line.slice(4))}</div>`); i++; continue; }
+                    // Subtext -#
+                    if (line.startsWith('-# ')) { out.push(`<span class="dc-subtext">${inlineDC(line.slice(3))}</span><br>`); i++; continue; }
+                    // Empty line
+                    if (line === '') { out.push('<br>'); i++; continue; }
+                    // Regular text
+                    out.push(inlineDC(line) + '<br>');
+                    i++;
+                }
+                return out.join('').replace(/(<br>\s*)+$/, '');
+            }
+            /* ─────────────────────────────────────────────── */ function cssBg(url) { const raw = cleanString(url).trim(); if (!raw) return ""; return `url("${encodeURI(raw).replace(/"/g, "%22")}")`; } function formatTime() { const now = new Date(); const time = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); return `Today at ${time}`; } function formatDate(ts) { return new Date(ts).toLocaleString([], { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }); } function showToast(title, message, type = "info") {
+                const node = document.createElement("div");
+                node.className = `toast ${type}`;
+                node.innerHTML = `<strong>${escapeHTML(title)}</strong><span>${escapeHTML(message)}</span>`;
+                node.title = "Click to dismiss";
+                el.toastWrap.appendChild(node);
+                const dismiss = () => { node.style.opacity = "0"; node.style.transform = "translateY(8px) scale(.98)"; setTimeout(() => node.remove(), 220); };
+                node.addEventListener("click", dismiss);
+                setTimeout(dismiss, 2600);
+            } function copyText(text) { const value = String(text); const done = () => showToast("Copied", "The clipboard was updated.", "success"); if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(value).then(done).catch(fallbackCopy); return; } fallbackCopy(); function fallbackCopy() { const ta = document.createElement("textarea"); ta.value = value; ta.setAttribute("readonly", "readonly"); ta.style.position = "fixed"; ta.style.left = "-9999px"; ta.style.top = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch { showToast("Copy failed", "Your browser blocked clipboard access.", "error"); } ta.remove(); } } function downloadFile(filename, content) { const blob = new Blob([content], { type: "application/json;charset=utf-8" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 250); } function readByPath(obj, path) { return path.split(".").reduce((acc, key) => (acc && key in acc ? acc[key] : ""), obj); } function writeByPath(obj, path, value) { const parts = path.split("."); let cur = obj; for (let i = 0; i < parts.length - 1; i++) { const k = parts[i]; if (!cur[k] || typeof cur[k] !== "object") cur[k] = {}; cur = cur[k]; } cur[parts[parts.length - 1]] = value; } function updateBoundInputs() { document.querySelectorAll("[data-bind]").forEach(node => { const path = node.dataset.bind; const value = readByPath(state, path); if (node.type === "checkbox") node.checked = !!value; else if (node.type === "color") node.value = isHexColor(value) ? value : "#5865F2"; else node.value = value ?? ""; }); } function renderFieldList() {
                 if (!state.fields.length) { el.fieldList.innerHTML = ` <div class="empty-inline"> <div> <strong style="display:block; margin-bottom:4px; color:#fff;">No fields yet</strong> <span>Add fields to build a Discord-style grid inside the embed.</span> </div> <button id="emptyAddFieldBtn" class="btn small primary" type="button">+ Add First Field</button> </div> `; const emptyBtn = document.getElementById("emptyAddFieldBtn"); if (emptyBtn) emptyBtn.onclick = () => addField(); return; } el.fieldList.innerHTML = state.fields.map((field, index) => {
-                    const title = `Field ${index + 1}`; return ` <div class="field-row" data-field-id="${escapeAttr(field.id)}"> <div class="field-row-head"> <div class="field-row-title"> <button class="drag-handle" type="button" title="Drag to reorder" aria-label="Drag to reorder">⋮⋮</button> <strong>${title}</strong> </div> <button class="remove-field" type="button" data-action="remove-field" data-field-id="${escapeAttr(field.id)}">Remove</button> </div> <div class="field-subgrid"> <div class="mini-field"> <label>Name</label> <input class="input" type="text" data-prop="name" data-field-id="${escapeAttr(field.id)}" placeholder="Field name" value="${escapeAttr(field.name)}" /> </div> <div class="mini-field"> <label>Value</label> <textarea class="textarea" data-prop="value" data-field-id="${escapeAttr(field.id)}" placeholder="Field value">${escapeHTML(field.value)}</textarea>
+                    const title = `Field ${index + 1}`; return ` <div class="field-row" data-field-id="${escapeAttr(field.id)}"> <div class="field-row-head"> <div class="field-row-title"> <button class="drag-handle" type="button" title="Drag to reorder" aria-label="Drag to reorder">⋮⋮</button> <strong>${title}</strong> </div> <div class="field-row-actions"> <button class="duplicate-field" type="button" data-action="duplicate-field" data-field-id="${escapeAttr(field.id)}" title="Duplicate field">⧉ Dupe</button> <button class="remove-field" type="button" data-action="remove-field" data-field-id="${escapeAttr(field.id)}">Remove</button> </div> </div> <div class="field-subgrid"> <div class="mini-field"> <label>Name</label> <input class="input" type="text" data-prop="name" data-field-id="${escapeAttr(field.id)}" placeholder="Field name" data-max="256" value="${escapeAttr(field.name)}" /> <div class="char-count">${field.name.length} / 256</div> </div> <div class="mini-field"> <label>Value</label> <textarea class="textarea" data-prop="value" data-field-id="${escapeAttr(field.id)}" placeholder="Field value" data-max="1024">${escapeHTML(field.value)}</textarea> <div class="char-count">${field.value.length} / 1024</div>
             </div>
           </div>
           <div class="field-meta">
@@ -1716,8 +2119,8 @@
                     : `<div class="${titleClass}">${titleContent}</div>`;
 
                 const descClass = descText ? "embed-desc" : "embed-desc placeholder";
-                const descContent = textToHtml(descText || "Add a description, fields, images, and footer details here.");
-                const descHtml = `<p class="${descClass}">${descContent}</p>`;
+                const descContent = descText ? discordToHtml(descText) : textToHtml("Add a description, fields, images, and footer details here.");
+                const descHtml = `<div class="${descClass}">${descContent}</div>`;
 
                 const authorHtml = authorVisible ? `
       <div class="embed-author">
@@ -1738,8 +2141,8 @@
                     const valueClass = field.value.trim() ? "field-value" : "field-value placeholder";
                     return `
             <div class="embed-field ${field.inline ? "inline" : "block"}">
-              <div class="${nameClass}">${textToHtml(nameText)}</div>
-              <div class="${valueClass}">${textToHtml(valueText)}</div>
+              <div class="${nameClass}">${inlineDC(nameText)}</div>
+              <div class="${valueClass}">${field.value.trim() ? discordToHtml(field.value.trim()) : textToHtml(valueText)}</div>
             </div>
           `;
                 }).join("")}
@@ -1750,7 +2153,7 @@
                 const imageHtml = imageUrl ? `<div class="embed-image" style="background-image:${cssBg(imageUrl)}"></div>` : "";
 
                 const footerLeft = footerText
-                    ? `<div class="footer-text">${textToHtml(footerText)}</div>`
+                    ? `<div class="footer-text">${inlineDC(footerText)}</div>`
                     : footerIcon
                         ? `<div class="footer-text placeholder">Footer</div>`
                         : "";
@@ -2146,6 +2549,48 @@
                 if (!document.querySelector(".modal.open")) document.body.classList.remove("modal-open");
             }
 
+            function duplicateField(fieldId) {
+                const original = state.fields.find(f => f.id === fieldId);
+                if (!original) return;
+                const dupe = { ...clone(original), id: uid() };
+                const idx = state.fields.findIndex(f => f.id === fieldId);
+                state.fields.splice(idx + 1, 0, dupe);
+                pendingFocusFieldId = dupe.id;
+                renderFieldList();
+                renderPreview();
+                persistCurrentState();
+                if (jsonMode && !jsonDirty) updateJsonEditor();
+                showToast("Field duplicated", "A copy was inserted below.", "success");
+            }
+
+            function updateCharCounts() {
+                document.querySelectorAll("[data-max]").forEach(input => {
+                    const max = parseInt(input.dataset.max, 10);
+                    const id = input.id || null;
+                    const counter = id
+                        ? document.querySelector(`.char-count[data-for="${id}"]`)
+                        : input.parentElement && input.parentElement.querySelector(".char-count");
+                    if (!counter) return;
+                    const len = input.value.length;
+                    counter.textContent = `${len.toLocaleString()} / ${max.toLocaleString()}`;
+                    counter.classList.remove("warn", "over");
+                    if (len > max) counter.classList.add("over");
+                    else if (len >= max * 0.85) counter.classList.add("warn");
+                });
+            }
+
+            function initSectionToggles() {
+                document.querySelectorAll("[data-toggle]").forEach(head => {
+                    head.addEventListener("click", e => {
+                        if (e.target.closest("button.section-toggle") || e.target === head || e.target.closest(".section-head")) {
+                            const sectionId = head.dataset.toggle;
+                            const section = document.getElementById(sectionId);
+                            if (section) section.classList.toggle("collapsed");
+                        }
+                    });
+                });
+            }
+
             function init() {
                 const current = safeParse(safeGet(STORAGE_CURRENT));
                 const currentState = importToState(current);
@@ -2158,6 +2603,8 @@
                 renderFieldList();
                 renderPreview();
                 persistCurrentState();
+                updateCharCounts();
+                initSectionToggles();
             }
 
             // Events
@@ -2178,6 +2625,34 @@
                 downloadFile("discord-embed-config.json", JSON.stringify(exportConfig(), null, 2));
                 showToast("Exported", "Your embed config file was downloaded.", "success");
             });
+            el.resetAllBtn.addEventListener("click", () => {
+                openConfirm({
+                    title: "Reset all fields?",
+                    subtitle: "This will clear the entire form.",
+                    text: "All embed settings, fields, and webhook config will be wiped. Save a draft first if you want to keep your work.",
+                    confirmText: "Reset All",
+                    tone: "danger",
+                    onConfirm: () => {
+                        state = normalizeState(defaultState());
+                        updateBoundInputs();
+                        renderFieldList();
+                        renderPreview();
+                        persistCurrentState();
+                        updateCharCounts();
+                        if (jsonMode && !jsonDirty) updateJsonEditor();
+                        showToast("Reset", "The editor has been cleared.", "info");
+                    }
+                });
+            });
+
+            el.draftName.addEventListener("keydown", e => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    saveDraftByName(el.draftName.value);
+                    closeModal(el.saveModal);
+                }
+            });
+
             el.sendBtn.addEventListener("click", sendWebhook);
 
             el.addFieldBtn.addEventListener("click", addField);
@@ -2186,18 +2661,21 @@
                 const target = e.target;
                 if (!(target instanceof HTMLElement)) return;
                 if (target.matches("[data-bind]")) handleBoundInput(target);
+                updateCharCounts();
             });
 
             el.editorForm.addEventListener("change", e => {
                 const target = e.target;
                 if (!(target instanceof HTMLElement)) return;
                 if (target.matches("[data-bind]")) handleBoundInput(target);
+                updateCharCounts();
             });
 
             el.fieldList.addEventListener("input", e => {
                 const target = e.target;
                 if (!(target instanceof HTMLElement)) return;
                 if (target.matches("[data-prop='name'], [data-prop='value']")) handleFieldInput(target);
+                updateCharCounts();
             });
 
             el.fieldList.addEventListener("change", e => {
@@ -2213,6 +2691,15 @@
                 if (!btn) return;
                 const id = btn.getAttribute("data-field-id");
                 if (id) removeField(id);
+            });
+
+            el.fieldList.addEventListener("click", e => {
+                const target = e.target;
+                if (!(target instanceof HTMLElement)) return;
+                const dupBtn = target.closest("[data-action='duplicate-field']");
+                if (!dupBtn) return;
+                const id = dupBtn.getAttribute("data-field-id");
+                if (id) duplicateField(id);
             });
 
             el.jsonEditor.addEventListener("input", () => {
@@ -2288,6 +2775,12 @@
                     if (el.confirmModal.classList.contains("open")) closeConfirm();
                     if (el.saveModal.classList.contains("open")) closeModal(el.saveModal);
                     if (el.loadModal.classList.contains("open")) closeModal(el.loadModal);
+                    return;
+                }
+
+                if (meta && e.shiftKey && key === "a") {
+                    e.preventDefault();
+                    addField();
                     return;
                 }
 
