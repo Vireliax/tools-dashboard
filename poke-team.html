@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Team Builder — Synergy &amp; Coverage Analyzer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="icon" href="poke-logo.ico">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
@@ -1411,6 +1410,203 @@
             color: var(--good)
         }
 
+        /* MOVES & ABILITY */
+        .poke-detail-section {
+            margin-top: 9px;
+            padding-top: 9px;
+            border-top: 1px solid var(--border);
+        }
+
+        .detail-label {
+            font-size: 9.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .9px;
+            color: var(--text-3);
+            margin-bottom: 5px;
+        }
+
+        .ability-select {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 6px 10px;
+            font-size: 11.5px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 600;
+            color: var(--text-1);
+            outline: none;
+            cursor: pointer;
+            transition: border-color var(--t), background var(--t);
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234F566E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 9px center;
+            padding-right: 26px;
+        }
+
+        .ability-select:focus {
+            border-color: var(--border-focus);
+            background-color: var(--surface3);
+        }
+
+        [data-theme="light"] .ability-select {
+            color: var(--text-1);
+        }
+
+        .ability-hidden-tag {
+            font-size: 9px;
+            opacity: .55;
+            font-style: italic;
+        }
+
+        .moves-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        .move-wrap {
+            position: relative;
+        }
+
+        .move-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 5px 22px 5px 8px;
+            font-size: 11px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 500;
+            color: var(--text-1);
+            outline: none;
+            transition: border-color var(--t), background var(--t);
+        }
+
+        .move-input::placeholder {
+            color: var(--text-3);
+        }
+
+        .move-input:focus {
+            border-color: var(--border-focus);
+            background: var(--surface3);
+        }
+
+        .move-input.has-move {
+            font-weight: 700;
+        }
+
+        .move-type-dot {
+            position: absolute;
+            right: 7px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: opacity var(--t);
+        }
+
+        .move-clear-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-3);
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 1;
+            padding: 1px;
+            display: none;
+            transition: color var(--t);
+        }
+
+        .move-clear-btn:hover {
+            color: var(--danger);
+        }
+
+        .move-input.has-move~.move-clear-btn {
+            display: block;
+        }
+
+        .move-input.has-move {
+            padding-right: 22px;
+        }
+
+        #move-portal {
+            position: fixed;
+            background: var(--surface2);
+            border: 1px solid var(--border-focus);
+            border-radius: var(--radius-md);
+            max-height: 260px;
+            overflow-y: auto;
+            z-index: 9999;
+            box-shadow: var(--shadow);
+            display: none;
+            min-width: 200px;
+        }
+
+        #move-portal.open {
+            display: block;
+        }
+
+        .ac-move-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 11px;
+            cursor: pointer;
+            transition: background var(--t);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-1);
+        }
+
+        .ac-move-item:hover,
+        .ac-move-item.hi {
+            background: var(--surface3);
+        }
+
+        .ac-move-type-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            padding: 2px 6px;
+            border-radius: 100px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+            flex-shrink: 0;
+            transition: background 200ms ease;
+        }
+
+        .ac-move-type-badge.unknown {
+            background: var(--surface3);
+            color: var(--text-3);
+            text-shadow: none;
+        }
+
+        .analysis-mode-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 100px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            border: 1px solid rgba(90, 110, 255, 0.25);
+            letter-spacing: .4px;
+        }
+
         /* SCROLLBAR */
         ::-webkit-scrollbar {
             width: 5px;
@@ -1534,6 +1730,7 @@
     </div>
 
     <div id="ac-portal"></div>
+    <div id="move-portal"></div>
     <div class="toast" id="toast"></div>
 
     <script>
@@ -1569,10 +1766,47 @@
         function eff(atk, def) { const r = TYPE_CHART[atk]; return (r && r[def] !== undefined) ? r[def] : 1 }
         function defMult(atkType, types) { return types.reduce((a, t) => a * eff(atkType, t), 1) }
 
+        // ── ABILITY EFFECTS ───────────────────────────────────────────────────────────
+        // Maps ability slug → defensive modifiers it grants
+        const ABILITY_EFFECTS = {
+            'levitate': { immuneTo: ['ground'] },
+            'flash-fire': { immuneTo: ['fire'] },
+            'water-absorb': { immuneTo: ['water'] },
+            'dry-skin': { immuneTo: ['water'], weakTo: ['fire'] },
+            'storm-drain': { immuneTo: ['water'] },
+            'volt-absorb': { immuneTo: ['electric'] },
+            'lightning-rod': { immuneTo: ['electric'] },
+            'motor-drive': { immuneTo: ['electric'] },
+            'sap-sipper': { immuneTo: ['grass'] },
+            'earth-eater': { immuneTo: ['ground'] },
+            'wind-rider': { immuneTo: ['flying'] },
+            'well-baked-body': { immuneTo: ['fire'] },
+            'soundproof': { immuneTo: [] },   // blocks sound moves (not modelled by type)
+            'thick-fat': { halvesFrom: ['fire', 'ice'] },
+            'heatproof': { halvesFrom: ['fire'] },
+            'water-bubble': { halvesFrom: ['fire'] },
+            'fluffy': { doublesFrom: ['fire'] },
+            'purifying-salt': { halvesFrom: ['ghost'] },
+        };
+        // Apply ability modifiers on top of base type effectiveness
+        function getEffMult(atkType, pokemon) {
+            let m = defMult(atkType, pokemon.types);
+            const ab = pokemon.selectedAbility;
+            if (ab && ABILITY_EFFECTS[ab]) {
+                const fx = ABILITY_EFFECTS[ab];
+                if (fx.immuneTo && fx.immuneTo.includes(atkType)) return 0;
+                if (fx.halvesFrom && fx.halvesFrom.includes(atkType)) m *= 0.5;
+                if (fx.doublesFrom && fx.doublesFrom.includes(atkType)) m *= 2;
+                if (fx.weakTo && fx.weakTo.includes(atkType)) m *= 2;
+            }
+            return m;
+        }
+
         // ── STATE ─────────────────────────────────────────────────────────────────────
         let team = Array(6).fill(null);
         let pokeList = [];
         let pokeCache = {};
+        let moveCache = {};
         let listReady = false;
         let layout = 'grid';
         let saved = [];
@@ -1621,21 +1855,72 @@
                 showToast('Failed to load Pokédex. Check your connection.', 'err');
             }
         }
+        // Walk an evo-chain node and return all ancestor species names for targetName
+        function findPreEvos(node, targetName, ancestors = []) {
+            if (node.species.name === targetName) return ancestors;
+            for (const next of node.evolves_to) {
+                const result = findPreEvos(next, targetName, [...ancestors, node.species.name]);
+                if (result !== null) return result;
+            }
+            return null;
+        }
+        // Fetch move names for a pokemon by name, using a lightweight per-species cache
+        async function fetchMoveNames(pokeName) {
+            const ck = `ptb_moves_${pokeName}`; const lc = localStorage.getItem(ck);
+            if (lc) { try { return JSON.parse(lc); } catch (e) { } }
+            const r = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokeName}`);
+            if (!r.ok) return [];
+            const d = await r.json();
+            const moves = d.moves.map(m => m.move.name);
+            try { localStorage.setItem(ck, JSON.stringify(moves)); } catch (e) { }
+            return moves;
+        }
         async function getPoke(name) {
             if (pokeCache[name]) return pokeCache[name];
-            const ck = `ptb_poke_${name}`; const lc = localStorage.getItem(ck);
+            const ck = `ptb_poke4_${name}`; const lc = localStorage.getItem(ck);
             if (lc) { try { const p = JSON.parse(lc); pokeCache[name] = p; return p } catch (e) { } }
             const r = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
             if (!r.ok) throw new Error('Not found: ' + name);
             const d = await r.json();
+
+            // Start with own moves
+            const allMoves = new Set(d.moves.map(m => m.move.name));
+
+            // Fetch evolution chain and merge pre-evo moves
+            try {
+                const speciesRes = await fetch(d.species.url);
+                const speciesData = await speciesRes.json();
+                const chainRes = await fetch(speciesData.evolution_chain.url);
+                const chainData = await chainRes.json();
+                const preEvos = findPreEvos(chainData.chain, name) || [];
+                const preEvoMoveLists = await Promise.all(preEvos.map(n => fetchMoveNames(n)));
+                for (const list of preEvoMoveLists) { for (const mv of list) allMoves.add(mv); }
+            } catch (e) { /* silently fall back to own moves only */ }
+
             const p = {
                 name: d.name, id: d.id, types: d.types.map(t => t.type.name),
                 artwork: d.sprites?.other?.['official-artwork']?.front_default || art(d.id),
-                sprite: d.sprites?.front_default || spr(d.id)
+                sprite: d.sprites?.front_default || spr(d.id),
+                abilities: d.abilities.map(a => ({ name: a.ability.name, hidden: a.is_hidden })),
+                moves: Array.from(allMoves).sort(),
+                selectedAbility: d.abilities.find(a => !a.is_hidden)?.ability.name || d.abilities[0]?.ability.name || null,
+                selectedMoves: [null, null, null, null],
             };
             pokeCache[name] = p;
             try { localStorage.setItem(ck, JSON.stringify(p)) } catch (e) { }
             return p;
+        }
+        async function getMoveData(moveName) {
+            if (moveCache[moveName]) return moveCache[moveName];
+            const ck = `ptb_move_${moveName}`; const lc = localStorage.getItem(ck);
+            if (lc) { try { const m = JSON.parse(lc); moveCache[moveName] = m; return m; } catch (e) { } }
+            const r = await fetch(`https://pokeapi.co/api/v2/move/${moveName}`);
+            if (!r.ok) throw new Error('Move not found: ' + moveName);
+            const d = await r.json();
+            const m = { name: d.name, type: d.type.name, power: d.power, category: d.damage_class?.name };
+            moveCache[moveName] = m;
+            try { localStorage.setItem(ck, JSON.stringify(m)); } catch (e) { }
+            return m;
         }
 
         // ── TEAM MANAGEMENT ───────────────────────────────────────────────────────────
@@ -1777,6 +2062,29 @@
             const actions = `<div class="slot-actions"><button class="slot-remove" onclick="removePoke(${i})"><span style="font-size:13px">×</span> Remove</button></div>`;
             const spriteArea = `<div class="sprite-area"><div class="sprite-ring"></div>${img}${loader}</div>`;
 
+            // Ability & Moves section (only shown when slot is filled)
+            const abilitySection = p ? `
+<div class="poke-detail-section">
+  <div class="detail-label">Ability</div>
+  <select class="ability-select" id="ab-${i}" onchange="setAbility(${i}, this.value)">
+    ${(p.abilities || []).map(a => `<option value="${a.name}" ${p.selectedAbility === a.name ? 'selected' : ''}>${fname(a.name)}${a.hidden ? ' ✦' : ''}</option>`).join('')}
+  </select>
+</div>
+<div class="poke-detail-section">
+  <div class="detail-label">Moves <span style="opacity:.45;font-weight:500;text-transform:none;letter-spacing:0">(affects coverage)</span></div>
+  <div class="moves-grid">
+    ${[0, 1, 2, 3].map(mi => {
+                const sm = p.selectedMoves && p.selectedMoves[mi];
+                const dotColor = sm && sm.type ? (TYPE_COLORS[sm.type] || '#888') : 'transparent';
+                return `<div class="move-wrap">
+        <input class="move-input${sm ? ' has-move' : ''}" id="mv-${i}-${mi}" type="text" placeholder="Move ${mi + 1}" value="${sm ? fname(sm.name) : ''}" autocomplete="off" spellcheck="false">
+        <span class="move-type-dot" id="mvd-${i}-${mi}" style="background:${dotColor};opacity:${sm ? 1 : 0}"></span>
+        <button class="move-clear-btn" id="mvc-${i}-${mi}" onclick="clearMove(${i},${mi})" title="Clear move">×</button>
+      </div>`;
+            }).join('')}
+  </div>
+</div>` : '';
+
             if (layout === 'list') return `${spriteArea}
     <div class="slot-body">
       <div class="slot-main-info">
@@ -1784,7 +2092,7 @@
         <div class="slot-name">${name}</div>
         <div class="slot-types">${types}</div>
       </div>
-      <div class="slot-search-col">${search}${actions}</div>
+      <div class="slot-search-col">${search}${actions}${abilitySection}</div>
     </div>`;
 
             return `${spriteArea}
@@ -1792,7 +2100,7 @@
       <div class="slot-num">SLOT ${String(i + 1).padStart(2, '0')}</div>
       <div class="slot-name">${name}</div>
       <div class="slot-types">${types}</div>
-      ${search}${actions}
+      ${search}${actions}${abilitySection}
     </div>`;
         }
 
@@ -1815,6 +2123,32 @@
                 else if (e.key === 'Enter') { e.preventDefault(); const h = portal.querySelector('.ac-item.hi'); if (h) { selectPoke(i, h.dataset.name); clearSearch(i) } }
                 else if (e.key === 'Escape') closePortal();
             });
+            // Wire move inputs (only for filled slots)
+            if (team[i]) {
+                [0, 1, 2, 3].forEach(mi => {
+                    const mv = document.getElementById(`mv-${i}-${mi}`);
+                    if (!mv) return;
+                    mv.addEventListener('input', () => {
+                        const q = mv.value.trim();
+                        q.length >= 2 ? showMovePortal(i, mi, q) : closeMovePortal();
+                    });
+                    mv.addEventListener('focus', () => {
+                        const q = mv.value.trim();
+                        if (q.length >= 2) showMovePortal(i, mi, q);
+                        else if (team[i] && team[i].moves && team[i].moves.length) showMovePortal(i, mi, '');
+                    });
+                    mv.addEventListener('blur', () => setTimeout(() => {
+                        if (movePortalSlot === i && movePortalIdx === mi) closeMovePortal();
+                    }, 180));
+                    mv.addEventListener('keydown', e => {
+                        const items = movePortal.querySelectorAll('.ac-move-item');
+                        if (e.key === 'ArrowDown') { e.preventDefault(); hMove(items, 1); }
+                        else if (e.key === 'ArrowUp') { e.preventDefault(); hMove(items, -1); }
+                        else if (e.key === 'Enter') { e.preventDefault(); const h = movePortal.querySelector('.ac-move-item.hi'); if (h) { selectMove(i, mi, h.dataset.name); closeMovePortal(); } }
+                        else if (e.key === 'Escape') closeMovePortal();
+                    });
+                });
+            }
         }
         function clearSearch(i) {
             const inp = document.getElementById(`si-${i}`); const xb = document.getElementById(`sx-${i}`);
@@ -1853,11 +2187,114 @@
 
         document.addEventListener('mousedown', e => {
             if (!e.target.closest('.search-wrap') && !e.target.closest('#ac-portal')) closePortal();
+            if (!e.target.closest('.move-wrap') && !e.target.closest('#move-portal')) closeMovePortal();
         });
         window.addEventListener('scroll', () => {
             if (portalSlot >= 0) { const inp = document.getElementById(`si-${portalSlot}`); inp ? posPortal(inp) : closePortal() }
+            if (movePortalSlot >= 0) { const mv = document.getElementById(`mv-${movePortalSlot}-${movePortalIdx}`); mv ? posMovePortal(mv) : closeMovePortal(); }
         }, true);
-        window.addEventListener('resize', () => { if (portalSlot >= 0) closePortal() });
+        window.addEventListener('resize', () => { if (portalSlot >= 0) closePortal(); if (movePortalSlot >= 0) closeMovePortal(); });
+
+        // ── MOVE PORTAL ───────────────────────────────────────────────────────────────
+        let movePortalSlot = -1, movePortalIdx = -1;
+        const movePortal = document.getElementById('move-portal');
+
+        function moveBadgeHTML(mn) {
+            const cached = moveCache[mn];
+            if (cached) {
+                const color = TYPE_COLORS[cached.type] || '#888';
+                return `<span class="ac-move-type-badge" style="background:${color}" data-badge="${mn}">${cached.type}</span>`;
+            }
+            return `<span class="ac-move-type-badge unknown" data-badge="${mn}">…</span>`;
+        }
+        let moveTypeFetchAbort = null;
+        function showMovePortal(i, mi, q) {
+            const mv = document.getElementById(`mv-${i}-${mi}`); if (!mv || !team[i]) return;
+            movePortalSlot = i; movePortalIdx = mi;
+            movePortal.classList.add('open'); posMovePortal(mv);
+            const ql = q.toLowerCase().replace(/\s+/g, '-');
+            const moves = team[i].moves || [];
+            const filtered = ql.length >= 2
+                ? [...moves.filter(m => m.startsWith(ql)), ...moves.filter(m => !m.startsWith(ql) && m.includes(ql))]
+                : [...moves];
+            if (!filtered.length) { movePortal.innerHTML = '<div class="ac-no-result">No moves found</div>'; return; }
+            movePortal.innerHTML = filtered.map(mn =>
+                `<div class="ac-move-item" data-name="${mn}">${moveBadgeHTML(mn)}<span>${fname(mn)}</span></div>`
+            ).join('');
+            movePortal.querySelectorAll('.ac-move-item').forEach(el => {
+                el.addEventListener('mousedown', e2 => { e2.preventDefault(); selectMove(i, mi, el.dataset.name); closeMovePortal(); });
+            });
+            // Batch-fetch types for uncached moves, then update badges in-place
+            const uncached = filtered.filter(m => !moveCache[m]);
+            if (uncached.length) batchFetchMoveTypes(uncached);
+        }
+        async function batchFetchMoveTypes(moveNames) {
+            const BATCH = 6;
+            for (let idx = 0; idx < moveNames.length; idx += BATCH) {
+                if (movePortalSlot < 0) break; // portal closed, stop
+                const batch = moveNames.slice(idx, idx + BATCH);
+                await Promise.all(batch.map(async mn => {
+                    try {
+                        await getMoveData(mn);
+                        // Update badge in-place if portal still shows this move
+                        const badge = movePortal.querySelector(`[data-badge="${mn}"]`);
+                        if (badge && moveCache[mn]) {
+                            const color = TYPE_COLORS[moveCache[mn].type] || '#888';
+                            badge.textContent = moveCache[mn].type;
+                            badge.style.background = color;
+                            badge.classList.remove('unknown');
+                        }
+                    } catch (e) { }
+                }));
+                if (idx + BATCH < moveNames.length) await new Promise(r => setTimeout(r, 40));
+            }
+        }
+        function posMovePortal(inp) {
+            const r = inp.getBoundingClientRect();
+            movePortal.style.left = r.left + 'px'; movePortal.style.top = (r.bottom + 3) + 'px';
+            movePortal.style.width = Math.max(r.width, 180) + 'px';
+        }
+        function closeMovePortal() { movePortal.classList.remove('open'); movePortalSlot = -1; movePortalIdx = -1; }
+
+        async function selectMove(i, mi, moveName) {
+            if (!team[i]) return;
+            if (!team[i].selectedMoves) team[i].selectedMoves = [null, null, null, null];
+            try {
+                const md = await getMoveData(moveName);
+                team[i].selectedMoves[mi] = { name: moveName, type: md.type };
+                const inp = document.getElementById(`mv-${i}-${mi}`);
+                const dot = document.getElementById(`mvd-${i}-${mi}`);
+                const clr = document.getElementById(`mvc-${i}-${mi}`);
+                if (inp) { inp.value = fname(moveName); inp.classList.add('has-move'); }
+                if (dot) { dot.style.background = TYPE_COLORS[md.type] || '#888'; dot.style.opacity = '1'; }
+                if (clr) clr.style.display = 'block';
+                // Update portal dots if open
+                movePortal.querySelectorAll('.ac-move-item').forEach(el => {
+                    if (!el.querySelector('.ac-move-type-dot') && moveCache[el.dataset.name]) {
+                        const d = document.createElement('span');
+                        d.className = 'ac-move-type-dot'; d.style.background = TYPE_COLORS[moveCache[el.dataset.name].type] || '#888';
+                        el.prepend(d);
+                    }
+                });
+                renderAnalysis();
+            } catch (e) { showToast(`Could not load move "${fname(moveName)}"`, 'err'); }
+        }
+        function clearMove(i, mi) {
+            if (!team[i] || !team[i].selectedMoves) return;
+            team[i].selectedMoves[mi] = null;
+            const inp = document.getElementById(`mv-${i}-${mi}`);
+            const dot = document.getElementById(`mvd-${i}-${mi}`);
+            const clr = document.getElementById(`mvc-${i}-${mi}`);
+            if (inp) { inp.value = ''; inp.classList.remove('has-move'); inp.focus(); }
+            if (dot) { dot.style.opacity = '0'; }
+            if (clr) clr.style.display = 'none';
+            renderAnalysis();
+        }
+        function setAbility(i, abilityName) {
+            if (!team[i]) return;
+            team[i].selectedAbility = abilityName;
+            renderAnalysis();
+        }
 
         // ── UI HELPERS ────────────────────────────────────────────────────────────────
         function showLoading(i, v) { const el = document.getElementById(`ld-${i}`); if (el) el.style.display = v ? 'flex' : 'none' }
@@ -1879,10 +2316,20 @@
         }
 
         // ── ANALYSIS ─────────────────────────────────────────────────────────────────
+        function teamHasMoves() {
+            return team.filter(Boolean).some(p => p.selectedMoves && p.selectedMoves.some(m => m && m.type));
+        }
         function analyzeOff() {
             const f = team.filter(Boolean); if (!f.length) return null;
-            const ts = new Set(f.flatMap(p => p.types)); const res = {};
-            for (const d of TYPES) { let best = 0, ba = null; for (const a of ts) { const e = eff(a, d); if (e > best) { best = e; ba = a } } res[d] = { mult: best, atk: ba } }
+            // Collect attacking types: use move types for pokemon that have moves selected, else fall back to pokemon types
+            const atkTypes = new Set();
+            for (const p of f) {
+                const activeMoves = (p.selectedMoves || []).filter(m => m && m.type);
+                if (activeMoves.length > 0) { for (const m of activeMoves) atkTypes.add(m.type); }
+                else { for (const t of p.types) atkTypes.add(t); }
+            }
+            const res = {};
+            for (const d of TYPES) { let best = 0, ba = null; for (const a of atkTypes) { const e = eff(a, d); if (e > best) { best = e; ba = a } } res[d] = { mult: best, atk: ba } }
             return res;
         }
         function analyzeDef() {
@@ -1891,7 +2338,7 @@
             for (const a of TYPES) {
                 const c = { immune: 0, quadResist: 0, resist: 0, neutral: 0, weak: 0, quadWeak: 0 };
                 for (const p of f) {
-                    const m = defMult(a, p.types);
+                    const m = getEffMult(a, p);
                     if (m === 0) c.immune++; else if (m <= .25) c.quadResist++; else if (m < 1) c.resist++;
                     else if (m >= 4) c.quadWeak++; else if (m >= 2) c.weak++; else c.neutral++;
                 }
@@ -1922,14 +2369,23 @@
             const res = TYPES.filter(t => (d[t].resist + d[t].quadResist) > 0).sort((a, b) => (d[b].resist + d[b].quadResist) - (d[a].resist + d[a].quadResist));
             const imm = TYPES.filter(t => d[t].immune > 0);
             const dot = (t) => `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${TYPE_COLORS[t] || '#888'};flex-shrink:0"></span>`;
+            const hasMoves = teamHasMoves();
+            // Check if any ability has known effects
+            const hasAbilityFx = f.some(p => p.selectedAbility && ABILITY_EFFECTS[p.selectedAbility]);
+            const modeTags = [];
+            if (hasMoves) modeTags.push(`<span class="analysis-mode-tag">⚔ Move-based coverage</span>`);
+            if (hasAbilityFx) modeTags.push(`<span class="analysis-mode-tag" style="background:var(--good-dim);color:var(--good);border-color:var(--good-border)">🛡 Ability effects active</span>`);
             root.innerHTML = `
-  <div class="section-header" style="margin-top:4px"><div class="section-label">Analysis</div></div>
+  <div class="section-header" style="margin-top:4px">
+    <div class="section-label">Analysis</div>
+    ${modeTags.length ? `<div style="display:flex;gap:6px;flex-wrap:wrap">${modeTags.join('')}</div>` : ''}
+  </div>
   <div class="analysis-wrap">
     <div class="synergy-card">
       <div class="card-title">◎ Team Synergy</div>
       <div class="synergy-stats">
         <div class="syn-stat"><div class="syn-val">${f.length}</div><div class="syn-lbl">Pokémon</div></div>
-        <div class="syn-stat"><div class="syn-val" style="color:var(--good)">${sup}</div><div class="syn-lbl">Types Covered</div></div>
+        <div class="syn-stat"><div class="syn-val" style="color:var(--good)">${sup}</div><div class="syn-lbl">${hasMoves ? 'Move Coverage' : 'Types Covered'}</div></div>
         <div class="syn-stat"><div class="syn-val" style="color:${b.gaps > 5 ? 'var(--danger)' : b.gaps > 2 ? 'var(--warn)' : 'var(--good)'}">${b.gaps}</div><div class="syn-lbl">Coverage Gaps</div></div>
         <div class="syn-stat"><div class="syn-val" style="color:${b.mw > 3 ? 'var(--danger)' : b.mw > 1 ? 'var(--warn)' : 'var(--good)'}">${b.mw}</div><div class="syn-lbl">Major Weaknesses</div></div>
       </div>
@@ -1939,16 +2395,17 @@
         <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-3)">${b.score}/100</span>
       </div>
       ${b.gaps > 0 ? `<div class="insight-row"><span style="font-size:11px;color:var(--text-3)">Gaps:</span>${gapNames.slice(0, 9).map(g => `<span class="insight-chip">${g}</span>`).join('')}${gapNames.length > 9 ? `<span class="insight-chip">+${gapNames.length - 9}</span>` : ''}</div>` : ''}
+      ${!hasMoves ? `<div style="font-size:10.5px;color:var(--text-3);margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">💡 Add moves to each Pokémon for accurate offensive coverage analysis</div>` : ''}
     </div>
     <div class="analysis-grid">
       <div class="analysis-card">
-        <div class="card-title">⚔ Offensive Coverage</div>
+        <div class="card-title">⚔ Offensive Coverage <span style="font-size:9px;opacity:.5;font-weight:500;text-transform:none;letter-spacing:0">${hasMoves ? 'via moves' : 'via types'}</span></div>
         <div class="coverage-grid">
           ${TYPES.map(t => { const { mult } = o[t]; let cl, lb; if (mult >= 4) { cl = 'eff-super'; lb = '4×' } else if (mult >= 2) { cl = 'eff-super'; lb = '2×' } else if (mult === 1) { cl = 'eff-neutral'; lb = '1×' } else if (mult > 0) { cl = 'eff-resist'; lb = '½×' } else { cl = 'eff-zero'; lb = '—' }; return `<div class="cov-item"><span class="type-badge" style="background:${TYPE_COLORS[t] || '#888'}">${t}</span><span class="cov-eff ${cl}">${lb}</span></div>` }).join('')}
         </div>
       </div>
       <div class="analysis-card">
-        <div class="card-title">🛡 Defensive Analysis</div>
+        <div class="card-title">🛡 Defensive Analysis <span style="font-size:9px;opacity:.5;font-weight:500;text-transform:none;letter-spacing:0">${hasAbilityFx ? 'w/ abilities' : ''}</span></div>
         <div class="def-section">
           <div class="def-label lbl-weak">⬤ Weak To</div>
           <div class="def-chips">
